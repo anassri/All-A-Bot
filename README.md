@@ -1,4 +1,4 @@
-### List of features
+# List of features
 * Create an account
 * Log in
 * Create a bot
@@ -12,8 +12,8 @@
 bot specification MVP: call/response with strings
 additional features: timed triggers, responses that include adding/removing roles, changing nicknames/channel names, deleting messages/channels, randomness (select a random response, respond only a certain % of the time, etc.), listening for and responding with emoji reacts
 
-### list of triggers/responses:
-# Triggers:
+# list of triggers/responses:
+## Triggers:
 * message matching a particular string/regex
 * message from a user with a role matching a particular string/regex
 * message from a user with a handle matching a particular string/regex
@@ -22,7 +22,7 @@ additional features: timed triggers, responses that include adding/removing role
 * a user leaving the server whose handle matches a particular string
 * a user joining the server whose handle matches a particular string
 * it is a certain date or time of day
-# Responses:
+## Responses:
 * post a particular message
 * delete the message which triggered the response
 * respond with a particular emoji to the message which triggered the response
