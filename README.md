@@ -43,6 +43,8 @@ additional features: timed triggers, responses that include adding/removing role
 * userId
 * name
 * description
+* status
+* developerToken
 
 ## Rules table
 * botId
