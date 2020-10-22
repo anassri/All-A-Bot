@@ -43,10 +43,8 @@ additional features: timed triggers, responses that include adding/removing role
 * userId
 * name
 * description
-* avatar
 
 ## Rules table
 * botId
 * prefix
 * content
-* orderNumber
