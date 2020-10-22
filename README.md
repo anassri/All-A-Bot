@@ -14,21 +14,21 @@ additional features: timed triggers, responses that include adding/removing role
 
 ### list of triggers/responses:
 # Triggers:
-    * message matching a particular string/regex
-    * message from a user with a role matching a particular string/regex
-    * message from a user with a handle matching a particular string/regex
-    * emoji reaction matching a particular string/regex
-    * emoji reaction from a user whose handle matches a particular string/regex
-    * a user leaving the server whose handle matches a particular string
-    * a user joining the server whose handle matches a particular string
-    * it is a certain date or time of day
+* message matching a particular string/regex
+* message from a user with a role matching a particular string/regex
+* message from a user with a handle matching a particular string/regex
+* emoji reaction matching a particular string/regex
+* emoji reaction from a user whose handle matches a particular string/regex
+* a user leaving the server whose handle matches a particular string
+* a user joining the server whose handle matches a particular string
+* it is a certain date or time of day
 # Responses:
-    * post a particular message
-    * delete the message which triggered the response
-    * respond with a particular emoji to the message which triggered the response
-    * delete the most recent message matching a particular string/regex
-    * react with a particular emoji to the most recent message matching a particular string/regex
-    * ban the user whose action triggered the response
-    * ban a user whose handle matches a particular string/regex
-    * add or remove a particular role from the user who triggered the response
-    * add or remove a particular role from a user whose handle matches a particular string/regex
+* post a particular message
+* delete the message which triggered the response
+* respond with a particular emoji to the message which triggered the response
+* delete the most recent message matching a particular string/regex
+* react with a particular emoji to the most recent message matching a particular string/regex
+* ban the user whose action triggered the response
+* ban a user whose handle matches a particular string/regex
+* add or remove a particular role from the user who triggered the response
+* add or remove a particular role from a user whose handle matches a particular string/regex
