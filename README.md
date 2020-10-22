@@ -52,7 +52,7 @@ additional features: timed triggers, responses that include adding/removing role
 
 # Rule strings
 ## Example
-{
+``{
   "trigger": {"message: hi!"}
   "response": ["ban sender", "say 'no greeting in this server!'"]
- }
+ }``
