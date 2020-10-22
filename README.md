@@ -32,3 +32,27 @@ additional features: timed triggers, responses that include adding/removing role
 * ban a user whose handle matches a particular string/regex
 * add or remove a particular role from the user who triggered the response
 * add or remove a particular role from a user whose handle matches a particular string/regex
+
+# Database schema
+## Users table
+* username
+* email
+* password
+
+## Bots table
+* userId
+* name
+* description
+* developerToken
+
+## Rules table
+* botId
+* prefix
+* content
+
+# Rule strings
+## Example
+``{
+  "trigger": {"message: hi!"}
+  "response": ["ban sender", "say 'no greeting in this server!'"]
+ }``
