@@ -15,6 +15,8 @@ additional features: timed triggers, responses that include adding/removing role
 # list of triggers/responses:
 ## Triggers:
 * message matching a particular string/regex
+  * Starts with/starts with prefix and command name
+  * Contains a string anywhere in a message
 * message from a user with a role matching a particular string/regex
 * message from a user with a handle matching a particular string/regex
 * emoji reaction matching a particular string/regex
@@ -56,7 +58,7 @@ additional features: timed triggers, responses that include adding/removing role
   "trigger": {"message: hi!"}
   "response": ["ban sender", "say 'no greeting in this server!'"]
  }``
- 
+
  # Routes
  ## Examples (prelimenary)
  /users/[userid] - individual user
