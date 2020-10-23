@@ -56,3 +56,12 @@ additional features: timed triggers, responses that include adding/removing role
   "trigger": {"message: hi!"}
   "response": ["ban sender", "say 'no greeting in this server!'"]
  }``
+ 
+ # Routes
+ ## Examples (prelimenary)
+ /users/[userid] - individual user
+ /users/[userid]/bots - all the user's bots
+ /bots/[botid] - individual bot
+ /bots/[botid]/rules
+ /bots/[botid]/rules/[ruleid] - individual rule
+ /bots/[botid]/download - download the bot code
