@@ -17,7 +17,7 @@ export function HomePage({ logoutDispatcher, user }) {
 
   const handleSignup = e => {
     e.preventDefault();
-    history.push('/register');
+    history.push('/signup');
   };
 
   return (
