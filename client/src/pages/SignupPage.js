@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { login, loadUser, loadToken } from '../store/auth';
+import { signup, loadUser } from '../store/auth';
 
 import { Box, TextField, Button, Checkbox } from '@material-ui/core';
 
-export const SignupPage = ({ loginDispatcher, loadUserDispatcher }) => {
+export const SignupPage = ({ user, signupDispatch, loadUserDispatch }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,14 +13,15 @@ export const SignupPage = ({ loginDispatcher, loadUserDispatcher }) => {
   const history = useHistory();
 
   useEffect(() => {
-    loadUserDispatcher();
+    // TODO: Redirect to dashboard if user logged in
+    if (user) history.push('/');
   });
 
   const handleSubmit = e => {
     e.preventDefault();
-    console.log(email, password);
-    const storeIsReady = loginDispatcher(email, password);
+    const storeIsReady = signupDispatch(username, email, password);
     if (storeIsReady) {
+      // TODO: Redirect to dashboard
       history.push('/');
     }
   };
@@ -39,7 +40,8 @@ export const SignupPage = ({ loginDispatcher, loadUserDispatcher }) => {
 
 export default function SignupPageContainer() {
   const dispatch = useDispatch();
-  const loginDispatcher = (email, password) => dispatch(login(email, password));
-  const loadUserDispatcher = () => dispatch(loadUser());
-  return <SignupPage loginDispatcher={loginDispatcher} loadUserDispatcher={loadUserDispatcher} />;
+  const user = useSelector(state => state.auth.user);
+  const signupDispatch = (username, email, password) => dispatch(signup(username, email, password));
+  const loadUserDispatch = () => dispatch(loadUser());
+  return <SignupPage user={user} signupDispatch={signupDispatch} loadUserDispatch={loadUserDispatch} />;
 }

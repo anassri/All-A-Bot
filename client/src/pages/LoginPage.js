@@ -5,14 +5,15 @@ import { login, loadUser, loadToken } from '../store/auth';
 
 import { Box, TextField, Button, Checkbox } from '@material-ui/core';
 
-export const LoginPage = ({ loginDispatcher, loadUserDispatcher }) => {
+export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const history = useHistory();
 
   useEffect(() => {
-    loadUserDispatcher();
+    // TODO: Redirect to dashboard if user logged in
+    if (user) history.push('/');
   });
 
   const handleSubmit = e => {
@@ -20,6 +21,7 @@ export const LoginPage = ({ loginDispatcher, loadUserDispatcher }) => {
     console.log(email, password);
     const storeIsReady = loginDispatcher(email, password);
     if (storeIsReady) {
+      // TODO: Redirect to dashboard
       history.push('/');
     }
   };
@@ -37,7 +39,8 @@ export const LoginPage = ({ loginDispatcher, loadUserDispatcher }) => {
 
 export default function LoginPageContainer() {
   const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
   const loginDispatcher = (email, password) => dispatch(login(email, password));
   const loadUserDispatcher = () => dispatch(loadUser());
-  return <LoginPage loginDispatcher={loginDispatcher} loadUserDispatcher={loadUserDispatcher} />;
+  return <LoginPage user={user} loginDispatcher={loginDispatcher} loadUserDispatcher={loadUserDispatcher} />;
 }

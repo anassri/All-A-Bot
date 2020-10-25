@@ -47,7 +47,9 @@ export const signup = (username, email, password) => async dispatch => {
       setInLocalStorage(token, user);
       dispatch(setToken(token));
       dispatch(setUser(user));
+      return true;
     }
+    return false;
   } catch (e) {
     console.error(e);
   }
@@ -67,7 +69,9 @@ export const login = (email, password) => async dispatch => {
       setInLocalStorage(token, user);
       dispatch(setToken(token));
       dispatch(setUser(user));
+      return true;
     }
+    return false;
   } catch (e) {
     console.error(e);
   }
