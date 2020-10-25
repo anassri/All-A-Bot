@@ -20,17 +20,8 @@ function App() {
             </NavLink>
           </li>
         </ul>
-        <PagesContainer />
       </nav>
-      <Switch>
-        <Route path='/users'>
-          <UserList />
-        </Route>
-
-        <Route path='/'>
-          <h1>My Home Page</h1>
-        </Route>
-      </Switch>
+      <PagesContainer />
     </BrowserRouter>
   );
 }
