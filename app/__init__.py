@@ -13,9 +13,10 @@ from .config import Config
 app = Flask(__name__)
 
 app.config.from_object(Config)
-app.register_blueprint(user_routes, url_prefix='/api/users')
+
 db.init_app(app)
 
+app.register_blueprint(user_routes.user_routes)
 app.register_blueprint(auth.bp)
 
 migrate = Migrate(app, db)
@@ -37,6 +38,12 @@ def logout():
     jti = get_raw_jwt()['jti']
     blacklist.add(jti)
     return {'msg': 'Logged out'}, 200
+
+
+@app.route('/verify_token', methods=['GET'])
+@jwt_required
+def verify_token():
+    return {'msg': 'OK'}, 200
 
 
 # Application Security
