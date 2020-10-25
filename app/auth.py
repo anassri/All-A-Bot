@@ -25,3 +25,15 @@ def signup():
 
     token = create_access_token(identity=user.email)
     return jsonify(user=user.to_dict(), token=token)
+
+
+@bp.route('login', methods=['POST'])
+def login():
+    incoming = request.get_json()
+    user = User.query.filter_by(email=incoming['email']).one()
+    # TODO: Update user model
+    if user and user.check_password(incoming['password']):
+        token = create_access_token(identity=user.email)
+        return jsonify(user=user.to_dict(), token=token)
+    else:
+        return {'msg': 'Incorrect email or password'}, 400
