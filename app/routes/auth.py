@@ -5,7 +5,7 @@ from app.models import db, User
 bp = Blueprint('auth', __name__, url_prefix='')
 
 
-@bp.route('signup', methods=['POST'])
+@bp.route('/signup', methods=['POST'])
 def signup():
     incoming = request.get_json()
 
@@ -27,7 +27,7 @@ def signup():
     return jsonify(user=user.to_dict(), token=token)
 
 
-@bp.route('login', methods=['POST'])
+@bp.route('/login', methods=['POST'])
 def login():
     incoming = request.get_json()
     user = User.query.filter_by(email=incoming['email']).one()
