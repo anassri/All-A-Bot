@@ -37,7 +37,7 @@ class User(db.Model):
                 'Password must be between 8 and 50 characters')
         self.hashedPassword = generate_password_hash(password)
 
-    def check_password(self, pssword):
+    def check_password(self, password):
         return check_password_hash(self.password, password)
 
 

@@ -5,7 +5,7 @@ from app.models import db, User
 bp = Blueprint('auth', __name__, url_prefix='')
 
 
-@bp.route('signup', method=['POST'])
+@bp.route('signup', methods=['POST'])
 def signup():
     incoming = request.get_json()
 
