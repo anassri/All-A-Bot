@@ -1,4 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+import re
+
 
 db = SQLAlchemy()
 
@@ -33,6 +36,9 @@ class User(db.Model):
             raise AssertionError(
                 'Password must be between 8 and 50 characters')
         self.hashedPassword = generate_password_hash(password)
+
+    def check_password(self, pssword):
+        return check_password_hash(self.password, password)
 
 
 class Bot(db.Model):
