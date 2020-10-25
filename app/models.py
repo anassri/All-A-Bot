@@ -24,6 +24,16 @@ class User(db.Model):
     def password(self):
         return self.hashed_password
 
+    @password.setter
+    def password(self, password):
+        if not re.match(r'[A-Za-z0-9@#$%^&+=]{8,}', password):
+            raise AssertionError(
+                'Password must contain 1 capital letter and 1 number')
+        if len(password) < 8 or len(password) > 50:
+            raise AssertionError(
+                'Password must be between 8 and 50 characters')
+        self.hashedPassword = generate_password_hash(password)
+
 
 class Bot(db.Model):
     __tablename__ = 'bots'
