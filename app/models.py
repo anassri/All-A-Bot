@@ -20,6 +20,10 @@ class User(db.Model):
             "email": self.email
         }
 
+    @property
+    def password(self):
+        return self.hashed_password
+
 
 class Bot(db.Model):
     __tablename__ = 'bots'
