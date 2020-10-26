@@ -38,7 +38,6 @@ export const SignupPage = ({ user, signupDispatch, loadUserDispatch }) => {
       if (signupAttempt.status === 200) history.push('/dashboard');
       else setErrors([signupAttempt.msg]);
     }
-    console.log(errors);
   };
 
   return (
