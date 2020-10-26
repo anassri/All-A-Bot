@@ -52,8 +52,8 @@ class Bot(db.Model):
     # nullable because presumably we want users to be able
     # to create a draft bot before they have a developer token
 
-    owner = db.relationship("User")
-    rules = db.relationship("Rules")
+    owner = db.relationship("users")
+    rules = db.relationship("rules")
 
 
 class Rule(db.Model):
@@ -67,4 +67,4 @@ class Rule(db.Model):
     # this is "text" rather than a string because it could be
     # very long in some cases
 
-    bot = db.relationship("Bot")
+    bot = db.relationship("bots")
