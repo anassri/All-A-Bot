@@ -34,13 +34,14 @@ export const loadUser = () => async dispatch => {
 };
 
 export const signup = (username, email, password) => async dispatch => {
-  console.log(username, email, password);
   try {
     const res = await fetch('/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, email, password }),
     });
+
+    console.log(res.status);
 
     // TODO: Refactor
     if (res.ok) {
@@ -50,9 +51,12 @@ export const signup = (username, email, password) => async dispatch => {
       dispatch(setUser(user));
       return true;
     }
+
+    if (res.status === 500) throw { status: 500, msg: 'User with that email address already exists' };
+    else throw { status: 400, msg: (await res.json()).msg };
   } catch (e) {
-    console.error(e);
-    return false;
+    console.log('catch e', e);
+    return e;
   }
 };
 
@@ -73,13 +77,9 @@ export const login = (email, password) => async dispatch => {
       return {
         status: 200,
       };
-    } else {
-      throw {
-        status: 400,
-        msg: (await res.json()).msg,
-      };
-    }
+    } else throw { status: 400, msg: (await res.json()).msg };
   } catch (e) {
+    console.log('catch e', e);
     return e;
   }
 };
