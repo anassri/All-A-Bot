@@ -10,7 +10,7 @@ client.once('ready', () => {
 })
 
 `
-
+const randStringMaker = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
 function nonMessageEventsBuidler(events) {
     let nonMessageEvents = ``
@@ -22,15 +22,24 @@ function nonMessageEventsBuidler(events) {
     return nonMessageEvents
 }
 
-function commandObjectBuilder(objList) {
+function commandObjectsBuilder(objList) {
     let commandObjects = ``
 
     objList.forEach(cmd => {
-        // Fill this in once actual data can be passed to this
+        const varName = cmd.name + randStringMaker()
+        if (cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'starts') {
+            commandObjects += `\n${varName} = {name: ${cmd.name}, description: ${cmd.description}, async execute(message, args) {${basicResponseBuilder(cmd.response.send)}}}\nclient.commands.set(varName.name, varName)`
+        } else if(cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'includes') {
+
+        } else {
+
+        }
     })
 }
 
-
+function basicResponseBuilder(response) {
+    return `message.channel.send('${response}')`
+}
 
 
 
