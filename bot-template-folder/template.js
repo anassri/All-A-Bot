@@ -50,7 +50,7 @@ client.on('message', message => {
             break
     }
 })
-// Placeholder token variable, will either be inserted by the user directly, or on the frontend at end of generation (either here, or in a .env file late)
+// Placeholder token variable, will either be inserted by the user directly, or on the frontend at end of generation (either here, or in a .env file later)
 token = 'bot token goes here'
 // Login function, actually starts up the bot and allows it to be interacted with
 // This should always be at the end of the file
