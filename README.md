@@ -15,25 +15,25 @@ additional features: timed triggers, responses that include adding/removing role
 # list of triggers/responses:
 ## Triggers:
 * message matching a particular string/regex
-  * Starts with/starts with prefix and command name
-  * Contains a string anywhere in a message
-* message from a user with a role matching a particular string/regex
-* message from a user with a handle matching a particular string/regex
-* emoji reaction matching a particular string/regex
-* emoji reaction from a user whose handle matches a particular string/regex
-* a user leaving the server whose handle matches a particular string
-* a user joining the server whose handle matches a particular string
-* it is a certain date or time of day
+  * Starts with/starts with prefix and command name - one text input field for the prefix/command name
+  * Contains a string anywhere in a message - one text input field for the trigger string
+* message from a user with a role matching a particular string - one text input field for the name of the role
+* message from a user with a name matching a particular string/regex - one text input field for the name string (this trigger may be in the form of an additional modifier to the previous one)
+* emoji reaction matching a particular string/regex - one text input field for the name of the emoji reaction
+* emoji reaction from a user whose name matches a particular string/regex - one text input field for the name string (this trigger may be in the form of an additional modifier to the previous one)
+* a user leaving the server whose name matches a particular string - one text input field for the name string
+* a user joining the server whose name matches a particular string - one text input field for the name string
+* it is a certain date or time of day - one date/time input field
 ## Responses:
-* post a particular message
-* delete the message which triggered the response
-* respond with a particular emoji to the message which triggered the response
-* delete the most recent message matching a particular string/regex
-* react with a particular emoji to the most recent message matching a particular string/regex
-* ban the user whose action triggered the response
-* ban a user whose handle matches a particular string/regex
-* add or remove a particular role from the user who triggered the response
-* add or remove a particular role from a user whose handle matches a particular string/regex
+* post a particular message - one text input field for the response message
+* delete the message which triggered the response - no input required
+* respond with a particular emoji to the message which triggered the response - one text input field for the name of the emoji (not a dropdown since servers may have custom emoji)
+* delete the most recent message matching a particular string/regex - one text input field for the matching string
+* react with a particular emoji to the most recent message matching a particular string/regex - one text input field for the matching string
+* ban the user whose action triggered the response - one dropdown menu for kick/server mute/ban
+* ban a user whose name matches a particular string/regex - one dropdown menu for kick/server mute/ban and one text input field for the
+* add or remove a particular role from the user who triggered the response - one text input field for the name of the role
+* add or remove a particular role from a user whose name matches a particular string/regex - two text input fields: one for the name of the role and one for the the user name string
 
 # Database schema
 ## Users table
