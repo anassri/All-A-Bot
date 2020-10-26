@@ -10,6 +10,18 @@ client.once('ready', () => {
 
 // Events like guild member join and leave can be here, since they do not depend on messages being sent
 
+// Command objects should be defines here, a simple example would be:
+/*
+ * const command = {
+     name: "command name",
+     description: "command description",
+     execute(message, args) {
+         functionality goes in here
+     }
+ }
+ */
+
+
 // Prefix will be gotten from user selection
 prefix = 'placeholder, put user selected prefix here'
 // User actions go here for the event of commands that start with a prefix
@@ -41,13 +53,10 @@ client.on('message', message => {
 // Placeholder token variable, will either be inserted by the user directly, or on the frontend at end of generation (either here, or in a .env file late)
 token = 'bot token goes here'
 // Login function, actually starts up the bot and allows it to be interacted with
+// This should always be at the end of the file
 const login = async (token) => {
     await client.login(token);
     return;
 }
 
 login(token);
-
-// Function defenitions of commands go here
-// Each command has to be added to the client via "client.commands.set(command.name, command)" - this does not apply to events like guild member join and leave,
-//      since they occur automatically, not when a user sends a message
