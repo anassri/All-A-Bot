@@ -23,7 +23,7 @@ def upgrade():
                               sa.ForeignKey("users.id"), nullable=False),
                     sa.Column('name', sa.String(100), nullable=False),
                     sa.Column('description', sa.Text()),
-                    sa.Column('developer_token', sa.String(100)),
+                    sa.Column('is_draft', sa.Boolean(), nullable=False),
                     sa.PrimaryKeyConstraint('id'),
                     )
 
