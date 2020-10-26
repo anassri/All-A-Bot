@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Switch} from 'react-router-dom';
+import { BrowserRouter, Route, Switch} from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from './theme'
@@ -7,6 +7,7 @@ import theme from './theme'
 import UserList from './components/UsersList';
 import PagesContainer from './pages/Pages';
 import Navigation from './components/Navigation'
+import { LoginPage } from './pages/LoginPage';
 
 function App() {
   return (
