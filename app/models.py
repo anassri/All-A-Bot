@@ -40,11 +40,12 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
+
 class Bot(db.Model):
     __tablename__ = 'bots'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("User.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
     developer_token = db.Column(db.String(100))
@@ -52,14 +53,14 @@ class Bot(db.Model):
     # to create a draft bot before they have a developer token
 
     owner = db.relationship("User")
-    rules = db.relationship("Rules")
+    rules = db.relationship("Rule")
 
 
 class Rule(db.Model):
     __tablename__ = 'rules'
 
     id = db.Column(db.Integer, primary_key=True)
-    bot_id = db.Column(db.Integer, db.ForeignKey("Bot.id"), nullable=False)
+    bot_id = db.Column(db.Integer, db.ForeignKey("bots.id"), nullable=False)
     prefix = db.Column(db.String(100))
     # nullable because we want to make it possible to create prefix-less rules
     content = db.Column(db.Text, nullable=False)
