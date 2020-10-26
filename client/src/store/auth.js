@@ -66,16 +66,21 @@ export const login = (email, password) => async dispatch => {
 
     // TODO: Refactor
     if (res.ok) {
-      console.log(await res.json());
       const { token, user } = await res.json();
       setInLocalStorage(token, user);
       dispatch(setToken(token));
       dispatch(setUser(user));
-      return true;
+      return {
+        status: 200,
+      };
+    } else {
+      throw {
+        status: 400,
+        msg: (await res.json()).msg,
+      };
     }
   } catch (e) {
-    console.error(e);
-    return false;
+    return e;
   }
 };
 

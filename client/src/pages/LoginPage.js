@@ -8,6 +8,7 @@ import { Box, TextField, Button, Checkbox } from '@material-ui/core';
 export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState('');
 
   const history = useHistory();
 
@@ -17,14 +18,15 @@ export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const storeIsReady = await loginDispatcher(email, password);
-    if (storeIsReady) {
-      history.push('/dashboard');
-    }
+    const loginAttempt = await loginDispatcher(email, password);
+
+    if (loginAttempt.status === 200) history.push('/dashboard');
+    else setErrors(loginAttempt.msg);
   };
 
   return (
     <Box>
+      <div>{errors}</div>
       <form onSubmit={handleSubmit}>
         <TextField value={email} onChange={e => setEmail(e.target.value)} label='Email'></TextField>
         <TextField value={password} onChange={e => setPassword(e.target.value)} label='Password'></TextField>
