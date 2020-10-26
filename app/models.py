@@ -40,6 +40,7 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
+
 class Bot(db.Model):
     __tablename__ = 'bots'
 
@@ -52,7 +53,7 @@ class Bot(db.Model):
     # to create a draft bot before they have a developer token
 
     owner = db.relationship("User")
-    rules = db.relationship("Rules")
+    rules = db.relationship("Rule")
 
 
 class Rule(db.Model):
