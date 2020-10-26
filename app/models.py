@@ -48,7 +48,8 @@ class Bot(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
-    developer_token = db.Column(db.String(100))
+    is_draft = db.Column(db.Boolean, nullable=False)
+    # developer_token = db.Column(db.String(100))
     # nullable because presumably we want users to be able
     # to create a draft bot before they have a developer token
 

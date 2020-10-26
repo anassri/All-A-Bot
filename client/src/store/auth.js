@@ -15,7 +15,7 @@ export const removeAuth = () => ({ type: REMOVE_AUTH });
 
 export const loadUser = () => async dispatch => {
   const { user, token } = getFromLocalStorage();
-
+  console.log(token);
   if (!user || !token) return;
 
   const res = await fetch('/verify_token', {
@@ -25,8 +25,9 @@ export const loadUser = () => async dispatch => {
 
   // Res status will be 200 if token fresh or >400 if token revoked or expired
   if (res.ok) {
-    dispatch(setUser);
-    dispatch(setToken);
+    console.log(await res.json());
+    dispatch(setUser(user));
+    dispatch(setToken(token));
   } else {
     deleteFromLocalStorage();
     dispatch(removeAuth());
