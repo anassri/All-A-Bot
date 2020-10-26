@@ -14,7 +14,7 @@ class User(db.Model):
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
 
-    # bots = db.relationship("Bot")
+    bots = db.relationship("Bot")
 
     def to_dict(self):
         return {
@@ -39,7 +39,6 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
-
 
 class Bot(db.Model):
     __tablename__ = 'bots'
