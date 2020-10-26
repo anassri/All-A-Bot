@@ -16,12 +16,24 @@ export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
     if (user) history.push('/dashboard');
   });
 
+  const validateForm = data => {
+    const errors = [];
+    if (email.length === 0) errors.push('Email is required.');
+    if (password.length === 0) errors.push('Password is required.');
+    if (errors.length === 0) return true;
+    setErrors(errors);
+    return false;
+  };
+
   const handleSubmit = async e => {
     e.preventDefault();
-    const loginAttempt = await loginDispatcher(email, password);
+    const formIsValid = validateForm();
+    if (formIsValid) {
+      const loginAttempt = await loginDispatcher(email, password);
 
-    if (loginAttempt.status === 200) history.push('/dashboard');
-    else setErrors(loginAttempt.msg);
+      if (loginAttempt.status === 200) history.push('/dashboard');
+      else setErrors(loginAttempt.msg);
+    }
   };
 
   return (
