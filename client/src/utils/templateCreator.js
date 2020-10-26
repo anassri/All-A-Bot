@@ -11,16 +11,31 @@ client.once('ready', () => {
 
 `
 
-const nonMessageEvents = ``
+
+function nonMessageEventsBuidler(events) {
+    let nonMessageEvents = ``
+
+    events.forEach(event => {
+        nonMessageEvents += `client.on('${event.type}') {\n    ${event.action}\n}`
+    })
+
+    return nonMessageEvents
+}
+
+
 
 const commandObjects = ``
+
+
+
+
 
 function switchCaseWithPrefixBuilder(prefix, commands) {
     let ifStatement = `    if (!message.content.startsWith('${prefix}')) {\n`
 
     let args = `        const args = message.content.slice(prefix.length).split(/ +/);\n`
 
-    let cmd = `        const command = args.shift().toLowerCase();\n`
+    let cmd = `        const command = args.shift();\n`
 
     let switchStatement = `        swtitch(command) { \n`
 
