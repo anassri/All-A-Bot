@@ -22,7 +22,7 @@ def index():
 @bot_routes.route('/<int:id>', methods=['GET'])
 def get_bot(id=0):
     print("Reached the route!")
-    bot = Bot.query.get(id)
+    bot = Bot.query.get(id).options(subqueryload(Bot.rules))
     if bot:
         return jsonify(bot)
     else:
@@ -37,7 +37,10 @@ def post_bot(id=0):
         bot.name = incoming["name"]
         bot.rules = incoming["rules"]
     else:
-        bot = Bot(name=incoming["name"], rules=incoming["rules"])
+        bot = Bot(name=incoming["name"])
+        for rule in rules:
+            new_rule = Rule(content=rule.content, bot_id=bot.id)
+            db.session.add(new_rule)
         db.session.add(bot)
     db.session.commit()
     return jsoniy(True)

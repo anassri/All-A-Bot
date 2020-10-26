@@ -30,12 +30,11 @@ export default function EditBot(props) {
         });
     }
 
-    const ruleForm = (rule) => (
+    const RuleForm = (rule) => (
         <Box>
             <form>
                 <Menu
                     keepMounted
-                    open={false}
                 >
                     <MenuItem onClick={e => {
                         rule.trigger = "message"
@@ -54,7 +53,7 @@ export default function EditBot(props) {
                     <Button onClick={addRule}>Add rule</Button>
                 </form>
             </Box>
-            {rules.map(rule => ruleForm(rule))}
+            {rules.map((rule, i) => <Box key={i}><RuleForm rule={rule} /></Box>)}
             <Button onClick={saveBot}>Save</Button>
         </>
     )
