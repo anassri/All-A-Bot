@@ -7,9 +7,10 @@ export default function EditBot(props) {
 
     const botId = props.match.params.id;
     const dispatch = useDispatch();
-    dispatch(loadBot(botId));
 
     const bot = useSelector(state => state.bots.bot)
+
+    if (bot.id !== botId) dispatch(loadBot(botId));
 
     const [botName, setBotName] = useState(bot.name);
     const [rules, setRules] = useState(bot.rules);

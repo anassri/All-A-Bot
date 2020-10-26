@@ -6,7 +6,7 @@ from app.models import db, Bot, Rule, User
 bot_routes = Blueprint('bot', __name__, url_prefix='/api/bots')
 
 
-@bp.route('', methods=['POST'])
+@bot_routes.route('', methods=['POST'])
 @jwt_required
 def index():
     incoming = request.get_json()
