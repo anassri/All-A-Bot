@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager, jwt_required, get_raw_jwt
 
 from .models import db, User
-from .routes.api import user_routes
+from .api import user_routes
 from .routes import auth
 from .config import Config
 
