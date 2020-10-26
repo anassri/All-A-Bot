@@ -8,7 +8,8 @@ export default function EditBot(props) {
     const botId = props.match.params.id;
     const dispatch = useDispatch();
 
-    const bot = useSelector(state => state.bots.bot)
+    const bot = useSelector(state => state.bots.bot);
+    const user = useSelector(state => state.auth.user);
 
     useEffect(() => {
         if (bot.id !== botId) dispatch(loadBot(botId))
@@ -26,7 +27,7 @@ export default function EditBot(props) {
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...bot, name: botName }),
+            body: JSON.stringify({ ...bot, name: botName, userId: user.id }),
         });
     }
 
@@ -36,7 +37,7 @@ export default function EditBot(props) {
             <form>
                 <Menu
                     keepMounted
-                    anchorPosition="0"
+                    open={true}
                 >
                     <MenuItem onClick={e => {
                         rule.trigger = "message"

@@ -38,7 +38,7 @@ def post_bot(id=0):
         bot.rules = incoming["rules"]
     else:
         bot = Bot(name=incoming["name"])
-        for rule in rules:
+        for rule in bot.rules:
             new_rule = Rule(content=rule.content, bot_id=bot.id)
             db.session.add(new_rule)
         db.session.add(bot)
