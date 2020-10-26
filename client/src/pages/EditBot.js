@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, TextField, Button, Checkbox, Menu, MenuItem } from '@material-ui/core';
+import { Box, TextField, Button, Checkbox, Menu, MenuItem, FormLabel } from '@material-ui/core';
 import { loadBot } from '../store/bots'
 
 export default function EditBot(props) {
@@ -32,14 +32,17 @@ export default function EditBot(props) {
 
     const RuleForm = (rule) => (
         <Box>
+            <h4>Rule:</h4>
             <form>
                 <Menu
                     keepMounted
+                    anchorPosition="0"
                 >
                     <MenuItem onClick={e => {
                         rule.trigger = "message"
                     }}>Message</MenuItem>
                 </Menu>
+                {rule.trigger === "message" ? <Box><TextField label="Trigger: "></TextField><TextField label="Response: "></TextField></Box> : <></>}
             </form>
         </Box>
     )
