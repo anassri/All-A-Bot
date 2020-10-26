@@ -20,7 +20,7 @@ client.once('ready', () => {
      }
  }
  */
-
+// All commands have to be added in via client.commands.set(command.name, command)
 
 // Prefix will be gotten from user selection
 prefix = 'placeholder, put user selected prefix here'
