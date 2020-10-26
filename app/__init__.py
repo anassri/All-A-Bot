@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager, jwt_required, get_raw_jwt
 
 from .models import db, User
-from .api import user_routes
+from .api import user_routes, bot_routes
 from .routes import auth
 from .config import Config
 
@@ -17,6 +17,7 @@ app.config.from_object(Config)
 db.init_app(app)
 
 app.register_blueprint(user_routes.user_routes)
+app.register_blueprint(bot_routes.bot_routes)
 app.register_blueprint(auth.bp)
 
 migrate = Migrate(app, db)

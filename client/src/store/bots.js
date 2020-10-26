@@ -8,8 +8,9 @@ const setBot = bot => ({
 
 export const loadBot = id => async dispatch => {
     try {
-        const res = await fetch(`/bots/${id}`);
+        const res = await fetch(`/api/bots/${id}`);
         if (res.ok) {
+            console.log("Res was okay!")
             const bot = await res.json();
             setBot(bot);
         }

@@ -14,6 +14,11 @@ export default function EditBot(props) {
     const [botName, setBotName] = useState(bot.name);
     const [rules, setRules] = useState(bot.rules);
 
+    const addRule = () => {
+        const newRule = {};
+        setRules([...rules, newRule]);
+    }
+
     const ruleForm = (rule) => (
         <Box>
             <form>
@@ -34,9 +39,10 @@ export default function EditBot(props) {
             <Box>
                 <form>
                     <TextField value={botName} onChange={e => setBotName(e.target.value)} label="Name"></TextField>
+                    <Button onClick={addRule}>Add rule</Button>
                 </form>
             </Box>
-            {bot.rules.forEach(rule => ruleForm(rule))}
+            {rules.forEach(rule => ruleForm(rule))}
         </>
     )
 }
