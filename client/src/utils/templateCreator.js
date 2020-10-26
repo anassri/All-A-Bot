@@ -22,9 +22,14 @@ function nonMessageEventsBuidler(events) {
     return nonMessageEvents
 }
 
+function commandObjectBuilder(objList) {
+    let commandObjects = ``
 
+    objList.forEach(cmd => {
+        // Fill this in once actual data can be passed to this
+    })
+}
 
-const commandObjects = ``
 
 
 
