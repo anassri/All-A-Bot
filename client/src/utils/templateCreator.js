@@ -10,6 +10,11 @@ client.once('ready', () => {
 })
 
 `
+
+const loginString = (token) => {
+    `const login = async (${token}) => { await client.login(${token})}`
+}
+
 const randStringMaker = () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
 function nonMessageEventsBuidler(events) {
@@ -28,13 +33,19 @@ function commandObjectsBuilder(objList) {
     objList.forEach(cmd => {
         const varName = cmd.name + randStringMaker()
         if (cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'starts') {
-            commandObjects += `\n${varName} = {name: ${cmd.name}, description: ${cmd.description}, async execute(message, args) {${basicResponseBuilder(cmd.response.send)}}}\nclient.commands.set(varName.name, varName)`
+            if (cmd.response.send) {
+                commandObjects += `\n${varName} = {name: ${cmd.name}, description: ${cmd.description}, async execute(message, args) {${basicResponseBuilder(cmd.response.send)}}}\nclient.commands.set(varName.name, varName)`
+            }
         } else if(cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'includes') {
-
+            if (cmd.response.send) {
+                commandObjects += `\n${varName} = {name: ${cmd.name}, description: ${cmd.description}, async execute(message, args) {${basicResponseBuilder(cmd.response.send)}}}\nclient.commands.set(varName.name, varName)`
+            }
         } else {
-
+            // Add command object creation for any other types we may add (if they don't get put into else ifs as needed)
         }
     })
+
+    return commandObjects
 }
 
 function basicResponseBuilder(response) {
