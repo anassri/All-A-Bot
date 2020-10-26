@@ -10,7 +10,9 @@ export default function EditBot(props) {
 
     const bot = useSelector(state => state.bots.bot)
 
-    if (bot.id !== botId) dispatch(loadBot(botId));
+    useEffect(() => {
+        if (bot.id !== botId) dispatch(loadBot(botId))
+    }, []);
 
     const [botName, setBotName] = useState(bot.name);
     const [rules, setRules] = useState(bot.rules);
@@ -20,11 +22,20 @@ export default function EditBot(props) {
         setRules([...rules, newRule]);
     }
 
+    const saveBot = async () => {
+        await fetch(`/api/bots/${botId}`, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...bot, name: botName }),
+        });
+    }
+
     const ruleForm = (rule) => (
         <Box>
             <form>
                 <Menu
                     keepMounted
+                    open={false}
                 >
                     <MenuItem onClick={e => {
                         rule.trigger = "message"
@@ -43,7 +54,8 @@ export default function EditBot(props) {
                     <Button onClick={addRule}>Add rule</Button>
                 </form>
             </Box>
-            {rules.forEach(rule => ruleForm(rule))}
+            {rules.map(rule => ruleForm(rule))}
+            <Button onClick={saveBot}>Save</Button>
         </>
     )
 }
