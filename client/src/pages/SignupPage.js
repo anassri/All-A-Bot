@@ -13,16 +13,15 @@ export const SignupPage = ({ user, signupDispatch, loadUserDispatch }) => {
   const history = useHistory();
 
   useEffect(() => {
-    // TODO: Redirect to dashboard if user logged in
-    if (user) history.push('/');
+    if (user) history.push('/dashboard');
   });
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    const storeIsReady = signupDispatch(username, email, password);
+    const storeIsReady = await signupDispatch(username, email, password);
+    console.log(storeIsReady);
     if (storeIsReady) {
-      // TODO: Redirect to dashboard
-      history.push('/');
+      history.push('/dashboard');
     }
   };
 

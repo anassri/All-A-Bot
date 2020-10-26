@@ -12,17 +12,14 @@ export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
   const history = useHistory();
 
   useEffect(() => {
-    // TODO: Redirect to dashboard if user logged in
-    if (user) history.push('/');
+    if (user) history.push('/dashboard');
   });
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    console.log(email, password);
-    const storeIsReady = loginDispatcher(email, password);
+    const storeIsReady = await loginDispatcher(email, password);
     if (storeIsReady) {
-      // TODO: Redirect to dashboard
-      history.push('/');
+      history.push('/dashboard');
     }
   };
 

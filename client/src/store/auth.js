@@ -25,8 +25,8 @@ export const loadUser = () => async dispatch => {
 
   // Res status will be 200 if token fresh or >400 if token revoked or expired
   if (res.ok) {
-    dispatch(setUser);
-    dispatch(setToken);
+    dispatch(setUser(user));
+    dispatch(setToken(token));
   } else {
     deleteFromLocalStorage();
     dispatch(removeAuth());
@@ -34,6 +34,7 @@ export const loadUser = () => async dispatch => {
 };
 
 export const signup = (username, email, password) => async dispatch => {
+  console.log(username, email, password);
   try {
     const res = await fetch('/signup', {
       method: 'POST',
@@ -49,9 +50,9 @@ export const signup = (username, email, password) => async dispatch => {
       dispatch(setUser(user));
       return true;
     }
-    return false;
   } catch (e) {
     console.error(e);
+    return false;
   }
 };
 
@@ -65,15 +66,16 @@ export const login = (email, password) => async dispatch => {
 
     // TODO: Refactor
     if (res.ok) {
+      console.log(await res.json());
       const { token, user } = await res.json();
       setInLocalStorage(token, user);
       dispatch(setToken(token));
       dispatch(setUser(user));
       return true;
     }
-    return false;
   } catch (e) {
     console.error(e);
+    return false;
   }
 };
 
