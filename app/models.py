@@ -68,4 +68,4 @@ class Rule(db.Model):
     # this is "text" rather than a string because it could be
     # very long in some cases
 
-    bot = db.relationship("bots")
+    bot = db.relationship("Bot")
