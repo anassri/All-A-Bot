@@ -26,7 +26,6 @@ def get_bot(id=0):
         for rule in bot.rules:
             rules.append({
                 'botId': bot.id,
-                'prefix': rule.prefix,
                 'content': rule.content,
             })
         print(rules)
