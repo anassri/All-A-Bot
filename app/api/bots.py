@@ -26,7 +26,6 @@ def get_bot(id=0):
         for rule in bot.rules:
             rules.append({
                 'botId': bot.id,
-                'prefix': rule.prefix,
                 'content': rule.content,
             })
         print(rules)
@@ -52,15 +51,13 @@ def post_bot(id=0):
             db.session.delete(old_rule)
         for new_rule in new_rules:
             new_rule_content = json.dumps(new_rule["content"])
-            db.session.add(Rule(prefix=new_rule["prefix"],
-                                content=new_rule_content,
+            db.session.add(Rule(content=new_rule_content,
                                 bot_id=bot.id))
     else:
         bot = Bot(name=incoming["bot"]["name"], prefix=incoming["bot"]["prefix"])
         for new_rule in new_rules:
             new_rule_content = json.dumps(new_rule["content"])
-            db.session.add(Rule(prefix=new_rule["prefix"],
-                                content=new_rule_content,
+            db.session.add(Rule(content=new_rule_content,
                                 bot_id=bot.id))
         db.session.add(bot)
     db.session.commit()
