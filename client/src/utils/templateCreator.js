@@ -16,7 +16,7 @@ const loginString = (token) => {
     await client.login(token)
     return
 )}
-login(${token})`
+login('${token}')`
 }
 
 // Random string generator, used to ensure that generated objects won't create naming conflicts
@@ -38,19 +38,20 @@ function commandObjectsBuilder(objList) {
     let commandObjects = ``
 
     objList.forEach(cmd => {
-        const varName = cmd.name + '_' + randStringMaker()
+        const varName = cmd.trigger.details.string + '_' + randStringMaker()
         if (cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'starts') {
-            // This will fire off if the command/rule's trigger is a starts-with trigger, and its response type is that of send (this is largely for prefixed commands)
-            if (cmd.response.send) {
-                commandObjects += `\n${varName} = {name: ${cmd.name}, description: ${cmd.description}, async execute(message, args) {${basicResponseBuilder(cmd.response.send)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
-            }
+            cmd.response.forEach(res => {
+                if (res.type === "message") {
+                    commandObjects += `\n${varName} = {name: ${cmd.trigger.details.string}, async execute(message, args) {${basicResponseBuilder(res.details.string)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
+                }
+            })
             // Add else if here for events other than send for when a prefixed command has other actions such as kick, delete, or ban
         } else if(cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'includes') {
-            // This will fire off if the command/rule's trigger is includes, and its response type is that of send
-            if (cmd.response.send) {
-                commandObjects += `\n${varName} = {name: ${cmd.name}, description: ${cmd.description}, async execute(message, args) {${basicResponseBuilder(cmd.response.send)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
-            }
-            // Add else ifs here for events other than send for when a matching substring is found, like kick, delete, or ban
+            cmd.response.forEach(res => {
+                if (res.type === "message") {
+                    commandObjects += `\n${varName} = {name: ${cmd.trigger.details.string}, async execute(message, args) {${basicResponseBuilder(res.details.string)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
+                }
+            })
         } else {
             // Add command object creation for any other types we may add (if they don't get put into else ifs as needed)
         }
@@ -78,7 +79,7 @@ function switchCaseWithPrefixBuilder(prefix, commands) {
 
     commands.forEach(command => {
         switchStatement += (
-            `            case '${command.name}':\n                client.commands.get('${command.name}').execute(message, args);\n                break;\n`)
+            `            case '${command.trigger.details.string}':\n                client.commands.get('${command.trigger.details.string}').execute(message, args);\n                break;\n`)
     })
 
     const defaulter = (
@@ -100,7 +101,7 @@ function substringMatcher(commands) {
     let elifStatements = ``
     commands.forEach(command => {
         elifStatements += (
-            `        } else if (checkContains(message, '${command.name}')):\n            client.commands.get('${command.name}').execute(message);\n`)
+            `        } else if (checkContains(message, '${command.trigger.details.string}')):\n            client.commands.get('${command.trigger.details.string}').execute(message);\n`)
     })
 
     let checks = ifStatement + elifStatements + '        }'
@@ -161,11 +162,9 @@ client.once('ready', () => {
 }
 
 // Testing console.log
-// console.log(assembleFullFile('!', 'sampleToken',
-//     [
-//         { name: 'Hello', trigger: { includesOrStarts: 'starts' }, response: { send: 'Hi' } },
-//         { name: 'Goodbye',  trigger: { includesOrStarts: 'starts' }, response: { send: 'Bye' }},
-//         { name: 'olleH', trigger: { includesOrStarts: 'includes' }, response: { send: 'iH' }},
-//         { name: 'eybdooG', trigger: { includesOrStarts: 'includes' }, response: { send: 'eyB' } }
-//     ],
-// ))
+console.log(assembleFullFile('!', 'sampleToken',
+    [
+        { trigger: { type: "message", usesPrefix: true, details: { string: "hi" } }, "response": [{ type: "message", details: { string: "hi there!" } }] },
+        { trigger: { type: "message", usesPrefix: false, details: { string: "bye" } }, "response": [{ type: "message", details: { string: "goodbye friend!" } }] }
+    ],
+))
