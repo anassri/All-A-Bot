@@ -56,6 +56,15 @@ class Bot(db.Model):
     owner = db.relationship("User")
     rules = db.relationship("Rule")
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'name': self.name,
+            'description': self.description,
+            'is_draft': self.is_draft
+        }
+
 
 class Rule(db.Model):
     __tablename__ = 'rules'
