@@ -8,9 +8,9 @@ from app.models import User, Bot, Rule
 # from alembic import op
 
 # print(db)
-ruleString1 = """{ "trigger": { "message": "hi", "includesOrStarts":"start" }, "response": "[{ "send": "Hello!" }]" }"""
+ruleString1 = """{ "trigger": { "type": "message", "details": { "string": "hi" } }, "response": { "type": "message", "details": { "string": "hi there!" } } }"""
 
-ruleString2 = """{ "trigger": { "message": "test", "includesOrStarts":"includes" }, "response": "[{ "send": "The test worked!}]" }"""
+ruleString2 = """{ "trigger": { "type": "message", "details": { "string": "bye" } }, "response": { "type": "message", "details": { "string": "goodbye friend!" } } }"""
 
 
 # op.bulk_insert('users', [
