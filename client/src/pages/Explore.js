@@ -10,7 +10,6 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import CardActionArea from '@material-ui/core/CardActionArea';
 
-
 const useStyle = makeStyles((theme)=>({
     root: {
         flexGrow: 1,
@@ -80,7 +79,6 @@ export default function Explore() {
 
     if (!bots) return null;
 
-    console.log(bots);
     return (
         <div className={classes.root}>
             <Container maxWidth="lg" className="paper-container">

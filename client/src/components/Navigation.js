@@ -87,12 +87,12 @@ export function Navigation({ logoutDispatch, user }) {
             <div className={classes.navButton}>
               {user ? (
                 <Button onClick={handleLogout}>
-                  <i className='fas fa-sign-in-alt'></i>
+                  <i className='fas fa-sign-out-alt'></i>
                   <div>LOGOUT</div>
                 </Button>
               ) : (
                 <Button onClick={handleLogin}>
-                  <i className='fas fa-sign-out-alt'></i>
+                  <i className='fas fa-sign-in-alt'></i>
                   <div>LOGIN</div>
                 </Button>
               )}

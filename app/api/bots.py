@@ -3,23 +3,23 @@ from flask_jwt_extended import JWTManager, jwt_required, get_raw_jwt
 from sqlalchemy.orm import joinedload
 from app.models import Bot, Rule, User
 
-bp = Blueprint('bots', __name__, url_prefix='/api/bots')
+bp = Blueprint("bots", __name__, url_prefix="/api/bots")
 
 
-@bp.route('', methods=['POST'])
+@bp.route("", methods=["POST"])
 @jwt_required
 def index():
     incoming = request.get_json()
     print(incoming)
 
-    # bots = Bot.query.filter_by(user_id=incoming['user_id'])
+    # bots = Bot.query.filter_by(user_id=incoming["user_id"])
     # data = [bot.to_dict() for bot in bots]
-    # return {'bots': data}
+    # return {"bots": data}
     data = [{"name": "bot1"}, {"name": "bot2"}]
     return jsonify(data=data)
 
 
-@bp.route('/all')
+@bp.route("/all")
 def get_all_published_bots():
     bots = Bot.query \
               .filter_by(is_draft=False) \
@@ -34,3 +34,25 @@ def get_all_published_bots():
         }
     } for bot in bots]
     return jsonify(data=data)
+
+@bp.route("/<int:id>")
+def get_one_published_bot(id):
+    bot = Bot.query \
+             .filter_by(id=id) \
+             .filter_by(is_draft=False) \
+             .options(joinedload(Bot.rules)) \
+             .options(joinedload(Bot.owner)) \
+             .all()
+    print(bot[0].rules[0].__dict__)
+    # data = {
+    #     "name": bot.name,
+    #     "description": bot.description,
+    #     "owner": {
+    #         "username": bot.owner.username,
+    #     },
+    #     # "rules": [{
+    #     #     "prefix": bot.rules.prefix,
+    #     #     "content": bot.rules.content,
+    #     # }]
+    # } 
+    return {}

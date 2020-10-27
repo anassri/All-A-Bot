@@ -22,7 +22,7 @@ export function Pages({ loadUserDispatch }) {
       <Route exact path='/login' component={LoginPageContainer}></Route>
       <Route exact path='/signup' component={SignupPageContainer}></Route>
       <Route exact path='/dashboard' component={DashboardContainer}></Route>
-      <Route exact path='/bot/:id' component={Bot} />
+      <Route exact path='/bots/:id' component={Bot} />
 
     </>
   );
