@@ -40,8 +40,18 @@ export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
     <Box>
       <div>{errors}</div>
       <form onSubmit={handleSubmit}>
-        <TextField value={email} variant="outlined" onChange={e => setEmail(e.target.value)} label='Email'></TextField>
-        <TextField value={password} variant="outlined" onChange={e => setPassword(e.target.value)} label='Password'></TextField>
+        <TextField
+          value={email}
+          variant='outlined'
+          type='email'
+          onChange={e => setEmail(e.target.value)}
+          label='Email'></TextField>
+        <TextField
+          value={password}
+          variant='outlined'
+          type='password'
+          onChange={e => setPassword(e.target.value)}
+          label='Password'></TextField>
         <Button type='submit'>Log In</Button>
       </form>
     </Box>
