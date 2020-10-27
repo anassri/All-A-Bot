@@ -13,7 +13,7 @@ const packageBlob = new Blob([`{
     "version": "1.0.0",
     "description": "Template bot generated via all-a-bot.herokuapp.com",
     "scripts": {
-      "start": "template.js"
+      "start": "bot.js"
     },
     "author": "",
     "license": "ISC",
