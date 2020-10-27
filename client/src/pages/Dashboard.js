@@ -8,6 +8,10 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import Divider from '@material-ui/core/Divider';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import EditIcon from '@material-ui/icons/Edit';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 import { loadBots } from '../store/bots';
 
@@ -44,9 +48,18 @@ function a11yProps(index) {
 }
 
 const useStyles = makeStyles(theme => ({
+  container: {
+    'margin-left': '25%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+    width: '66.67%',
+    borderRadius: '10px',
   },
 }));
 
@@ -58,7 +71,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch }) {
 
   useEffect(() => {
     if (user) loadBotsDispatch(user, token);
-  });
+  }, user);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -67,44 +80,111 @@ export function Dashboard({ user, token, bots, loadBotsDispatch }) {
   if (!bots) return null;
 
   return (
-    <div>
+    <div className={classes.container}>
       <h1>DASHBOARD</h1>
 
       <div className={classes.root}>
-        <AppBar position='static'>
+        <AppBar
+          position='static'
+          style={{ backgroundColor: '#282828', 'border-top-left-radius': '5px', 'border-top-right-radius': '5px' }}>
           <Tabs value={value} onChange={handleChange} aria-label='simple tabs example'>
             <Tab label='Bots' {...a11yProps(0)} />
             <Tab label='Drafts' {...a11yProps(1)} />
             <Tab label='Bookmarked' {...a11yProps(2)} />
           </Tabs>
         </AppBar>
-        <TabPanel value={value} index={0}>
+        <TabPanel
+          value={value}
+          index={0}
+          style={{
+            backgroundColor: '#282828',
+            'border-bottom-left-radius': '5px',
+            'border-bottom-right-radius': '5px',
+          }}>
           <div>
-            // TODO: Update filter for draft status
             {bots
-              .filter(bot => bot.name === 'bot1')
+              .filter(bot => bot.is_draft === false)
               .map(bot => {
-                return <h2>{bot.name}</h2>;
+                return (
+                  <>
+                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                      <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                        {bot.name}
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography variant='body2'>{bot.description}</Typography>
+                      <div>
+                        <GetAppIcon style={{ margin: '2px' }} fontSize='medium' />
+                        <EditIcon style={{ margin: '2px' }} fontSize='medium' />
+                      </div>
+                    </div>
+                    <Divider />
+                  </>
+                );
               })}
           </div>
         </TabPanel>
-        <TabPanel value={value} index={1}>
+        <TabPanel
+          value={value}
+          index={1}
+          style={{
+            backgroundColor: '#282828',
+            'border-bottom-left-radius': '5px',
+            'border-bottom-right-radius': '5px',
+          }}>
           <div>
-            // TODO: Update filter for draft status
             {bots
-              .filter(bot => bot.name.includes('bot'))
+              .filter(bot => bot.is_draft === true)
               .map(bot => {
-                return <h2>{bot.name}</h2>;
+                return (
+                  <>
+                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                      <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                        {bot.name}
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography variant='body2'>{bot.description}</Typography>
+                      <div>
+                        <EditIcon style={{ margin: '2px' }} fontSize='medium' />
+                      </div>
+                    </div>
+                    <Divider />
+                  </>
+                );
               })}
           </div>
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        <TabPanel
+          value={value}
+          index={2}
+          style={{
+            backgroundColor: '#282828',
+            'border-bottom-left-radius': '5px',
+            'border-bottom-right-radius': '5px',
+          }}>
           <div>
-            // TODO: Update filter for bots owned by other user
             {bots
-              .filter(bot => bot.name === 'bot1')
+              .filter(bot => bot.user_id === user.id)
               .map(bot => {
-                return <h2>{bot.name}</h2>;
+                return (
+                  <>
+                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                      <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                        {bot.name}
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography variant='body2'>{bot.description}</Typography>
+                      <div>
+                        <GetAppIcon style={{ margin: '2px' }} fontSize='medium' />
+                        <FileCopyIcon style={{ margin: '2px' }} fontSize='medium' />
+                      </div>
+                    </div>
+                    <Divider />
+                  </>
+                );
               })}
           </div>
         </TabPanel>
