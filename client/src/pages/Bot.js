@@ -41,10 +41,15 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 function Rule({rule}){
-    
+    const content = JSON.parse(rule.content)
+    const triggerData = content["trigger"];
+    console.log(triggerData)
     return (
         <>
-        {}
+            prefix: {rule.prefix}
+            on: {triggerData.type}
+            message: {triggerData.details.string}
+            {}
         </>
     )
 }
