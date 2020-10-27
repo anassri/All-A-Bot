@@ -5,8 +5,10 @@ import { loadBot } from '../store/bots'
 
 function EditBot({bot, botId, user}) {
 
-    const [botName, setBotName] = useState(bot.name);
+    const [botName, setBotName] = useState("");
     const [rules, setRules] = useState(bot.rules);
+
+    useEffect(() => setBotName(bot.name));
 
     const addRule = () => {
         const newRule = {};
