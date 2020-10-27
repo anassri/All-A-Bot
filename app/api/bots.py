@@ -26,11 +26,11 @@ def get_all_published_bots():
               .options(joinedload(Bot.owner)) \
               .all()
     data = [{
+        "id": bot.id,
         "name": bot.name,
         "description": bot.description,
         "owner": {
             "username": bot.owner.username
         }
     } for bot in bots]
-    # print(data)
-    return {'data': data}
+    return jsonify(data=data)
