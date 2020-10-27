@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, get_raw_jwt
 from app.models import db, Bot, Rule, User
+from sqlalchemy.orm import joinedload
 
 
 bot_routes = Blueprint('bot', __name__, url_prefix='/api/bots')
@@ -22,9 +23,22 @@ def index():
 @bot_routes.route('/<int:id>', methods=['GET'])
 def get_bot(id=0):
     print("Reached the route!")
-    bot = Bot.query.get(id).options(subqueryload(Bot.rules))
+    # bot = Bot.query.get(id)
+    bot = db.session.query(Bot).options(joinedload(Bot.rules)).filter_by(id=id).one()
     if bot:
-        return jsonify(bot)
+        rules = []
+        for rule in bot.rules:
+            rules.append({
+                'botId': bot.id,
+                'prefix': rule.prefix,
+                'content': rule.content,
+            })
+        print(rules)
+        return jsonify({
+            'name': bot.name,
+            'userId': bot.user_id,
+            'rules': rules
+        })
     else:
         return jsonify(message="No such bot found!")
 

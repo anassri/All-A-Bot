@@ -18,6 +18,8 @@ export const loadBot = id => async dispatch => {
         const res = await fetch(`/api/bots/${id}`);
         if (res.ok) {
             const bot = await res.json();
+            bot.rules = bot.rules.map(rule => ({...rule, content: JSON.parse(rule.content)}));
+            console.log(bot.rules);
             dispatch(setBot(bot));
         }
     } catch (e) {
