@@ -8,26 +8,37 @@ import { Box, TextField, Button, Checkbox } from '@material-ui/core';
 export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState('');
 
   const history = useHistory();
 
   useEffect(() => {
-    // TODO: Redirect to dashboard if user logged in
-    if (user) history.push('/');
+    if (user) history.push('/dashboard');
   });
 
-  const handleSubmit = e => {
+  const validateForm = data => {
+    const errors = [];
+    if (email.length === 0) errors.push('Email is required.');
+    if (password.length === 0) errors.push('Password is required.');
+    if (errors.length === 0) return true;
+    setErrors(errors);
+    return false;
+  };
+
+  const handleSubmit = async e => {
     e.preventDefault();
-    console.log(email, password);
-    const storeIsReady = loginDispatcher(email, password);
-    if (storeIsReady) {
-      // TODO: Redirect to dashboard
-      history.push('/');
+    const formIsValid = validateForm();
+    if (formIsValid) {
+      const loginAttempt = await loginDispatcher(email, password);
+
+      if (loginAttempt.status === 200) history.push('/dashboard');
+      else setErrors(loginAttempt.msg);
     }
   };
 
   return (
     <Box>
+      <div>{errors}</div>
       <form onSubmit={handleSubmit}>
         <TextField value={email} variant="outlined" onChange={e => setEmail(e.target.value)} label='Email'></TextField>
         <TextField value={password} variant="outlined" onChange={e => setPassword(e.target.value)} label='Password'></TextField>

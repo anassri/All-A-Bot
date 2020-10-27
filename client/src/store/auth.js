@@ -25,7 +25,6 @@ export const loadUser = () => async dispatch => {
 
   // Res status will be 200 if token fresh or >400 if token revoked or expired
   if (res.ok) {
-    console.log(await res.json());
     dispatch(setUser(user));
     dispatch(setToken(token));
   } else {
@@ -42,6 +41,8 @@ export const signup = (username, email, password) => async dispatch => {
       body: JSON.stringify({ username, email, password }),
     });
 
+    console.log(res.status);
+
     // TODO: Refactor
     if (res.ok) {
       const { token, user } = await res.json();
@@ -50,9 +51,12 @@ export const signup = (username, email, password) => async dispatch => {
       dispatch(setUser(user));
       return true;
     }
-    return false;
+
+    if (res.status === 500) throw { status: 500, msg: 'User with that email address already exists' };
+    else throw { status: 400, msg: (await res.json()).msg };
   } catch (e) {
-    console.error(e);
+    console.log('catch e', e);
+    return e;
   }
 };
 
@@ -70,11 +74,13 @@ export const login = (email, password) => async dispatch => {
       setInLocalStorage(token, user);
       dispatch(setToken(token));
       dispatch(setUser(user));
-      return true;
-    }
-    return false;
+      return {
+        status: 200,
+      };
+    } else throw { status: 400, msg: (await res.json()).msg };
   } catch (e) {
-    console.error(e);
+    console.log('catch e', e);
+    return e;
   }
 };
 

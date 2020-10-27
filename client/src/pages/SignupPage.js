@@ -9,29 +9,57 @@ export const SignupPage = ({ user, signupDispatch, loadUserDispatch }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState([]);
 
   const history = useHistory();
 
   useEffect(() => {
-    // TODO: Redirect to dashboard if user logged in
-    if (user) history.push('/');
+    if (user) history.push('/dashboard');
   });
 
-  const handleSubmit = e => {
+  const validateForm = data => {
+    const errors = [];
+    if (email.length === 0) errors.push('Email is required.');
+    if (username.length === 0) errors.push('Username is required.');
+    if (password.length === 0) errors.push('Password is required.');
+    if (confirmPassword.length === 0) errors.push('Password confirmation is required.');
+    if (password !== confirmPassword) errors.push('Passwords must match.');
+    if (errors.length === 0) return true;
+    setErrors(errors);
+    return false;
+  };
+
+  const handleSubmit = async e => {
     e.preventDefault();
-    const storeIsReady = signupDispatch(username, email, password);
-    if (storeIsReady) {
-      // TODO: Redirect to dashboard
-      history.push('/');
+    const formIsValid = validateForm();
+    if (formIsValid) {
+      const signupAttempt = await signupDispatch(username, email, password);
+      if (signupAttempt.status === 200) history.push('/dashboard');
+      else setErrors([signupAttempt.msg]);
     }
   };
 
   return (
     <Box>
+      <Box>
+        {errors.map(error => (
+          <div>{error}</div>
+        ))}
+      </Box>
       <form onSubmit={handleSubmit}>
-        <TextField value={email} onChange={e => setEmail(e.target.value)} label='Email'></TextField>
+        <TextField value={email} type='email' onChange={e => setEmail(e.target.value)} label='Email'></TextField>
         <TextField value={username} onChange={e => setUsername(e.target.value)} label='Username'></TextField>
-        <TextField value={password} onChange={e => setPassword(e.target.value)} label='Password'></TextField>
+        <TextField
+          value={password}
+          type='password'
+          onChange={e => setPassword(e.target.value)}
+          label='Password'></TextField>
+        <TextField
+          value={confirmPassword}
+          type='password'
+          onChange={e => setConfirmPassword(e.target.value)}
+          label='Confirm Password'></TextField>
         <Button type='submit'>Sign Up</Button>
       </form>
     </Box>
