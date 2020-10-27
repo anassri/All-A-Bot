@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import JWTManager, jwt_required, get_raw_jwt
 from app.models import db, Bot, Rule, User
 from sqlalchemy.orm import joinedload
+import json
 
 bot_routes = Blueprint('bot', __name__, url_prefix='/api/bots')
 
@@ -45,13 +46,18 @@ def get_bot(id=0):
 @bot_routes.route('/<int:id>', methods=['POST'])
 def post_bot(id=0):
     incoming = request.get_json()
+    print(incoming["rules"])
+    new_rules = incoming["rules"]
     bot = Bot.query.get(id)
     if bot:
         bot.name = incoming["bot"]["name"]
-        # for i in range(len(bot.rules)):
-        #     if bot.rules[i].content != incoming["rules"][i]["content"]:
-        #         db.session.delete(bot.rules[i])
-        #         db.session.add(Rule(content=incoming["rules"][i]["content"], prefix=incoming["rules"][i]["prefix"] bot_id=bot.id))
+        for old_rule in bot.rules:
+            db.session.delete(old_rule)
+        for new_rule in new_rules:
+            new_rule_content = json.dumps(new_rule["content"])
+            db.session.add(Rule(prefix=new_rule["prefix"],
+                                content=new_rule_content,
+                                bot_id=bot.id))
     else:
         bot = Bot(name=incoming["bot"]["name"])
         for rule in incoming["rules"]:

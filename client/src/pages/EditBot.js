@@ -50,7 +50,7 @@ function EditBot({bot, botId, user}) {
                     onClose={() => setAnchorEl(null)}
                 >
                     <MenuItem onClick={e => {
-                        setRule(i, {...rules[i], trigger: "message"})
+                        setRule(i, {...rules[i], content: { ...rules[i].content, trigger: "message" }})
                     }}>Message</MenuItem>
                 </Menu>
                 </div>
