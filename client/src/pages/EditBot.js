@@ -5,10 +5,11 @@ import { loadBot } from '../store/bots'
 
 function EditBot({bot, botId, user}) {
 
-    const BLANK_RULE = { name: "", prefix: "", content: { trigger: "", response: "" } };
+    const BLANK_RULE = { name: "", prefix: "", content: { trigger: {}, response: [{}] } };
 
     const [botName, setBotName] = useState("");
     const [rules, setRules] = useState([BLANK_RULE]);
+    const [anchorEl, setAnchorEl] = useState(null);
 
     useEffect(() => {
         if (botName === "") setBotName(bot.name);
@@ -26,13 +27,6 @@ function EditBot({bot, botId, user}) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({bot: { ...bot, name: botName, userId: user.id }, rules }),
         });
-        // // let jsonRules = rules;
-        // // jsonRules = jsonRules.map(rule => ({...rule, content: JSON.stringify(rule.content)}));
-        // await fetch(`/api/bots/${botId}/rules`, {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(rules)
-        // })
     }
 
     const setRule = (i, newRule) => {
@@ -45,15 +39,21 @@ function EditBot({bot, botId, user}) {
             <h4>Rule:</h4>
             <form>
                 <TextField label="Prefix" value={rules[i].prefix} onChange={e => setRule(i, {...rules[i], prefix: e.target.value})}></TextField>
-{/*                 <Menu
+                <div>
+                <Button onClick={e => setAnchorEl(e.currentTarget)}>Trigger</Button>
+                <Menu
                     keepMounted
-                    open={true}
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
                     label="On"
+                    className="trigger-menu"
+                    onClose={() => setAnchorEl(null)}
                 >
                     <MenuItem onClick={e => {
-                        rules[i] = { trigger: "message", response: null };
+                        rules[i].content.trigger = "message";
                     }}>Message</MenuItem>
-                </Menu> */}
+                </Menu>
+                </div>
                 {rules[i].content.trigger === "message" ? <Box><TextField label="Trigger: "></TextField><TextField label="Response: "></TextField></Box> : <></>}
             </form>
         </Box>
