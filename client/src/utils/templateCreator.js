@@ -136,7 +136,7 @@ client.once('ready', () => {
     let unprefixedCommands = []
     if (commands) {
         commands.forEach(cmd => {
-            if (cmd.trigger.prefix === 'starts') {
+            if (cmd.trigger.usesPrefix) {
                 prefixedCommands.push(cmd)
             } else {
                 unprefixedCommands.push(cmd)
@@ -161,11 +161,11 @@ client.once('ready', () => {
 }
 
 // Testing console.log
-console.log(assembleFullFile('!', 'sampleToken',
-    [
-        { name: 'Hello', trigger: { includesOrStarts: 'starts' }, response: { send: 'Hi' } },
-        { name: 'Goodbye',  trigger: { includesOrStarts: 'starts' }, response: { send: 'Bye' }},
-        { name: 'olleH', trigger: { includesOrStarts: 'includes' }, response: { send: 'iH' }},
-        { name: 'eybdooG', trigger: { includesOrStarts: 'includes' }, response: { send: 'eyB' } }
-    ],
-))
+// console.log(assembleFullFile('!', 'sampleToken',
+//     [
+//         { name: 'Hello', trigger: { includesOrStarts: 'starts' }, response: { send: 'Hi' } },
+//         { name: 'Goodbye',  trigger: { includesOrStarts: 'starts' }, response: { send: 'Bye' }},
+//         { name: 'olleH', trigger: { includesOrStarts: 'includes' }, response: { send: 'iH' }},
+//         { name: 'eybdooG', trigger: { includesOrStarts: 'includes' }, response: { send: 'eyB' } }
+//     ],
+// ))
