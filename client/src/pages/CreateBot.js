@@ -2,7 +2,7 @@ import React, { Redirect, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadAllBots } from '../store/bots';
 
-export default function CreateBot() {
+export default function CreateBot(props) {
 
     const dispatch = useDispatch();
     useEffect(()=>{
@@ -19,6 +19,13 @@ export default function CreateBot() {
     newId = maxId
     console.log(newId);
 
-    return <>{(newId > -1) ? <Redirect to={`/edit-bot/${newId}`} /> : <h1>Loading...</h1>}</>;
+    // const renderCreatePage = () => {
+    //     if (newId > -1) return <Redirect to={`/edit-bot/${newId}`} />;
+    //     else return <h1>Loading...</h1>;
+    // }
+
+    if (newId > -1) props.history.push(`/edit-bot/${newId}`);
+
+    return <h1>Loading...</h1>;
 
 }
