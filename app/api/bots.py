@@ -9,10 +9,6 @@ bp = Blueprint('bots', __name__, url_prefix='/api/bots')
 @jwt_required
 def index():
     incoming = request.get_json()
-    print(incoming)
-
-    # bots = Bot.query.filter_by(user_id=incoming['user_id'])
-    # data = [bot.to_dict() for bot in bots]
-    # return {'bots': data}
-    data = [{"name": "bot1"}, {"name": "bot2"}]
-    return jsonify(data=data)
+    bots = Bot.query.filter_by(user_id=incoming['user_id']).all()
+    data = [bot.to_dict() for bot in bots]
+    return jsonify(data), 200
