@@ -48,15 +48,19 @@ def post_bot(id=0):
     bot = Bot.query.get(id)
     if bot:
         bot.name = incoming["bot"]["name"]
-        bot.rules = incoming["bot"]["rules"]
+        # for i in range(len(bot.rules)):
+        #     if bot.rules[i].content != incoming["rules"][i]["content"]:
+        #         db.session.delete(bot.rules[i])
+        #         db.session.add(Rule(content=incoming["rules"][i]["content"], prefix=incoming["rules"][i]["prefix"] bot_id=bot.id))
     else:
         bot = Bot(name=incoming["bot"]["name"])
         for rule in incoming["rules"]:
-            new_rule = Rule(content=rule.content, bot_id=bot.id)
-            db.session.add(new_rule)
+            # new_rule = Rule(content=rule["content"], prefix=rule["prefix"] bot_id=bot.id)
+            # db.session.add(new_rule)
+            pass
         db.session.add(bot)
     db.session.commit()
-    return jsoniy(True)
+    return jsonify(True)
 
 
 @bot_routes.route('/all')
