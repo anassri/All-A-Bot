@@ -48,11 +48,11 @@ def post_bot(id=0):
     incoming = request.get_json()
     bot = Bot.query.get(id)
     if bot:
-        bot.name = incoming["name"]
-        bot.rules = incoming["rules"]
+        bot.name = incoming["bot"]["name"]
+        bot.rules = incoming["bot"]["rules"]
     else:
-        bot = Bot(name=incoming["name"])
-        for rule in bot.rules:
+        bot = Bot(name=incoming["bot"]["name"])
+        for rule in incoming["rules"]:
             new_rule = Rule(content=rule.content, bot_id=bot.id)
             db.session.add(new_rule)
         db.session.add(bot)

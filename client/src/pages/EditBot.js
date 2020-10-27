@@ -24,15 +24,15 @@ function EditBot({bot, botId, user}) {
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...bot, name: botName, userId: user.id }),
+            body: JSON.stringify({bot: { ...bot, name: botName, userId: user.id }, rules }),
         });
-        // let jsonRules = rules;
-        // jsonRules = jsonRules.map(rule => ({...rule, content: JSON.stringify(rule.content)}));
-        await fetch(`/api/bots/${botId}/rules`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(rules)
-        })
+        // // let jsonRules = rules;
+        // // jsonRules = jsonRules.map(rule => ({...rule, content: JSON.stringify(rule.content)}));
+        // await fetch(`/api/bots/${botId}/rules`, {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(rules)
+        // })
     }
 
     const setRule = (i, newRule) => {
