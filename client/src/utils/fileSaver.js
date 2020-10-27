@@ -11,7 +11,7 @@ function fileDownload(file) {
 const packageBlob = new Blob([`{
     "name": "template-bot",
     "version": "1.0.0",
-    "description": "Tempate bot generated via all-a-bot.herokuapp.com",
+    "description": "Template bot generated via all-a-bot.herokuapp.com",
     "scripts": {
       "start": "template.js"
     },
