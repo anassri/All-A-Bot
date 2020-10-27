@@ -52,7 +52,7 @@ export function Navigation({ logoutDispatch, user }) {
       </div>
       <div className={classes.buttons}>
         <div>
-          <NavLink to='/edit-bot/' activeclass='active'>
+          <NavLink to='/create-bot/' activeclass='active'>
             <div className={classes.navButton}>
               <Button>
                 <i className='fas fa-robot'></i>
