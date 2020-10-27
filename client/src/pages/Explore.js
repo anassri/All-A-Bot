@@ -28,38 +28,45 @@ const useStyle = makeStyles((theme)=>({
         textAlign: 'left',
     },
     bot:{
-        paddingLeft: 10,
-        paddingTop: 15,
+        display: 'flex',
         borderBottom: '1px solid rgba(232,232,232,0.3)',
+    },
+    action:{
+        paddingTop: 15,
+        paddingLeft: 15,
     },
     content: {
         display: 'flex',
-        justifyContent: 'space-between'
+        alignItems: 'flex-end',
+        marginBottom: 5,
+        paddingLeft: 20
     }
 }));
 const ListItem = ({id,name,description,username}) => {
     const classes = useStyle();
     return (
-        <CardActionArea>
-            <Link key={id} to={`/bots/${id}`} style={{ color: 'inherit' }}>
-            <Grid item xs={12} className={classes.bot}>
-                <Typography variant="h5" component="h2" style={{ fontWeight: "bold" }}>
-                    {name}
-                </Typography>
-                <Typography variant="subtitle1" component="h2">
-                    <div className={classes.content}>
-                        <div>
-                            {description}. By  <span style={{ fontWeight: "bold" }}>{username}</span>
-                        </div>
-                        <div>
-                            <i className="fas fa-download"></i>
-                            <i className="fas fa-clone"></i>
-                        </div>
-                    </div>
-                </Typography>
-            </Grid >
-            </Link>
-        </CardActionArea>            
+        <Grid item xs={12} className={classes.bot}>
+            <CardActionArea className={classes.action}>
+                <Link key={id} to={`/bots/${id}`} style={{ color: 'inherit' }}>
+                    <Typography variant="h5" component="h2" style={{ fontWeight: "bold" }}>
+                        {name}
+                    </Typography>
+                    <Typography variant="subtitle1" component="h2">
+                            <div>
+                                {description}. By  <span style={{ fontWeight: "bold" }}>{username}</span>
+                            </div>
+                    </Typography>
+                </Link>
+            </CardActionArea>            
+            <div className={classes.content}>
+                <Link key={id} to={``} style={{ color: 'inherit' }}>
+                    <i className="fas fa-download fa-lg"></i>
+                </Link>
+                <Link key={id} to={``} style={{ color: 'inherit' }}>
+                    <i className="fas fa-clone fa-lg"></i>
+                </Link>
+            </div>
+        </Grid >
 )};
 
 export default function Explore() {
