@@ -36,4 +36,5 @@ def login():
         token = create_access_token(identity=user.email)
         return jsonify(user=user.to_dict(), token=token)
     else:
+        print('error')
         return {'msg': 'Incorrect email or password'}, 400
