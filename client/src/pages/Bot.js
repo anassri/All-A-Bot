@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+
 import { loadOne } from '../store/bots'
 import { makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
@@ -13,10 +15,14 @@ import Divider from '@material-ui/core/Divider';
 const useStyle = makeStyles((theme) => ({
     root: {
         marginTop: 10,
+        
     },
     paper: {
         height: '60vh',
         padding: '55px 65px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
     },
     title: {
         fontWeight: 'bold',
@@ -37,6 +43,10 @@ const useStyle = makeStyles((theme) => ({
     },
     grid: {
         maxWidth: '10%'
+    },
+    icons: {
+        textAlign: 'right',
+        opacity: 0.7
     }
     
     
@@ -97,39 +107,49 @@ export default function Bot(){
                     {bot.name.toUpperCase()}
                 </Typography>
                 <Paper className={classes.paper}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={2} sm={2} className={classes.grid}>
-                            <Typography variant="subtitle2" component="h2" className={classes.label}>
-                                Bot Name:
-                            </Typography>
-                            <Typography variant="subtitle2" component="h2" className={classes.label}>
-                                Description:
-                            </Typography>
-                            {bot.prefix 
-                                ? <Typography variant="subtitle2" component="h2" className={classes.label}>Prefix:</Typography>
-                                : null}
-                            
+                    <div>
+                        <Grid container spacing={2}>
+                            <Grid item xs={2} sm={2} className={classes.grid}>
+                                <Typography variant="subtitle2" component="h2" className={classes.label}>
+                                    Bot Name:
+                                </Typography>
+                                <Typography variant="subtitle2" component="h2" className={classes.label}>
+                                    Description:
+                                </Typography>
+                                {bot.prefix 
+                                    ? <Typography variant="subtitle2" component="h2" className={classes.label}>Prefix:</Typography>
+                                    : null}
+                                
+                            </Grid>
+                            <Grid item xs={3} sm={6}>
+                                <Typography variant="subtitle1" component="h2" className={classes.content}>
+                                    {bot.name}
+                                </Typography>
+                                <Typography variant="subtitle1" component="h2" className={classes.content}>
+                                    {bot.description}
+                                </Typography>
+                                {bot.prefix
+                                    ? <Typography variant="subtitle1" component="h2" className={classes.content}>{bot.prefix}</Typography>
+                                    : null}
+                            </Grid>
                         </Grid>
-                        <Grid item xs={3} sm={6}>
-                            <Typography variant="subtitle1" component="h2" className={classes.content}>
-                                {bot.name}
-                            </Typography>
-                            <Typography variant="subtitle1" component="h2" className={classes.content}>
-                                {bot.description}
-                            </Typography>
-                            {bot.prefix
-                                ? <Typography variant="subtitle1" component="h2" className={classes.content}>{bot.prefix}</Typography>
-                                : null}
-                        </Grid>
-                    </Grid>
-                    <Divider style={{marginTop: 20}}/>
+                        <Divider style={{marginTop: 20}}/>
 
-                        {bot.rules.map((rule) => 
-                            <>
-                                <Rule key={rule.id} rule={rule} />
-                                <Divider style={{marginTop: 15}} /> 
-                            </>  
-                        )}
+                            {bot.rules.map((rule) => 
+                                <>
+                                    <Rule key={rule.id} rule={rule} />
+                                    <Divider style={{marginTop: 15}} /> 
+                                </>  
+                            )}
+                    </div>
+                    <div className={classes.icons}>
+                        <Link key={id} to={``} style={{ color: 'inherit' }}>
+                            <i className="fas fa-download fa-lg"></i>
+                        </Link>
+                        <Link key={id} to={``} style={{ color: 'inherit' }}>
+                            <i className="fas fa-clone fa-lg"></i>
+                        </Link>
+                    </div>
                 </Paper>
             </Container>
         </div>

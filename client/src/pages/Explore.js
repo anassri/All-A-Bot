@@ -38,7 +38,8 @@ const useStyle = makeStyles((theme)=>({
         display: 'flex',
         alignItems: 'flex-end',
         marginBottom: 5,
-        paddingLeft: 20
+        paddingLeft: 20,
+        opacity: 0.7
     }
 }));
 const ListItem = ({id,name,description,username}) => {
