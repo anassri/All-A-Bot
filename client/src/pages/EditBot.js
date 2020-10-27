@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, TextField, Button, Checkbox, Menu, MenuItem, FormLabel } from '@material-ui/core';
+import { Box, TextField, Button, Checkbox, Menu, MenuItem, FormLabel, Paper } from '@material-ui/core';
 import { loadBot } from '../store/bots'
 
 function EditBot({bot, botId, user}) {
@@ -35,7 +35,7 @@ function EditBot({bot, botId, user}) {
 
     const RuleForm = ({i}) => {
         return (
-        <Box>
+        <>
             <h4>Rule:</h4>
             <form>
                 <TextField label="Prefix" value={rules[i].prefix} onChange={e => setRule(i, {...rules[i], prefix: e.target.value})}></TextField>
@@ -50,17 +50,17 @@ function EditBot({bot, botId, user}) {
                     onClose={() => setAnchorEl(null)}
                 >
                     <MenuItem onClick={e => {
-                        rules[i].content.trigger = "message";
+                        setRule(i, {...rules[i], trigger: "message"})
                     }}>Message</MenuItem>
                 </Menu>
                 </div>
                 {rules[i].content.trigger === "message" ? <Box><TextField label="Trigger: "></TextField><TextField label="Response: "></TextField></Box> : <></>}
             </form>
-        </Box>
+        </>
     )}
 
     return (
-        <>
+        <Paper>
             <h1>Create your bot</h1>
             <Box>
                 <form>
@@ -70,7 +70,7 @@ function EditBot({bot, botId, user}) {
             </Box>
             {rules.map((rule, i) => <Box key={i}><RuleForm i={i} /></Box>)}
             <Button onClick={saveBot}>Save</Button>
-        </>
+        </Paper>
     )
 }
 
