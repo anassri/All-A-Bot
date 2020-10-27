@@ -12,13 +12,17 @@ function EditBot({bot, botId, user}) {
     const [anchorEl, setAnchorEl] = useState(null);
 
     useEffect(() => {
-        if (botName === "") setBotName(bot.name);
-        if (rules === [BLANK_RULE]){
+        console.log(bot);
+        console.log(bot.rules);
+        console.log(rules);
+        if (rules[0] === BLANK_RULE || rules.length === 0){
             setRules(bot.rules);
-            for (let i=0; i<bot.rules.length; i++){
-                rules[i].content = JSON.parse(bot.rules[i].content);
-            }
+            console.log(rules);
+            // for (let i=0; i<bot.rules.length; i++){
+            //     rules[i].content = JSON.parse(bot.rules[i].content);
+            // }
         }
+        if (botName === "") setBotName(bot.name);
     })
 
     const addRule = () => {
