@@ -68,17 +68,8 @@ const ListItem = ({id,name,description,username}) => {
         </Grid >
 )};
 
-export default function Explore() {
+export function Explore({bots}) {
     const classes = useStyle();
-    const bots = useSelector(state => state.bots.explore)
-    const dispatch = useDispatch()
-
-    useEffect(()=>{
-        dispatch(loadAllBots())
-    }, [])
-
-    if (!bots) return null;
-
     return (
         <div className={classes.root}>
             <Container maxWidth="lg" className="paper-container">
@@ -105,4 +96,17 @@ export default function Explore() {
             </Container>
         </div>
     );
+}
+
+export default function ExploreContainer() {
+    const bots = useSelector(state => state.bots.explore)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(loadAllBots())
+    }, [])
+
+    if (!bots) return null;
+
+    return <Explore bots={bots} />
 }

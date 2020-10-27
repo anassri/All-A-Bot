@@ -18,7 +18,7 @@ def index():
     data = [{"name": "bot1"}, {"name": "bot2"}]
     return jsonify(data=data)
 
-
+# Grabbing all published bots for the explore page - Ammar
 @bp.route("/all")
 def get_all_published_bots():
     bots = Bot.query \
@@ -35,6 +35,7 @@ def get_all_published_bots():
     } for bot in bots]
     return jsonify(data=data)
 
+# Grabbing the info of a particular published bots, navigated to from the explore page - Ammar
 @bp.route("/<int:id>")
 def get_one_published_bot(id):
     bot = Bot.query \
@@ -42,17 +43,24 @@ def get_one_published_bot(id):
              .filter_by(is_draft=False) \
              .options(joinedload(Bot.rules)) \
              .options(joinedload(Bot.owner)) \
-             .all()
-    print(bot[0].rules[0].__dict__)
-    # data = {
-    #     "name": bot.name,
-    #     "description": bot.description,
-    #     "owner": {
-    #         "username": bot.owner.username,
-    #     },
-    #     # "rules": [{
-    #     #     "prefix": bot.rules.prefix,
-    #     #     "content": bot.rules.content,
-    #     # }]
-    # } 
-    return {}
+             .one()
+    if bot:
+        rules = []
+        for rule in bot.rules:
+            rules.append({
+                "id": rule.id,
+                "prefix": rule.prefix,
+                "content": rule.content,
+            }) 
+        data = {
+            "id": bot.id,
+            "name": bot.name,
+            "description": bot.description,
+            "owner": {
+                "username": bot.owner.username,
+            },
+            "rules": rules
+        } 
+        return jsonify(data=data)
+    else:
+        return jsonify(message="No such bot found!")
