@@ -12,7 +12,10 @@ client.once('ready', () => {
 `
 // String form of discord.js login function
 const loginString = (token) => {
-    `const login = async (${token}) => { await client.login(${token})}`
+    return `\nconst login = async (${token}) => {
+    await client.login(${token}
+    return
+)}`
 }
 
 // Random string generator, used to ensure that generated objects won't create naming conflicts
