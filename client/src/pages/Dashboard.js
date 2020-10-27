@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
+import Link from '@material-ui/core/Link';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -77,6 +78,12 @@ export function Dashboard({ user, token, bots, loadBotsDispatch }) {
     setValue(newValue);
   };
 
+  const deleteBot = event => {
+    const regex = /\d+/;
+    const id = event.target.id.match(regex)[0];
+    console.log(id);
+  };
+
   if (!bots) return null;
 
   return (
@@ -117,6 +124,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch }) {
                       <div>
                         <GetAppIcon style={{ margin: '2px' }} fontSize='medium' />
                         <EditIcon style={{ margin: '2px' }} fontSize='medium' />
+                        <i onClick={deleteBot} id={`bot-${bot.id}`} className='fas fa-trash'></i>
                       </div>
                     </div>
                     <Divider />
@@ -148,6 +156,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch }) {
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
                         <EditIcon style={{ margin: '2px' }} fontSize='medium' />
+                        <i onClick={deleteBot} id={`bot-${bot.id}`} className='fas fa-trash'></i>
                       </div>
                     </div>
                     <Divider />
