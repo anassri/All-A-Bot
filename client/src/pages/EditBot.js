@@ -16,7 +16,7 @@ function EditBot({bot, botId, user}) {
         console.log(bot);
         console.log(bot.rules);
         console.log(rules);
-        if (bot.rules.length === 0 || rules[0] !== bot.rules[0]){
+        if (rules.length === 0 || bot.rules[0] && (rules[0] !== bot.rules[0])){
             setRules(bot.rules);
             console.log(rules);
         }
