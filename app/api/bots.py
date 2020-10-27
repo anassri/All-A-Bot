@@ -59,7 +59,7 @@ def post_bot(id=0):
     return jsoniy(True)
 
 
-@bp.route('/all')
+@bot_routes.route('/all')
 def get_all_published_bots():
     bots = Bot.query \
               .filter_by(is_draft=False) \
