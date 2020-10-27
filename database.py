@@ -13,6 +13,7 @@ ruleString1 = """{ "trigger": { "type": "message", "usesPrefix": "true", "detail
 ruleString2 = """{ "trigger": { "type": "message", "usesPrefix": "true", "details": { "string": "bye" } }, "response": { "type": "message", "details": { "string": "goodbye friend!" } } }"""
 
 
+
 # op.bulk_insert('users', [
 #     {'username'}
 # ])
