@@ -72,7 +72,7 @@ export function Navigation({ logoutDispatch, user }) {
           </NavLink>
         </div>
         <div>
-          <NavLink to='/dashboard' activeclass='active'>
+          <NavLink to={user ? '/dashboard' : '/login'} activeclass='active'>
             <div className={classes.navButton}>
               <Button>
                 <i className='fas fa-user-circle'></i>
