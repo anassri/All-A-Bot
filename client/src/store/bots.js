@@ -14,7 +14,7 @@ export const loadBots = (user, token) => async dispatch => {
 
   if (res.ok) {
     const bots = await res.json();
-    dispatch(setBots(bots.data));
+    dispatch(setBots(bots));
   }
 };
 
