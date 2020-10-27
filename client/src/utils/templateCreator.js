@@ -12,10 +12,11 @@ client.once('ready', () => {
 `
 // String form of discord.js login function
 const loginString = (token) => {
-    return `\nconst login = async (${token}) => {
-    await client.login(${token}
+    return `\nconst login = async (token) => {
+    await client.login(token)
     return
-)}`
+)}
+login(${token})`
 }
 
 // Random string generator, used to ensure that generated objects won't create naming conflicts
@@ -37,17 +38,17 @@ function commandObjectsBuilder(objList) {
     let commandObjects = ``
 
     objList.forEach(cmd => {
-        const varName = cmd.name + randStringMaker()
+        const varName = cmd.name + '_' + randStringMaker()
         if (cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'starts') {
             // This will fire off if the command/rule's trigger is a starts-with trigger, and its response type is that of send (this is largely for prefixed commands)
             if (cmd.response.send) {
-                commandObjects += `\n${varName} = {name: ${cmd.name}, description: ${cmd.description}, async execute(message, args) {${basicResponseBuilder(cmd.response.send)}}}\nclient.commands.set(varName.name, varName)`
+                commandObjects += `\n${varName} = {name: ${cmd.name}, description: ${cmd.description}, async execute(message, args) {${basicResponseBuilder(cmd.response.send)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
             }
             // Add else if here for events other than send for when a prefixed command has other actions such as kick, delete, or ban
         } else if(cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'includes') {
             // This will fire off if the command/rule's trigger is includes, and its response type is that of send
             if (cmd.response.send) {
-                commandObjects += `\n${varName} = {name: ${cmd.name}, description: ${cmd.description}, async execute(message, args) {${basicResponseBuilder(cmd.response.send)}}}\nclient.commands.set(varName.name, varName)`
+                commandObjects += `\n${varName} = {name: ${cmd.name}, description: ${cmd.description}, async execute(message, args) {${basicResponseBuilder(cmd.response.send)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
             }
             // Add else ifs here for events other than send for when a matching substring is found, like kick, delete, or ban
         } else {
@@ -81,7 +82,7 @@ function switchCaseWithPrefixBuilder(prefix, commands) {
     })
 
     const defaulter = (
-        `            default:\n                message.channel.send('Invalid command')\n                break;}\n    } else {\n`)
+        `            default:\n                message.channel.send('Invalid command')\n                break;\n        }\n    } else {\n`)
 
     let switchWithDefault = switchStatement + defaulter
     let fullBlock = ifStatement + args + cmd + switchWithDefault
@@ -119,7 +120,52 @@ function messageEventAssembler(prefix, prefixedCommands, unprefixedCommands) {
     return messageEventStart + switches + messageEventEnd
 }
 
-// Testing console.log
-console.log( fileStart + messageEventAssembler('!', [{ name: 'Hello' }, { name: 'Goodbye' }], [{ name: 'olleH'}, { name: 'eybdooG' }]))
 
-// More will be added here later for final assembly and converting string to a js file for download
+function assembleFullFile(prefix, token, commands, events) {
+    const file = `
+const Discord = require('discord.js');
+const client = new Discord.Client();
+
+client.commands = new Discord.Collection();
+
+client.once('ready', () => {
+    console.log('Bot is ready to go!)
+})\n`
+
+    let prefixedCommands = []
+    let unprefixedCommands = []
+    if (commands) {
+        commands.forEach(cmd => {
+            if (cmd.trigger.includesOrStarts === 'starts') {
+                prefixedCommands.push(cmd)
+            } else {
+                unprefixedCommands.push(cmd)
+            }
+        })
+    }
+
+    let evs = ``
+    if (events) {
+        evs = nonMessageEventsBuidler(events)
+    }
+
+    const comObjs = commandObjectsBuilder(commands)
+
+    const msgEventHandler = messageEventAssembler(prefix, prefixedCommands, unprefixedCommands)
+
+    const loginFunc = loginString(token)
+
+    const fullBot = file + evs + comObjs + msgEventHandler + loginFunc
+
+    return fullBot
+}
+
+// Testing console.log
+console.log(assembleFullFile('!', 'sampleToken',
+    [
+        { name: 'Hello', trigger: { includesOrStarts: 'starts' }, response: { send: 'Hi' } },
+        { name: 'Goodbye',  trigger: { includesOrStarts: 'starts' }, response: { send: 'Bye' }},
+        { name: 'olleH', trigger: { includesOrStarts: 'includes' }, response: { send: 'iH' }},
+        { name: 'eybdooG', trigger: { includesOrStarts: 'includes' }, response: { send: 'eyB' } }
+    ],
+))
