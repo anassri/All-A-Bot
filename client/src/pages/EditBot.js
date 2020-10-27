@@ -5,11 +5,7 @@ import { loadBot } from '../store/bots'
 
 function EditBot({bot, botId, user}) {
 
-<<<<<<< Updated upstream
-    const BLANK_RULE = { name: "", prefix: "", content: { trigger: {type: "", details: { string: "" }}, response: [{type: "", details: { string: "" }}] } };
-=======
     const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "" }}, response: [{type: "", details: { string: "" }}] } };
->>>>>>> Stashed changes
 
     const [botName, setBotName] = useState("");
     const [rules, setRules] = useState([BLANK_RULE]);
