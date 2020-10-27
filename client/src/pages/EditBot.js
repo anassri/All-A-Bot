@@ -13,7 +13,12 @@ function EditBot({bot, botId, user}) {
 
     useEffect(() => {
         if (botName === "") setBotName(bot.name);
-        if (rules === [BLANK_RULE]) setRules(bot.rules);
+        if (rules === [BLANK_RULE]){
+            setRules(bot.rules);
+            for (let i=0; i<bot.rules.length; i++){
+                rules[i].content = JSON.parse(bot.rules[i].content);
+            }
+        }
     })
 
     const addRule = () => {
