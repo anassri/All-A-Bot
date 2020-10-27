@@ -3,7 +3,6 @@ from flask_jwt_extended import JWTManager, jwt_required, get_raw_jwt
 from app.models import db, Bot, Rule, User
 from sqlalchemy.orm import joinedload
 
-
 bot_routes = Blueprint('bot', __name__, url_prefix='/api/bots')
 
 
@@ -58,3 +57,20 @@ def post_bot(id=0):
         db.session.add(bot)
     db.session.commit()
     return jsoniy(True)
+
+
+@bp.route('/all')
+def get_all_published_bots():
+    bots = Bot.query \
+              .filter_by(is_draft=False) \
+              .options(joinedload(Bot.owner)) \
+              .all()
+    data = [{
+        "id": bot.id,
+        "name": bot.name,
+        "description": bot.description,
+        "owner": {
+            "username": bot.owner.username
+        }
+    } for bot in bots]
+    return jsonify(data=data)

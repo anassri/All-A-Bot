@@ -1,17 +1,28 @@
 import { SET_BOT } from '../constants';
-import { SET_BOTS } from '../constants';
+import { SET_BOTS, LOAD_ALL } from '../constants';
 
 
 const setBot = bot => ({
     type: SET_BOT,
     bot,
 });
+export const loadAll = bots => ({
+  type: LOAD_ALL,
+  bots,
+});
+
+export const loadAllBots = () => async dispatch => {
+  const res = await fetch('/api/bots/all')
+  if(res.ok) {
+    const bots = await res.json();
+    dispatch(loadAll(bots.data));
+  }
+}
 
 export const setBots = bots => ({
     type: SET_BOTS,
     bots,
   });
-
 
 export const loadBot = id => async dispatch => {
     try {
@@ -46,7 +57,8 @@ export default function botReducer (state={ bot: { name: "", rules: [] } }, acti
             return { ...state, bot: action.bot };
         case SET_BOTS:
             return { ...state, list: action.bots };
+        case LOAD_ALL:
+            return { ...state, explore: action.bots };
         default:
             return state;
     }
-}
