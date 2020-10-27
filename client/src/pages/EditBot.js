@@ -5,6 +5,7 @@ import { loadBot } from '../store/bots'
 
 function EditBot({bot, botId, user}) {
 
+
     const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "" }}, response: [{type: "", details: { string: "" }}] } };
 
     const [botName, setBotName] = useState("");

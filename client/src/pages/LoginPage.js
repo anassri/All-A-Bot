@@ -2,10 +2,43 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { login, loadUser, loadToken } from '../store/auth';
+import { makeStyles } from '@material-ui/core';
+import { Box, TextField, Button, Checkbox, Typography, Container, Paper } from '@material-ui/core';
 
-import { Box, TextField, Button, Checkbox } from '@material-ui/core';
+const useStyle = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+    marginTop: 10,
+  },
+  paper: {
+    height: '60vh',
+    padding: '55px 65px',
+  },
+  title: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  bots: {
+    textAlign: 'left',
+  },
+  bot: {
+    display: 'flex',
+    borderBottom: '1px solid rgba(232,232,232,0.3)',
+  },
+  action: {
+    paddingTop: 15,
+    paddingLeft: 15,
+  },
+  content: {
+    display: 'flex',
+    alignItems: 'flex-end',
+    marginBottom: 5,
+    paddingLeft: 20,
+  },
+}));
 
 export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
+  const classes = useStyle();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState('');
@@ -39,21 +72,64 @@ export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
   return (
     <Box>
       <div>{errors}</div>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          value={email}
-          variant='outlined'
-          type='email'
-          onChange={e => setEmail(e.target.value)}
-          label='Email'></TextField>
-        <TextField
-          value={password}
-          variant='outlined'
-          type='password'
-          onChange={e => setPassword(e.target.value)}
-          label='Password'></TextField>
-        <Button type='submit'>Log In</Button>
-      </form>
+
+      <div className={classes.root}>
+        <Container maxWidth='lg' className='paper-container'>
+          <Paper className={classes.paper}>
+            <div className='welcome-container'>
+              <Typography variant='h4' component='h2' style={{ fontWeight: 'bold', color: 'white' }}>
+                Welcome back!
+              </Typography>
+              <Typography variant='subtitle1' component='h2' style={{ fontWeight: 'bold', color: '#969696' }}>
+                We're psyched to see ya!
+              </Typography>
+            </div>
+            <br></br>
+            <br></br>
+            <Container>
+              <form onSubmit={handleSubmit}>
+                <Box style={{ display: 'flex', flexDirection: 'column' }}>
+                  <TextField
+                    value={email}
+                    variant='outlined'
+                    type='email'
+                    onChange={e => setEmail(e.target.value)}
+                    label='Email'></TextField>
+                  <br></br>
+                  <br></br>
+                  <TextField
+                    value={password}
+                    variant='outlined'
+                    type='password'
+                    onChange={e => setPassword(e.target.value)}
+                    label='Password'></TextField>
+                  <br></br>
+                  <Typography
+                    variant='subtitle1'
+                    component='h3'
+                    color='primary'
+                    style={{ fontWeight: 'bold', textAlign: 'left' }}>
+                    Forget your password?
+                  </Typography>
+                  <br></br>
+                  <Button variant='contained' color='primary' type='submit'>
+                    Log In
+                  </Button>
+                  <br></br>
+                  <Typography variant='subtitle1' component='h3' style={{ textAlign: 'left' }}>
+                    <span style={{ color: 'white' }}>Need an account? </span>
+                    <span>
+                      <a style={{ color: '#914A84', fontWeight: 'bold' }} href='/signup'>
+                        Register
+                      </a>
+                    </span>
+                  </Typography>
+                </Box>
+              </form>
+            </Container>
+          </Paper>
+        </Container>
+      </div>
     </Box>
   );
 };
