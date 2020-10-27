@@ -5,13 +5,18 @@ import { loadBot } from '../store/bots'
 
 function EditBot({bot, botId, user}) {
 
-    const [botName, setBotName] = useState("");
-    const [rules, setRules] = useState(bot.rules);
+    const BLANK_RULE = { name: "", prefix: "", content: { trigger: "", response: "" } };
 
-    useEffect(() => setBotName(bot.name));
+    const [botName, setBotName] = useState("");
+    const [rules, setRules] = useState([BLANK_RULE]);
+
+    useEffect(() => {
+        if (botName === "") setBotName(bot.name);
+        if (rules === [BLANK_RULE]) setRules(bot.rules);
+    })
 
     const addRule = () => {
-        const newRule = {};
+        const newRule = BLANK_RULE;
         setRules([...rules, newRule]);
     }
 
@@ -31,15 +36,16 @@ function EditBot({bot, botId, user}) {
     }
 
     const setRule = (i, newRule) => {
-        return setRules([...rules.slice(0, i), newRule, ...rules.slice(i+1)]);
+        setRules([...rules.slice(0, i), newRule, ...rules.slice(i+1)]);
     }
 
-    const RuleForm = (i=0) => (
+    const RuleForm = ({i}) => {
+        return (
         <Box>
             <h4>Rule:</h4>
             <form>
                 <TextField label="Prefix" value={rules[i].prefix} onChange={e => setRule(i, {...rules[i], prefix: e.target.value})}></TextField>
-                <Menu
+{/*                 <Menu
                     keepMounted
                     open={true}
                     label="On"
@@ -47,11 +53,11 @@ function EditBot({bot, botId, user}) {
                     <MenuItem onClick={e => {
                         rules[i] = { trigger: "message", response: null };
                     }}>Message</MenuItem>
-                </Menu>
+                </Menu> */}
                 {rules[i].content.trigger === "message" ? <Box><TextField label="Trigger: "></TextField><TextField label="Response: "></TextField></Box> : <></>}
             </form>
         </Box>
-    )
+    )}
 
     return (
         <>
