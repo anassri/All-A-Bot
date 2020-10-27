@@ -9,32 +9,7 @@ export function HomePage({ logoutDispatcher, user }) {
     e.preventDefault();
     logoutDispatcher();
   };
-
-  const handleLogin = e => {
-    e.preventDefault();
-    history.push('/login');
-  };
-
-  const handleSignup = e => {
-    e.preventDefault();
-    history.push('/signup');
-  };
-
-  return (
-    <div>
-      <h1>All-A-Bot</h1>
-      <div>
-        {user ? (
-          <button onClick={handleLogout}>Logout</button>
-        ) : (
-          <div>
-            <button onClick={handleLogin}>Log In</button>
-            <button onClick={handleSignup}>Sign Up</button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+  return <></>;
 }
 
 export default function HomePageContainer() {
