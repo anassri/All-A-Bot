@@ -28,9 +28,9 @@ with app.app_context():
 
 
     bot1 = Bot(user_id=1, name="fakebot1", description="The first fake bot ever here", is_draft=False)
-    bot2 = Bot(user_id=2, name="fakebot2", description="The second fake bot ever here", is_draft=True)
-    bot3 = Bot(user_id=3, name="fakebot3", description="The third fake bot ever here", is_draft=True)
-    bot4 = Bot(user_id=4, name="fakebot4", description="The fourth fake bot ever here", is_draft=True)
+    bot2 = Bot(user_id=2, name="fakebot2", description="The second fake bot ever here", is_draft=False)
+    bot3 = Bot(user_id=3, name="fakebot3", description="The third fake bot ever here", is_draft=False)
+    bot4 = Bot(user_id=4, name="fakebot4", description="The fourth fake bot ever here", is_draft=False)
     bot5 = Bot(user_id=1, name="fakebot5", description="The fifth fake bot ever here", is_draft=True)
 
     rule1 = Rule(bot_id=1, prefix="!", content=ruleString1)
