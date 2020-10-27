@@ -61,4 +61,5 @@ export default function botReducer (state={ bot: { name: "", rules: [] } }, acti
             return { ...state, explore: action.bots };
         default:
             return state;
+        }
     }
