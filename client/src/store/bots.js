@@ -24,7 +24,6 @@ export const setBots = bots => ({
     bots,
   });
 
-<<<<<<< HEAD
 export const loadBot = id => async dispatch => {
     try {
         const res = await fetch(`/api/bots/${id}`);
@@ -37,23 +36,6 @@ export const loadBot = id => async dispatch => {
     } catch (e) {
         console.error(e);
     }
-=======
-  if (res.ok) {
-    const bots = await res.json();
-    dispatch(setBots(bots));
-  }
-};
-
-export default function botsReducer(state = {}, action) {
-  switch (action.type) {
-    case SET_BOTS:
-      return { ...state, list: action.bots };
-    case LOAD_ALL:
-      return { ...state, explore: action.bots };
-    default:
-      return state;
-  }
->>>>>>> master
 }
 
 export const loadBots = (user, token) => async dispatch => {
