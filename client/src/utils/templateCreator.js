@@ -136,7 +136,7 @@ client.once('ready', () => {
     let unprefixedCommands = []
     if (commands) {
         commands.forEach(cmd => {
-            if (cmd.trigger.includesOrStarts === 'starts') {
+            if (cmd.trigger.prefix === 'starts') {
                 prefixedCommands.push(cmd)
             } else {
                 unprefixedCommands.push(cmd)

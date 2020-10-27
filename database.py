@@ -8,9 +8,9 @@ from app.models import User, Bot, Rule
 # from alembic import op
 
 # print(db)
-ruleString1 = """{ "trigger": { "type": "message", "details": { "string": "hi" } }, "response": { "type": "message", "details": { "string": "hi there!" } } }"""
+ruleString1 = """{ "trigger": { "type": "message", "usesPrefix": "true", "details": { "string": "hi" } }, "response": { "type": "message", "details": { "string": "hi there!" } } }"""
 
-ruleString2 = """{ "trigger": { "type": "message", "details": { "string": "bye" } }, "response": { "type": "message", "details": { "string": "goodbye friend!" } } }"""
+ruleString2 = """{ "trigger": { "type": "message", "usesPrefix": "true", "details": { "string": "bye" } }, "response": { "type": "message", "details": { "string": "goodbye friend!" } } }"""
 
 
 # op.bulk_insert('users', [
@@ -27,14 +27,14 @@ with app.app_context():
     user4 = User(username="matt-ramotar", email="fake4@email.com", password="demopassword4")
 
 
-    bot1 = Bot(user_id=1, name="fakebot1", description="The first fake bot ever here", is_draft=False)
-    bot2 = Bot(user_id=2, name="fakebot2", description="The second fake bot ever here", is_draft=False)
-    bot3 = Bot(user_id=3, name="fakebot3", description="The third fake bot ever here", is_draft=False)
-    bot4 = Bot(user_id=4, name="fakebot4", description="The fourth fake bot ever here", is_draft=False)
-    bot5 = Bot(user_id=1, name="fakebot5", description="The fifth fake bot ever here", is_draft=True)
+    bot1 = Bot(user_id=1, name="fakebot1", prefix="!", description="The first fake bot ever here", is_draft=False)
+    bot2 = Bot(user_id=2, name="fakebot2", prefix= "@", description="The second fake bot ever here", is_draft=False)
+    bot3 = Bot(user_id=3, name="fakebot3", prefix="#", description="The third fake bot ever here", is_draft=False)
+    bot4 = Bot(user_id=4, name="fakebot4", prefix="//", description="The fourth fake bot ever here", is_draft=False)
+    bot5 = Bot(user_id=1, name="fakebot5", prefix= "%", description="The fifth fake bot ever here", is_draft=True)
 
-    rule1 = Rule(bot_id=1, prefix="!", content=ruleString1)
-    rule2 = Rule(bot_id=2, prefix=None, content=ruleString2)
+    rule1 = Rule(bot_id=1, content=ruleString1)
+    rule2 = Rule(bot_id=2, content=ruleString2)
 
     db.session.add(user1)
     db.session.add(user2)

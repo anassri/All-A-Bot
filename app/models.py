@@ -47,6 +47,7 @@ class Bot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     name = db.Column(db.String(100), nullable=False)
+    prefix = db.Column(db.String(100))
     description = db.Column(db.Text)
     is_draft = db.Column(db.Boolean, nullable=False)
     # developer_token = db.Column(db.String(100))
@@ -71,7 +72,6 @@ class Rule(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     bot_id = db.Column(db.Integer, db.ForeignKey("bots.id"), nullable=False)
-    prefix = db.Column(db.String(100))
     # nullable because we want to make it possible to create prefix-less rules
     content = db.Column(db.Text, nullable=False)
     # this is "text" rather than a string because it could be
