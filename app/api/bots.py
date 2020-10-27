@@ -15,14 +15,6 @@ def index():
     data = [bot.to_dict() for bot in bots]
     return jsonify(data), 200
 
-    # bots = Bot.query.filter_by(user_id=incoming["user_id"])
-    # data = [bot.to_dict() for bot in bots]
-    # return {"bots": data}
-    data = [{"name": "bot1"}, {"name": "bot2"}]
-    return jsonify(data=data)
-
-
-
 @bp.route('/<int:id>', methods=['GET'])
 def get_bot(id=0):
     print("Reached the route!")
@@ -102,13 +94,13 @@ def get_one_published_bot(id):
         for rule in bot.rules:
             rules.append({
                 "id": rule.id,
-                "prefix": rule.prefix,
                 "content": rule.content,
             }) 
         data = {
             "id": bot.id,
             "name": bot.name,
             "description": bot.description,
+            "prefix": bot.prefix,
             "owner": {
                 "username": bot.owner.username,
             },
