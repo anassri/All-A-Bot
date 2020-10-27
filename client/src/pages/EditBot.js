@@ -5,7 +5,7 @@ import { loadBot } from '../store/bots'
 
 function EditBot({bot, botId, user}) {
 
-    const BLANK_RULE = { name: "", prefix: "", content: { trigger: {}, response: [{}] } };
+    const BLANK_RULE = { name: "", prefix: "", content: { trigger: {type: ""}, response: [{}] } };
 
     const [botName, setBotName] = useState("");
     const [rules, setRules] = useState([BLANK_RULE]);
@@ -55,11 +55,11 @@ function EditBot({bot, botId, user}) {
                     onClose={() => setAnchorEl(null)}
                 >
                     <MenuItem onClick={e => {
-                        setRule(i, {...rules[i], content: { ...rules[i].content, trigger: "message" }})
+                        setRule(i, {...rules[i], content: { ...rules[i].content, trigger: {type: "message"} }})
                     }}>Message</MenuItem>
                 </Menu>
                 </div>
-                {rules[i].content.trigger === "message" ? <Box><TextField label="Trigger: "></TextField><TextField label="Response: "></TextField></Box> : <></>}
+                {rules[i].content.trigger.type === "message" ? <Box><TextField label="Trigger: "></TextField><TextField label="Response: "></TextField></Box> : <></>}
             </form>
         </>
     )}
