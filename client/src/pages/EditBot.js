@@ -5,10 +5,15 @@ import { loadBot } from '../store/bots'
 
 function EditBot({bot, botId, user}) {
 
+<<<<<<< Updated upstream
     const BLANK_RULE = { name: "", prefix: "", content: { trigger: {type: "", details: { string: "" }}, response: [{type: "", details: { string: "" }}] } };
+=======
+    const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "" }}, response: [{type: "", details: { string: "" }}] } };
+>>>>>>> Stashed changes
 
     const [botName, setBotName] = useState("");
     const [rules, setRules] = useState([BLANK_RULE]);
+    const [botPrefix, setBotPrefix] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
     const [responseAnchor, setResponseAnchor] = useState(null);
 
@@ -21,6 +26,7 @@ function EditBot({bot, botId, user}) {
             console.log(rules);
         }
         if (botName === "") setBotName(bot.name);
+        if (botPrefix !== bot.prefix) setBotPrefix(bot.prefix);
     })
 
     const addRule = () => {
@@ -32,7 +38,7 @@ function EditBot({bot, botId, user}) {
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({bot: { ...bot, name: botName, userId: user.id }, rules }),
+            body: JSON.stringify({bot: { ...bot, name: botName, prefix: botPrefix, userId: user.id }, rules }),
         });
     }
 
@@ -45,7 +51,6 @@ function EditBot({bot, botId, user}) {
         <>
             <h4>Rule:</h4>
             <form>
-                <TextField label="Prefix" value={rules[i].prefix} onChange={e => setRule(i, {...rules[i], prefix: e.target.value})}></TextField>
                 <div>
                 {/* this is the div which contains the trigger form. the next div down is the response form. */}
                 <Button onClick={e => setAnchorEl(e.currentTarget)}>Trigger</Button>
@@ -105,6 +110,7 @@ function EditBot({bot, botId, user}) {
             <Box>
                 <form>
                     <TextField value={botName} onChange={e => setBotName(e.target.value)} label="Name"></TextField>
+                    <TextField label="Prefix" value={botPrefix} onChange={e => setBotPrefix(e.target.value)}></TextField>
                     <Button onClick={addRule}>Add rule</Button>
                 </form>
             </Box>

@@ -47,6 +47,7 @@ def post_bot(id=0):
     bot = Bot.query.get(id)
     if bot:
         bot.name = incoming["bot"]["name"]
+        bot.prefix = incoming["bot"]["prefix"]
         for old_rule in bot.rules:
             db.session.delete(old_rule)
         for new_rule in new_rules:
@@ -55,7 +56,7 @@ def post_bot(id=0):
                                 content=new_rule_content,
                                 bot_id=bot.id))
     else:
-        bot = Bot(name=incoming["bot"]["name"])
+        bot = Bot(name=incoming["bot"]["name"], prefix=incoming["bot"]["prefix"])
         for new_rule in new_rules:
             new_rule_content = json.dumps(new_rule["content"])
             db.session.add(Rule(prefix=new_rule["prefix"],
