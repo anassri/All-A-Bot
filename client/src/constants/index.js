@@ -10,3 +10,5 @@ export const SET_TOKEN = 'auth/SET_TOKEN';
 export const TOKEN = 'auth/TOKEN';
 
 export const USER = 'auth/USER';
+
+export const SET_BOT = 'bots/GET_BOT';
