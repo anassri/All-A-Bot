@@ -1,9 +1,8 @@
 import { SET_BOT, SET_BOTS, SET_ALL, SET_ONE } from '../constants';
 
-
 const setBot = bot => ({
-    type: SET_BOT,
-    bot,
+  type: SET_BOT,
+  bot,
 });
 export const setAll = bots => ({
   type: SET_ALL,
@@ -35,40 +34,41 @@ export const loadOne = (id) => async dispatch => {
   } catch(e) {
     console.error(e)
   }
-}
+};
 
 export const setBots = bots => ({
-    type: SET_BOTS,
-    bots,
-  });
+  type: SET_BOTS,
+  bots,
+});
 
 
 export const loadBot = id => async dispatch => {
-    try {
-        const res = await fetch(`/api/bots/${id}`);
-        if (res.ok) {
-            const bot = await res.json();
-            bot.rules = bot.rules.map(rule => ({...rule, content: JSON.parse(rule.content)}));
-            console.log(bot.rules);
-            dispatch(setBot(bot));
-        }
-    } catch (e) {
-        console.error(e);
+  try {
+    const res = await fetch(`/api/bots/${id}`);
+    if (res.ok) {
+      const bot = await res.json();
+      bot.rules = bot.rules.map(rule => ({ ...rule, content: JSON.parse(rule.content) }));
+      console.log(bot.rules);
+      dispatch(setBot(bot));
     }
-}
+  } catch (e) {
+    console.error(e);
+  }
+};
 
 export const loadBots = (user, token) => async dispatch => {
-    const res = await fetch('/api/bots', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ user_id: user.id }),
-    });
+  console.log('load bots', user, token);
+  const res = await fetch('/api/bots', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ user_id: user.id }),
+  });
 
-    if (res.ok) {
-      const bots = await res.json();
-      dispatch(setBots(bots.data));
-    }
-  };
+  if (res.ok) {
+    const bots = await res.json();
+    dispatch(setBots(bots));
+  }
+};
 
 export default function botReducer (state={ bot: { name: "", rules: [] } }, action) {
     switch (action.type) {
