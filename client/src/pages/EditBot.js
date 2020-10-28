@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, TextField, Button, FormControl, InputLabel, Select, Menu, MenuItem, Divider, Paper } from '@material-ui/core';
+import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Divider, Paper, RadioGroup, Radio, FormControlLabel } from '@material-ui/core';
 import { loadBot } from '../store/bots'
 import { loadUser } from '../store/auth';
 import { makeStyles } from '@material-ui/core';
@@ -54,7 +54,7 @@ const useStyle = makeStyles((theme) => ({
 function EditBot({bot, botId, user}) {
 
     const BLANK_RESPONSE = {type: "", details: { string: "" }}
-    const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "" }}, response: [BLANK_RESPONSE] } };
+    const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "", includesOrBeginsWith: "begins with" }}, response: [BLANK_RESPONSE] } };
 
     const [botName, setBotName] = useState("");
     const [rules, setRules] = useState([]);
@@ -123,12 +123,21 @@ function EditBot({bot, botId, user}) {
                         </Grid>
                         <Grid item xs className={classes.grid}>
                             {rules[i].content.trigger.type === "message"
-                                ? <TextField
+                                ? <>
+                                <FormControl>
+                                <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
+                                            onChange={e => setRule(i, {...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value } } }})}
+                                >
+                                    <FormControlLabel value="includes" control={<Radio />} label="Includes" />
+                                    <FormControlLabel value="begins with" control={<Radio />} label="Begins with" />
+                                </RadioGroup>
+                                </FormControl>
+                                <TextField
                                         variant="outlined"
                                         fullWidth
                                         value={rules[i].content.trigger.details.string}
-                                        label="Message"
-                                        onChange={e => setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } } } })} />
+                                        label={`message ${rules[i].content.trigger.details.includesOrBeginsWith} string...`}
+                                        onChange={e => setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } } } })} /></>
                                 : <></>}
                         </Grid>
                     </Grid>
@@ -163,16 +172,17 @@ function EditBot({bot, botId, user}) {
                             label="Select a Response"
                         >
                             <MenuItem value="message">Message</MenuItem>
+                            <MenuItem value="emoji">Emoji react to triggering message</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
                 <Grid item xs className={classes.grid}>
-                    {rules[ruleIndex].content.response[responseIndex].type === "message"
+                    {["message", "emoji"].includes(rules[ruleIndex].content.response[responseIndex].type)
                         ? <TextField
                         variant="outlined"
                         fullWidth
                         value={rules[ruleIndex].content.response[responseIndex].details.string}
-                        label="Response message: "
+                        label={rules[ruleIndex].content.response[responseIndex].type === "message" ? "message string" : "emoji name"}
                         onChange={e => setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{ ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }] } })} />
                         : <></>}
                 </Grid>
