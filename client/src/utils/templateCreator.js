@@ -6,7 +6,7 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
 client.once('ready', () => {
-    console.log('Bot is ready to go!)
+    console.log('Bot is ready to go!')
 })
 
 `
@@ -15,7 +15,7 @@ const loginString = (token) => {
     return `\nconst login = async (token) => {
     await client.login(token)
     return
-)}
+}
 login('${token}')`
 }
 
@@ -39,17 +39,17 @@ function commandObjectsBuilder(objList) {
 
     objList.forEach(cmd => {
         const varName = cmd.trigger.details.string + '_' + randStringMaker()
-        if (cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'starts') {
+        if (cmd.trigger.usesPrefix) {
             cmd.response.forEach(res => {
                 if (res.type === "message") {
-                    commandObjects += `\n${varName} = {name: ${cmd.trigger.details.string}, async execute(message, args) {${basicResponseBuilder(res.details.string)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
+                    commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${basicResponseBuilder(res.details.string)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
                 }
             })
             // Add else if here for events other than send for when a prefixed command has other actions such as kick, delete, or ban
-        } else if(cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'includes') {
+        } else if (!cmd.trigger.usesPrefix) {
             cmd.response.forEach(res => {
                 if (res.type === "message") {
-                    commandObjects += `\n${varName} = {name: ${cmd.trigger.details.string}, async execute(message, args) {${basicResponseBuilder(res.details.string)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
+                    commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${basicResponseBuilder(res.details.string)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
                 }
             })
         } else {
@@ -75,7 +75,7 @@ function switchCaseWithPrefixBuilder(prefix, commands) {
 
     let cmd = `        const command = args.shift();\n`
 
-    let switchStatement = `        swtitch(command) { \n`
+    let switchStatement = `        switch(command) { \n`
 
     commands.forEach(command => {
         switchStatement += (
@@ -94,7 +94,7 @@ function switchCaseWithPrefixBuilder(prefix, commands) {
 
 // Builds all the message listeners in if else if statements for events that are meant to trigger when a message contains certain substring(s)
 function substringMatcher(commands) {
-    let substringCheck = `        const checkContains = (message, term) => message.content.contains(term)\n`
+    let substringCheck = `        const checkContains = (message, term) => message.content.includes(term)\n`
 
     let ifStatement = `        if (checkContain(message, client.commands.first().name)) {\n            client.commands.get(client.commands.first().name)\n`
 
@@ -112,9 +112,11 @@ function substringMatcher(commands) {
 
 // Assembles the final message event handler
 function messageEventAssembler(prefix, prefixedCommands, unprefixedCommands) {
-    let messageEventStart = `client.on('message', message => {\n    if (message.author.bot) return;\n`
+    let messageEventStart = `\nclient.on('message', message => {\n    if (message.author.bot) return;\n`
 
-    let messageEventEnd = `\n})`
+    let prefixVar = `\n    const prefix = ${prefix}`
+
+    let messageEventEnd = `\n    }\n})`
 
     let switches = switchCaseWithPrefixBuilder(prefix, prefixedCommands) + substringMatcher(unprefixedCommands)
 
@@ -122,7 +124,7 @@ function messageEventAssembler(prefix, prefixedCommands, unprefixedCommands) {
 }
 
 
-function assembleFullFile(prefix, token, commands, events) {
+export function assembleFullFile(prefix, token, commands, events) {
     const file = `
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -160,11 +162,3 @@ client.once('ready', () => {
 
     return fullBot
 }
-
-// Testing console.log
-console.log(assembleFullFile('!', 'sampleToken',
-    [
-        { trigger: { type: "message", usesPrefix: true, details: { string: "hi" } }, "response": [{ type: "message", details: { string: "hi there!" } }] },
-        { trigger: { type: "message", usesPrefix: false, details: { string: "bye" } }, "response": [{ type: "message", details: { string: "goodbye friend!" } }] }
-    ],
-))

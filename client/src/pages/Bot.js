@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import { assembleFullFile } from '../utils/templateCreator';
+import { fileDownload, packageDownload } from '../utils/fileSaver'
 import { loadOne } from '../store/bots'
 import { makeStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
@@ -16,7 +18,7 @@ const useStyle = makeStyles((theme) => ({
     root: {
         marginTop: 10,
         boxSizing: 'border-box'
-        
+
     },
     paper: {
         height: '60vh',
@@ -49,8 +51,8 @@ const useStyle = makeStyles((theme) => ({
         textAlign: 'right',
         opacity: 0.7
     }
-    
-    
+
+
 }));
 function Entry({label, msg}){
     const classes = useStyle();
@@ -100,7 +102,18 @@ export default function Bot(){
         dispatch(loadOne(id))
     }, [])
     if (!bot) return null;
-    console.log(bot.rules)
+    console.log(bot)
+
+    async function handleDownload() {
+        let parsedRules = []
+        bot.rules.forEach(rule => {
+            parsedRules.push(JSON.parse(rule.content))
+        })
+        const file = assembleFullFile(bot.prefix, 'sampleToken', parsedRules)
+        await fileDownload(file)
+        await packageDownload()
+    }
+
     return (
         <div className={classes.root}>
             <Container maxWidth="lg" className="paper-container">
@@ -117,10 +130,10 @@ export default function Bot(){
                                 <Typography variant="subtitle2" component="h2" className={classes.label}>
                                     Description:
                                 </Typography>
-                                {bot.prefix 
+                                {bot.prefix
                                     ? <Typography variant="subtitle2" component="h2" className={classes.label}>Prefix:</Typography>
                                     : null}
-                                
+
                             </Grid>
                             <Grid item xs={3} sm={6}>
                                 <Typography variant="subtitle1" component="h2" className={classes.content}>
@@ -136,17 +149,17 @@ export default function Bot(){
                         </Grid>
                         <Divider style={{marginTop: 20}}/>
 
-                            {bot.rules.map((rule) => 
+                            {bot.rules.map((rule) =>
                                 <>
                                     <Rule key={rule.id} rule={rule} />
-                                    <Divider style={{marginTop: 15}} /> 
-                                </>  
+                                    <Divider style={{marginTop: 15}} />
+                                </>
                             )}
                     </div>
                     <div className={classes.icons}>
-                        <Link key={id} to={``} style={{ color: 'inherit' }} title="Download Bot">
+                        <button key={id} onClick={handleDownload} style={{ color: 'inherit' }} title="Download Bot">
                             <i className="fas fa-download fa-lg"></i>
-                        </Link>
+                        </button>
                         <Link key={id} to={``} style={{ color: 'inherit' }} title="Clone Bot">
                             <i className="fas fa-clone fa-lg"></i>
                         </Link>
@@ -156,4 +169,3 @@ export default function Bot(){
         </div>
     );
 }
-
