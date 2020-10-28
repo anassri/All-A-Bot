@@ -18,7 +18,7 @@ db.init_app(app)
 
 app.register_blueprint(user_routes.user_routes)
 app.register_blueprint(auth.bp)
-app.register_blueprint(bots.bot_routes)
+app.register_blueprint(bots.bp)
 
 migrate = Migrate(app, db)
 

@@ -15,12 +15,12 @@ def index():
     data = [bot.to_dict() for bot in bots]
     return jsonify(data), 200
 
-
 @bot_routes.route('/<int:id>', methods=['GET'])
 def get_bot(id=0):
     print("Reached the route!")
     # bot = Bot.query.get(id)
-    bot = db.session.query(Bot).options(joinedload(Bot.rules)).filter_by(id=id).one()
+    bot = db.session.query(Bot).options(
+        joinedload(Bot.rules)).filter_by(id=id).one()
     if bot:
         rules = []
         for rule in bot.rules:
@@ -54,7 +54,8 @@ def post_bot(id=0):
             db.session.add(Rule(content=new_rule_content,
                                 bot_id=bot.id))
     else:
-        bot = Bot(name=incoming["bot"]["name"], prefix=incoming["bot"]["prefix"])
+        bot = Bot(name=incoming["bot"]["name"],
+                  prefix=incoming["bot"]["prefix"])
         for new_rule in new_rules:
             new_rule_content = json.dumps(new_rule["content"])
             db.session.add(Rule(content=new_rule_content,
@@ -64,7 +65,18 @@ def post_bot(id=0):
     return jsonify(True)
 
 
-@bot_routes.route('/all')
+
+@bot_routes.route('/<int:id>', methods=['DELETE'])
+@jwt_required
+def delete_bot(id):
+    bot = Bot.query.get(id)
+    db.session.delete(bot)
+    db.session.commit()
+    return jsonify({"msg": f'{bot.name} deleted'})
+
+
+# Grabbing all published bots for the explore page - Ammar
+@bot_routes.route("/all")
 def get_all_published_bots():
     bots = Bot.query \
               .filter_by(is_draft=False) \
@@ -79,3 +91,33 @@ def get_all_published_bots():
         }
     } for bot in bots]
     return jsonify(data=data)
+
+# Grabbing the info of a particular published bots, navigated to from the explore page - Ammar
+@bot_routes.route("/detail/<int:id>")
+def get_one_published_bot(id):
+    bot = Bot.query \
+             .filter_by(id=id) \
+             .filter_by(is_draft=False) \
+             .options(joinedload(Bot.rules)) \
+             .options(joinedload(Bot.owner)) \
+             .one()
+    if bot:
+        rules = []
+        for rule in bot.rules:
+            rules.append({
+                "id": rule.id,
+                "content": rule.content,
+            }) 
+        data = {
+            "id": bot.id,
+            "name": bot.name,
+            "description": bot.description,
+            "prefix": bot.prefix,
+            "owner": {
+                "username": bot.owner.username,
+            },
+            "rules": rules
+        } 
+        return jsonify(data=data)
+    else:
+        return jsonify(message="No such bot found!")

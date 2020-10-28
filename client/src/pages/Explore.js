@@ -10,7 +10,6 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import CardActionArea from '@material-ui/core/CardActionArea';
 
-
 const useStyle = makeStyles((theme)=>({
     root: {
         flexGrow: 1,
@@ -39,7 +38,8 @@ const useStyle = makeStyles((theme)=>({
         display: 'flex',
         alignItems: 'flex-end',
         marginBottom: 5,
-        paddingLeft: 20
+        paddingLeft: 20,
+        opacity: 0.7
     }
 }));
 const ListItem = ({id,name,description,username}) => {
@@ -59,28 +59,18 @@ const ListItem = ({id,name,description,username}) => {
                 </Link>
             </CardActionArea>            
             <div className={classes.content}>
-                <Link key={id} to={``} style={{ color: 'inherit' }}>
+                <Link key={id} to={``} style={{ color: 'inherit' }} title="Download Bot">
                     <i className="fas fa-download fa-lg"></i>
                 </Link>
-                <Link key={id} to={``} style={{ color: 'inherit' }}>
+                <Link key={id} to={``} style={{ color: 'inherit' }} title="Clone Bot">
                     <i className="fas fa-clone fa-lg"></i>
                 </Link>
             </div>
         </Grid >
 )};
 
-export default function Explore() {
+export function Explore({bots}) {
     const classes = useStyle();
-    const bots = useSelector(state => state.bots.explore)
-    const dispatch = useDispatch()
-
-    useEffect(()=>{
-        dispatch(loadAllBots())
-    }, [])
-
-    if (!bots) return null;
-
-    console.log(bots);
     return (
         <div className={classes.root}>
             <Container maxWidth="lg" className="paper-container">
@@ -107,4 +97,17 @@ export default function Explore() {
             </Container>
         </div>
     );
+}
+
+export default function ExploreContainer() {
+    const bots = useSelector(state => state.bots.explore)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(loadAllBots())
+    }, [])
+
+    if (!bots) return null;
+
+    return <Explore bots={bots} />
 }

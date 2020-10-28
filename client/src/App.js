@@ -8,14 +8,17 @@ import UserList from './components/UsersList';
 import PagesContainer from './pages/Pages';
 import NavigationContainer from './components/Navigation';
 import { LoginPage } from './pages/LoginPage';
+import { ConfirmProvider } from 'material-ui-confirm';
 
 function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <NavigationContainer />
-        <PagesContainer />
+        <ConfirmProvider>
+          <CssBaseline />
+          <NavigationContainer />
+          <PagesContainer />
+        </ConfirmProvider>
       </ThemeProvider>
     </BrowserRouter>
   );
