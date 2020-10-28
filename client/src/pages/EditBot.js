@@ -51,29 +51,28 @@ const useStyle = makeStyles((theme) => ({
 }));
 
 function EditBot({bot, botId, user}) {
-    const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "" }}, response: [{type: "", details: { string: "" }}] } };
+
+    const BLANK_RESPONSE = {type: "", details: { string: "" }}
+    const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "" }}, response: [BLANK_RESPONSE] } };
 
     const [botName, setBotName] = useState("");
-    const [rules, setRules] = useState([BLANK_RULE]);
-    const [botPrefix, setBotPrefix] = useState(" ");
+    const [rules, setRules] = useState([]);
+    const [botPrefix, setBotPrefix] = useState("");
     const [botDescription, setBotDescription] = useState("");
-    const [trigger, setTrigger] = useState("");
-    const [response, setResponse] = useState("");
     const [isDraft, setIsDraft] = useState(true);
     const [autoSaveMsg, setAutoSaveMsg] = useState("");
-
+    
     const classes = useStyle();
 
     useEffect(() => {
-        console.log(bot);
-        console.log(bot.rules);
-        console.log(rules);
-        if (rules.length === 0 || bot.rules[0] && (rules[0] !== bot.rules[0])){
+        // console.log(bot);
+        // console.log(bot.rules);
+        // console.log(rules);
+        if (rules.length === 0){
             setRules(bot.rules);
-            console.log(rules);
         }
         if (botName === "") setBotName(bot.name);
-        if (botPrefix !== bot.prefix) setBotPrefix(bot.prefix);
+        if (botPrefix === "") setBotPrefix(bot.prefix);
     })
 
     const addRule = () => {
@@ -82,6 +81,7 @@ function EditBot({bot, botId, user}) {
     }
 
     const saveBot = async () => {
+        console.log(botPrefix);
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
@@ -121,26 +121,20 @@ function EditBot({bot, botId, user}) {
                                     labelId="trigger-select-label"
                                     id="trigger-select"
                                     variant="outlined"
-                                    value={trigger}
+                                    value={rules[i].content.trigger.type}
                                     fullWidth
-                                    onChange={(e) => setTrigger(e.target.value)}
+                                    onChange={(e) => setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, type: e.target.value } } })}
                                     label="Select a Trigger"
                                 >
-                                    <MenuItem onClick={e => {
-                                        setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, type: "message" } } })
-                                        // this is how we have to modify a rule - it's important to spread all of the intermediate nested objects into the new rule to make sure
-                                        // that nothing is being overwritten.
-                                        // we can't just modify the rule directly because it is part of the state.
-                                        // we follow this same pattern below when we are setting the string in the trigger details using the "trigger message" field.
-                                    }}>Message</MenuItem>
+                                    <MenuItem value="message">Message</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
                         <Grid item xs className={classes.grid}>
-                            {rules[i].content.trigger.type === "message" 
-                                ? <TextField 
-                                        variant="outlined" 
-                                        fullWidth 
+                            {rules[i].content.trigger.type === "message"
+                                ? <TextField
+                                        variant="outlined"
+                                        fullWidth
                                         value={rules[i].content.trigger.details.string}
                                         label="Message"
                                         onChange={e => setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } } } })} />
@@ -148,44 +142,52 @@ function EditBot({bot, botId, user}) {
                         </Grid>
                     </Grid>
                 </div>
-                <div>
-                {/* this is the div which contains the trigger form. the next div down is the response form. */}
-                    <Grid container spacing={3}>
-                        <Grid item xs className={classes.grid}>
-                            <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel id="response-select-input-label">Select a Response</InputLabel>
-                                <Select
-                                    labelId="response-select-label"
-                                    id="response-select"
-                                    variant="outlined"
-                                    value={response}
-                                    fullWidth
-                                    onChange={(e) => setResponse(e.target.value)}
-                                    label="Select a Response"
-                                >
-                                    <MenuItem onClick={e => {
-                                        setRule(i, {...rules[i], content: { ...rules[i].content, response: [{...rules[i].content.response[0], type: "message"}] }})
-                                    }}>Message</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs className={classes.grid}>
-                            {rules[i].content.response[0].type === "message"  
-                                ? <TextField 
-                                variant="outlined" 
-                                fullWidth 
-                                value={rules[i].content.response[0].details.string}
-                                label="Response message: "
-                                onChange={e => setRule(i, { ...rules[i], content: { ...rules[i].content, response: [{ ...rules[i].content.response[0], details: { ...rules[i].content.response[0].details, string: e.target.value } }] } })} />
-                                : <></>}
-                        </Grid>
-                    </Grid>
-                </div>
-                <Button onClick={addRule} >Add rule</Button>
-
+                {rules[i].content.response.map((resp, responseIndex) => <ResponseForm ruleIndex={i} responseIndex={responseIndex} />)}
+                <Button onClick={() => addResponse(i)}>Add response</Button>
             </form>
         </>
     )}
+
+    const addResponse = i => {
+        console.log(rules[i].content.response.length);
+        let newResponses = rules[i].content.response;
+        newResponses.push(BLANK_RESPONSE);
+        setRule(i, {...rules[i], content: { ...rules[i].content, response: newResponses }});
+        console.log(rules[i].content.response.length);
+    }
+
+    const ResponseForm = ({ruleIndex, responseIndex}) => {
+        return (<div>
+            <Grid container spacing={3}>
+                <Grid item xs className={classes.grid}>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                        <InputLabel id="response-select-input-label">Select a Response</InputLabel>
+                        <Select
+                            labelId="response-select-label"
+                            id="response-select"
+                            variant="outlined"
+                            value={rules[ruleIndex].content.response[responseIndex].type}
+                            fullWidth
+                            onChange={(e) => setRule(ruleIndex, {...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), {...rules[ruleIndex].content.response[responseIndex], type: e.target.value}, ...rules[ruleIndex].content.response.slice(responseIndex+1)] }})}
+                            label="Select a Response"
+                        >
+                            <MenuItem value="message">Message</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs className={classes.grid}>
+                    {rules[ruleIndex].content.response[responseIndex].type === "message"
+                        ? <TextField
+                        variant="outlined"
+                        fullWidth
+                        value={rules[ruleIndex].content.response[responseIndex].details.string}
+                        label="Response message: "
+                        onChange={e => setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{ ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }] } })} />
+                        : <></>}
+                </Grid>
+            </Grid>
+        </div>)
+    }
 
     return (
         <Container className={`${classes.container} paper-container`}>
@@ -210,7 +212,9 @@ function EditBot({bot, botId, user}) {
                 <Divider />
 
                 {rules.map((rule, i) => <Box key={i}><RuleForm i={i} /></Box>)}
-                <Grid container spacing={3} justify="flex-end" alignItems="flex-end" style={{paddingRight: 35}}>
+                <Button onClick={addRule} >Add rule</Button>
+
+                <Grid container spacing={3} justify="flex-end" style={{paddingRight: 35}}>
                     {autoSaveMsg 
                     ?   <Grid item xs>
                             <Alert variant="outlined" severity="success">

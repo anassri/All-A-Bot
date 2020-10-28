@@ -19,7 +19,7 @@ export const loadAllBots = () => async dispatch => {
     if(res.ok) {
       const bots = await res.json();
       dispatch(setAll(bots.data));
-    } 
+    }
   } catch(e) {
     console.error(e)
   }
@@ -48,7 +48,7 @@ export const loadBot = id => async dispatch => {
     if (res.ok) {
       const bot = await res.json();
       bot.rules = bot.rules.map(rule => ({ ...rule, content: JSON.parse(rule.content) }));
-      console.log(bot.rules);
+      console.log(bot);
       dispatch(setBot(bot));
     }
   } catch (e) {
