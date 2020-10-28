@@ -131,8 +131,8 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
-                        <GetAppIcon style={{ margin: '2px' }} fontSize='medium' />
-                        <EditIcon style={{ margin: '2px' }} fontSize='medium' />
+                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-download'></i>
+                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-edit'></i>
                         <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
                       </div>
                     </div>
@@ -164,7 +164,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
-                        <EditIcon style={{ margin: '2px' }} fontSize='medium' />
+                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-edit'></i>
                         <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
                       </div>
                     </div>
@@ -196,8 +196,8 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
-                        <GetAppIcon style={{ margin: '2px' }} fontSize='medium' />
-                        <FileCopyIcon style={{ margin: '2px' }} fontSize='medium' />
+                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-download'></i>
+                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-clone'></i>
                       </div>
                     </div>
                     <Divider />
