@@ -120,12 +120,12 @@ function EditBot({bot, botId, user}) {
                         </Grid>
                         <Grid item xs className={classes.grid}>
                             {rules[i].content.trigger.type === "message"
-                                ? <TextField
+                                ? <><TextField
                                         variant="outlined"
                                         fullWidth
                                         value={rules[i].content.trigger.details.string}
-                                        label="Message"
-                                        onChange={e => setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } } } })} />
+                                        label="message string"
+                                        onChange={e => setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } } } })} /></>
                                 : <></>}
                         </Grid>
                     </Grid>
@@ -169,7 +169,7 @@ function EditBot({bot, botId, user}) {
                         variant="outlined"
                         fullWidth
                         value={rules[ruleIndex].content.response[responseIndex].details.string}
-                        label="Response message: "
+                        label="response message"
                         onChange={e => setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{ ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }] } })} />
                         : <></>}
                 </Grid>
