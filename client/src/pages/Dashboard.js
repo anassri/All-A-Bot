@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
-import Link from '@material-ui/core/Link';
+import { Link } from 'react-router-dom';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -14,7 +14,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import EditIcon from '@material-ui/icons/Edit';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { useConfirm } from 'material-ui-confirm';
-
+import { CardActionArea } from '@material-ui/core';
 import { loadBots, deleteBot } from '../store/bots';
 
 function TabPanel(props) {
@@ -123,11 +123,15 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
               .map(bot => {
                 return (
                   <>
-                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                      <Typography variant='h5' style={{ fontWeight: 'bold' }}>
-                        {bot.name}
-                      </Typography>
-                    </div>
+                    <CardActionArea>
+                      <Link key={bot.id} to={`/bots/${bot.id}`} style={{ color: 'inherit' }}>
+                        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                          <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                            {bot.name}
+                          </Typography>
+                        </div>
+                      </Link>
+                    </CardActionArea>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
