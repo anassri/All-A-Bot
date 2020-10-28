@@ -159,7 +159,7 @@ function EditBot({bot, botId, user}) {
                             onChange={(e) => setRule(ruleIndex, {...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), {...rules[ruleIndex].content.response[responseIndex], type: e.target.value}, ...rules[ruleIndex].content.response.slice(responseIndex+1)] }})}
                             label="Select a Response"
                         >
-                            <MenuItem value="message">message</MenuItem>
+                            <MenuItem value="message">Message</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
