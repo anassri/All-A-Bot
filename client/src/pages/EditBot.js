@@ -59,8 +59,6 @@ function EditBot({bot, botId, user}) {
     const [rules, setRules] = useState([BLANK_RULE]);
     const [botPrefix, setBotPrefix] = useState("");
     const [botDescription, setBotDescription] = useState("");
-    // const [trigger, setTrigger] = useState("");
-    const [response, setResponse] = useState("");
 
     const classes = useStyle();
 
@@ -68,7 +66,6 @@ function EditBot({bot, botId, user}) {
         // console.log(bot);
         // console.log(bot.rules);
         // console.log(rules);
-        console.log(bot);
         if ( bot.rules[0] && (rules.length === 0 || (rules[0] !== bot.rules[0]))){
             setRules(bot.rules);
         }
@@ -159,7 +156,7 @@ function EditBot({bot, botId, user}) {
                             variant="outlined"
                             value={rules[ruleIndex].content.response[responseIndex].type}
                             fullWidth
-                            onChange={(e) => setRule(ruleIndex, {...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{...rules[ruleIndex].content.response[responseIndex], type: e.target.value}] }})}
+                            onChange={(e) => setRule(ruleIndex, {...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), {...rules[ruleIndex].content.response[responseIndex], type: e.target.value}, ...rules[ruleIndex].content.response.slice(responseIndex+1)] }})}
                             label="Select a Response"
                         >
                             <MenuItem value="message">Message</MenuItem>
