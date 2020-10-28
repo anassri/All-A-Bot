@@ -15,9 +15,10 @@ function EditBot({bot, botId, user}) {
     const [responseAnchor, setResponseAnchor] = useState(null);
 
     useEffect(() => {
+        // console.log(bot);
+        // console.log(bot.rules);
+        // console.log(rules);
         console.log(bot);
-        console.log(bot.rules);
-        console.log(rules);
         if (rules.length === 0 || bot.rules[0] && (rules[0] !== bot.rules[0])){
             setRules(bot.rules);
             console.log(rules);
