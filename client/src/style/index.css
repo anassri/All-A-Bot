@@ -1,7 +1,13 @@
 /* TODO Add site wide styles */
 body {
     text-align: center;
+    background: url("../images/background.svg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
+
 a {
     text-decoration: none;
 }

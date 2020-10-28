@@ -15,7 +15,6 @@ def index():
     data = [bot.to_dict() for bot in bots]
     return jsonify(data), 200
 
-
 @bot_routes.route('/<int:id>', methods=['GET'])
 def get_bot(id=0):
     print("Reached the route!")
@@ -66,6 +65,7 @@ def post_bot(id=0):
     return jsonify(True)
 
 
+
 @bot_routes.route('/<int:id>', methods=['DELETE'])
 @jwt_required
 def delete_bot(id):
@@ -75,7 +75,8 @@ def delete_bot(id):
     return jsonify({"msg": f'{bot.name} deleted'})
 
 
-@bot_routes.route('/all')
+# Grabbing all published bots for the explore page - Ammar
+@bot_routes.route("/all")
 def get_all_published_bots():
     bots = Bot.query \
               .filter_by(is_draft=False) \
@@ -90,3 +91,33 @@ def get_all_published_bots():
         }
     } for bot in bots]
     return jsonify(data=data)
+
+# Grabbing the info of a particular published bots, navigated to from the explore page - Ammar
+@bot_routes.route("/detail/<int:id>")
+def get_one_published_bot(id):
+    bot = Bot.query \
+             .filter_by(id=id) \
+             .filter_by(is_draft=False) \
+             .options(joinedload(Bot.rules)) \
+             .options(joinedload(Bot.owner)) \
+             .one()
+    if bot:
+        rules = []
+        for rule in bot.rules:
+            rules.append({
+                "id": rule.id,
+                "content": rule.content,
+            }) 
+        data = {
+            "id": bot.id,
+            "name": bot.name,
+            "description": bot.description,
+            "prefix": bot.prefix,
+            "owner": {
+                "username": bot.owner.username,
+            },
+            "rules": rules
+        } 
+        return jsonify(data=data)
+    else:
+        return jsonify(message="No such bot found!")
