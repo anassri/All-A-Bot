@@ -82,8 +82,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
   };
 
   const handleDelete = async event => {
-    const regex = /\d+/;
-    const id = event.target.id.match(regex)[0];
+    const id = event.target.id.match(/\d+/)[0];
     try {
       await confirm({ description: 'This operation cannot be undone', dialogProps: { maxWidth: 'sm' } });
       await deleteBotDispatch(id, token);
@@ -92,6 +91,14 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
       console.error(e);
     }
   };
+
+  const handleEdit = event => {
+    const botId = event.target.id.match(/\d+/)[0];
+  };
+
+  const handleDownload = event => {};
+
+  const handleClone = event => {};
 
   if (!bots) return null;
 
@@ -135,9 +142,17 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
-                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-download'></i>
-                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-edit'></i>
-                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
+                        <CardActionArea>
+                          <Link to={''} style={{ color: 'inherit' }} title='Download Bot'>
+                            <i onClick={handleDownload} id={`bot-${bot.id}`} className='fas fa-download'></i>
+                          </Link>
+                          <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
+                            <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
+                          </Link>
+                          <Link style={{ color: 'inherit' }} title='Delete Bot'>
+                            <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
+                          </Link>
+                        </CardActionArea>
                       </div>
                     </div>
                     <Divider />
@@ -168,8 +183,12 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
-                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-edit'></i>
-                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
+                        <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
+                          <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
+                        </Link>
+                        <Link style={{ color: 'inherit' }} title='Delete Bot'>
+                          <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
+                        </Link>
                       </div>
                     </div>
                     <Divider />
@@ -200,8 +219,12 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
-                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-download'></i>
-                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-clone'></i>
+                        <Link to={''} style={{ color: 'inherit' }} title='Download Bot'>
+                          <i onClick={handleDownload} id={`bot-${bot.id}`} className='fas fa-download'></i>
+                        </Link>
+                        <Link style={{ color: 'inherit' }} title='Clone Bot'>
+                          <i onClick={handleClone} id={`bot-${bot.id}`} className='fas fa-clone'></i>
+                        </Link>
                       </div>
                     </div>
                     <Divider />
