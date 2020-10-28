@@ -19,7 +19,8 @@ def index():
 def get_bot(id=0):
     print("Reached the route!")
     # bot = Bot.query.get(id)
-    bot = db.session.query(Bot).options(joinedload(Bot.rules)).filter_by(id=id).one()
+    bot = db.session.query(Bot).options(
+        joinedload(Bot.rules)).filter_by(id=id).one()
     if bot:
         rules = []
         for rule in bot.rules:
@@ -53,7 +54,8 @@ def post_bot(id=0):
             db.session.add(Rule(content=new_rule_content,
                                 bot_id=bot.id))
     else:
-        bot = Bot(name=incoming["bot"]["name"], prefix=incoming["bot"]["prefix"])
+        bot = Bot(name=incoming["bot"]["name"],
+                  prefix=incoming["bot"]["prefix"])
         for new_rule in new_rules:
             new_rule_content = json.dumps(new_rule["content"])
             db.session.add(Rule(content=new_rule_content,
@@ -61,6 +63,16 @@ def post_bot(id=0):
         db.session.add(bot)
     db.session.commit()
     return jsonify(True)
+
+
+
+@bot_routes.route('/<int:id>', methods=['DELETE'])
+@jwt_required
+def delete_bot(id):
+    bot = Bot.query.get(id)
+    db.session.delete(bot)
+    db.session.commit()
+    return jsonify({"msg": f'{bot.name} deleted'})
 
 
 # Grabbing all published bots for the explore page - Ammar

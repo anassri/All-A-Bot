@@ -56,8 +56,16 @@ export const loadBot = id => async dispatch => {
   }
 };
 
+export const deleteBot = (id, token) => async dispatch => {
+  const res = await fetch(`/api/bots/${id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+  });
+  if (res.ok) return true;
+  else return false;
+};
+
 export const loadBots = (user, token) => async dispatch => {
-  console.log('load bots', user, token);
   const res = await fetch('/api/bots', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },

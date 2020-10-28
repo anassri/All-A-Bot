@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
+import Link from '@material-ui/core/Link';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -12,8 +13,9 @@ import Divider from '@material-ui/core/Divider';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import EditIcon from '@material-ui/icons/Edit';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import { useConfirm } from 'material-ui-confirm';
 
-import { loadBots } from '../store/bots';
+import { loadBots, deleteBot } from '../store/bots';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -63,18 +65,32 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function Dashboard({ user, token, bots, loadBotsDispatch }) {
+export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispatch }) {
   const history = useHistory();
+  const confirm = useConfirm();
 
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
+  const [botSyncNeeded, setBotSyncNeeded] = useState(false);
 
   useEffect(() => {
     if (user) loadBotsDispatch(user, token);
-  }, user);
+  }, [user, botSyncNeeded]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleDelete = async event => {
+    const regex = /\d+/;
+    const id = event.target.id.match(regex)[0];
+    try {
+      await confirm({ description: 'This operation cannot be undone', dialogProps: { maxWidth: 'sm' } });
+      await deleteBotDispatch(id, token);
+      setBotSyncNeeded(true);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   if (!bots) return null;
@@ -117,6 +133,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch }) {
                       <div>
                         <GetAppIcon style={{ margin: '2px' }} fontSize='medium' />
                         <EditIcon style={{ margin: '2px' }} fontSize='medium' />
+                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
                       </div>
                     </div>
                     <Divider />
@@ -148,6 +165,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch }) {
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
                         <EditIcon style={{ margin: '2px' }} fontSize='medium' />
+                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
                       </div>
                     </div>
                     <Divider />
@@ -199,6 +217,15 @@ export default function DashboardContainer() {
   const token = useSelector(state => state.auth.token);
   const bots = useSelector(state => state.bots.list);
   const loadBotsDispatch = (userId, token) => dispatch(loadBots(userId, token));
+  const deleteBotDispatch = (botId, token) => dispatch(deleteBot(botId, token));
 
-  return <Dashboard user={user} token={token} bots={bots} loadBotsDispatch={loadBotsDispatch} />;
+  return (
+    <Dashboard
+      user={user}
+      token={token}
+      bots={bots}
+      loadBotsDispatch={loadBotsDispatch}
+      deleteBotDispatch={deleteBotDispatch}
+    />
+  );
 }
