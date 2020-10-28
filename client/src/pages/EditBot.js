@@ -90,12 +90,7 @@ function EditBot({bot, botId, user}) {
     }
 
     const setRule = (i, newRule) => {
-        // if (newRule.content.response.length > rules[i].content.response.length){
-        //     console.log("got as far as modifying the rule!");
-        //     console.log(newRule.content.response)
-        // }
         setRules([...rules.slice(0, i), newRule, ...rules.slice(i+1)]);
-        // console.log(rules[i].content.response);
     }
 
     const RuleForm = ({i}) => {
@@ -145,8 +140,11 @@ function EditBot({bot, botId, user}) {
     )}
 
     const addResponse = i => {
-        setRule(i, {...rules[i], content: { ...rules[i].content, response: [...rules[i].content.response, BLANK_RESPONSE ] }});
-        console.log(rules[i].content.response);
+        console.log(rules[i].content.response.length);
+        let newResponses = rules[i].content.response;
+        newResponses.push(BLANK_RESPONSE);
+        setRule(i, {...rules[i], content: { ...rules[i].content, response: newResponses }});
+        console.log(rules[i].content.response.length);
     }
 
     const ResponseForm = ({ruleIndex, responseIndex}) => {
