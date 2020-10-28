@@ -4,10 +4,10 @@ from app.models import db, Bot, Rule, User
 from sqlalchemy.orm import joinedload
 import json
 
-bp = Blueprint('bot', __name__, url_prefix='/api/bots')
+bot_routes = Blueprint('bot', __name__, url_prefix='/api/bots')
 
 
-@bp.route('', methods=['POST'])
+@bot_routes.route('', methods=['POST'])
 @jwt_required
 def index():
     incoming = request.get_json()
@@ -15,7 +15,7 @@ def index():
     data = [bot.to_dict() for bot in bots]
     return jsonify(data), 200
 
-@bp.route('/<int:id>', methods=['GET'])
+@bot_routes.route('/<int:id>', methods=['GET'])
 def get_bot(id=0):
     print("Reached the route!")
     # bot = Bot.query.get(id)
@@ -37,7 +37,7 @@ def get_bot(id=0):
         return jsonify(message="No such bot found!")
 
 
-@bp.route('/<int:id>', methods=['POST'])
+@bot_routes.route('/<int:id>', methods=['POST'])
 def post_bot(id=0):
     incoming = request.get_json()
     print(incoming["rules"])
@@ -64,7 +64,7 @@ def post_bot(id=0):
 
 
 # Grabbing all published bots for the explore page - Ammar
-@bp.route("/all")
+@bot_routes.route("/all")
 def get_all_published_bots():
     bots = Bot.query \
               .filter_by(is_draft=False) \
@@ -81,7 +81,7 @@ def get_all_published_bots():
     return jsonify(data=data)
 
 # Grabbing the info of a particular published bots, navigated to from the explore page - Ammar
-@bp.route("/detail/<int:id>")
+@bot_routes.route("/detail/<int:id>")
 def get_one_published_bot(id):
     bot = Bot.query \
              .filter_by(id=id) \
