@@ -59,7 +59,7 @@ function EditBot({bot, botId, user}) {
     const [rules, setRules] = useState([BLANK_RULE]);
     const [botPrefix, setBotPrefix] = useState("");
     const [botDescription, setBotDescription] = useState("");
-    const [trigger, setTrigger] = useState("");
+    // const [trigger, setTrigger] = useState("");
     const [response, setResponse] = useState("");
 
     const classes = useStyle();
@@ -117,18 +117,12 @@ function EditBot({bot, botId, user}) {
                                     labelId="trigger-select-label"
                                     id="trigger-select"
                                     variant="outlined"
-                                    value={trigger}
+                                    value={rules[i].content.trigger.type}
                                     fullWidth
-                                    onChange={(e) => setTrigger(e.target.value)}
+                                    onChange={(e) => setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, type: e.target.value } } })}
                                     label="Select a Trigger"
                                 >
-                                    <MenuItem onClick={e => {
-                                        setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, type: "message" } } })
-                                        // this is how we have to modify a rule - it's important to spread all of the intermediate nested objects into the new rule to make sure
-                                        // that nothing is being overwritten.
-                                        // we can't just modify the rule directly because it is part of the state.
-                                        // we follow this same pattern below when we are setting the string in the trigger details using the "trigger message" field.
-                                    }}>Message</MenuItem>
+                                    <MenuItem value="message">Message</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -165,14 +159,12 @@ function EditBot({bot, botId, user}) {
                             labelId="response-select-label"
                             id="response-select"
                             variant="outlined"
-                            value={response}
+                            value={rules[ruleIndex].content.response[responseIndex].type}
                             fullWidth
-                            onChange={(e) => setResponse(e.target.value)}
+                            onChange={(e) => setRule(ruleIndex, {...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{...rules[ruleIndex].content.response[responseIndex], type: e.target.value}] }})}
                             label="Select a Response"
                         >
-                            <MenuItem onClick={e => {
-                                setRule(ruleIndex, {...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{...rules[ruleIndex].content.response[responseIndex], type: "message"}] }})
-                            }}>Message</MenuItem>
+                            <MenuItem value="message">Message</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
