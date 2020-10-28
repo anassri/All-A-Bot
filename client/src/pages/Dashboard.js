@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
-import Link from '@material-ui/core/Link';
+import { Link } from 'react-router-dom';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -14,7 +14,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import EditIcon from '@material-ui/icons/Edit';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { useConfirm } from 'material-ui-confirm';
-
+import { CardActionArea } from '@material-ui/core';
 import { loadBots, deleteBot } from '../store/bots';
 
 function TabPanel(props) {
@@ -82,8 +82,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
   };
 
   const handleDelete = async event => {
-    const regex = /\d+/;
-    const id = event.target.id.match(regex)[0];
+    const id = event.target.id.match(/\d+/)[0];
     try {
       await confirm({ description: 'This operation cannot be undone', dialogProps: { maxWidth: 'sm' } });
       await deleteBotDispatch(id, token);
@@ -92,6 +91,14 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
       console.error(e);
     }
   };
+
+  const handleEdit = event => {
+    const botId = event.target.id.match(/\d+/)[0];
+  };
+
+  const handleDownload = event => {};
+
+  const handleClone = event => {};
 
   if (!bots) return null;
 
@@ -123,17 +130,29 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
               .map(bot => {
                 return (
                   <>
-                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                      <Typography variant='h5' style={{ fontWeight: 'bold' }}>
-                        {bot.name}
-                      </Typography>
-                    </div>
+                    <CardActionArea>
+                      <Link key={bot.id} to={`/bots/${bot.id}`} style={{ color: 'inherit' }}>
+                        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                          <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                            {bot.name}
+                          </Typography>
+                        </div>
+                      </Link>
+                    </CardActionArea>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
-                        <GetAppIcon style={{ margin: '2px' }} fontSize='medium' />
-                        <EditIcon style={{ margin: '2px' }} fontSize='medium' />
-                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
+                        <CardActionArea>
+                          <Link to={''} style={{ color: 'inherit' }} title='Download Bot'>
+                            <i onClick={handleDownload} id={`bot-${bot.id}`} className='fas fa-download'></i>
+                          </Link>
+                          <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
+                            <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
+                          </Link>
+                          <Link style={{ color: 'inherit' }} title='Delete Bot'>
+                            <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
+                          </Link>
+                        </CardActionArea>
                       </div>
                     </div>
                     <Divider />
@@ -164,8 +183,12 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
-                        <EditIcon style={{ margin: '2px' }} fontSize='medium' />
-                        <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
+                        <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
+                          <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
+                        </Link>
+                        <Link style={{ color: 'inherit' }} title='Delete Bot'>
+                          <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
+                        </Link>
                       </div>
                     </div>
                     <Divider />
@@ -196,8 +219,12 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
-                        <GetAppIcon style={{ margin: '2px' }} fontSize='medium' />
-                        <FileCopyIcon style={{ margin: '2px' }} fontSize='medium' />
+                        <Link to={''} style={{ color: 'inherit' }} title='Download Bot'>
+                          <i onClick={handleDownload} id={`bot-${bot.id}`} className='fas fa-download'></i>
+                        </Link>
+                        <Link style={{ color: 'inherit' }} title='Clone Bot'>
+                          <i onClick={handleClone} id={`bot-${bot.id}`} className='fas fa-clone'></i>
+                        </Link>
                       </div>
                     </div>
                     <Divider />

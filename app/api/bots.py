@@ -31,6 +31,7 @@ def get_bot(id=0):
         print(rules)
         return jsonify({
             'name': bot.name,
+            'prefix': bot.prefix,
             'userId': bot.user_id,
             'rules': rules
         })
@@ -107,7 +108,7 @@ def get_one_published_bot(id):
             rules.append({
                 "id": rule.id,
                 "content": rule.content,
-            }) 
+            })
         data = {
             "id": bot.id,
             "name": bot.name,
@@ -117,7 +118,7 @@ def get_one_published_bot(id):
                 "username": bot.owner.username,
             },
             "rules": rules
-        } 
+        }
         return jsonify(data=data)
     else:
         return jsonify(message="No such bot found!")
