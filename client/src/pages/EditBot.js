@@ -4,7 +4,7 @@ import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Divi
 import { loadBot } from '../store/bots'
 import { loadUser } from '../store/auth';
 import { makeStyles } from '@material-ui/core';
-
+import Alert from '@material-ui/lab/Alert';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -60,7 +60,10 @@ function EditBot({bot, botId, user}) {
     const [rules, setRules] = useState([]);
     const [botPrefix, setBotPrefix] = useState("");
     const [botDescription, setBotDescription] = useState("");
-
+    const [isDraft, setIsDraft] = useState(true);
+    const [autoSaveMsg, setAutoSaveMsg] = useState("");
+    const [isSaving, setIsSaving] = useState(false);
+    
     const classes = useStyle();
 
     useEffect(() => {
@@ -82,10 +85,22 @@ function EditBot({bot, botId, user}) {
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({bot: { ...bot, name: botName, prefix: (botPrefix || null), userId: user.id, isDraft: true }, rules }),
+            body: JSON.stringify({bot: { ...bot, name: botName, prefix: (botPrefix || null), userId: user.id, isDraft: isDraft }, rules }),
         });
     }
-
+    
+    const autoSave = () =>{
+        if (!isSaving){
+            setIsSaving(true);
+            setIsDraft(true);
+            setTimeout(async ()=>{
+                await saveBot();
+                setIsSaving(false);
+                setAutoSaveMsg("Draft bot saved.");
+                setTimeout(()=>{setAutoSaveMsg("")}, 5000);
+            },20000);
+        }
+    }
     const setRule = (i, newRule) => {
         setRules([...rules.slice(0, i), newRule, ...rules.slice(i+1)]);
     }
@@ -111,7 +126,7 @@ function EditBot({bot, botId, user}) {
                                     variant="outlined"
                                     value={rules[i].content.trigger.type}
                                     fullWidth
-                                    onChange={(e) => setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, type: e.target.value } } })}
+                                        onChange={(e) => { setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, type: e.target.value } } }); autoSave(); }}
                                     label="Select a Trigger"
                                 >
                                     <MenuItem value="message">Message</MenuItem>
@@ -137,8 +152,14 @@ function EditBot({bot, botId, user}) {
                                 <FormControlLabel label="Uses prefix" control={<Checkbox checked={rules[i].content.trigger.usesPrefix}
                                            onChange={e => setRule(i, {...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, usesPrefix: e.target.checked } } })} />}>Uses prefix</FormControlLabel>
                                 </FormControl>
-                                  </>
-                                : <></>}
+                                <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        value={rules[i].content.trigger.details.string}
+                                        label={`message ${rules[i].content.trigger.details.includesOrBeginsWith} string...`}
+                                        onChange={e => { setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } } } }); autoSave(); }} /></>
+                                : <></>
+                            }
                         </Grid>
                     </Grid>
                 </div>
@@ -168,7 +189,7 @@ function EditBot({bot, botId, user}) {
                             variant="outlined"
                             value={rules[ruleIndex].content.response[responseIndex].type}
                             fullWidth
-                            onChange={(e) => setRule(ruleIndex, {...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), {...rules[ruleIndex].content.response[responseIndex], type: e.target.value}, ...rules[ruleIndex].content.response.slice(responseIndex+1)] }})}
+                            onChange={(e) => { setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), { ...rules[ruleIndex].content.response[responseIndex], type: e.target.value }, ...rules[ruleIndex].content.response.slice(responseIndex + 1)] } }); autoSave(); }}
                             label="Select a Response"
                         >
                             <MenuItem value="message">Message</MenuItem>
@@ -183,7 +204,7 @@ function EditBot({bot, botId, user}) {
                         fullWidth
                         value={rules[ruleIndex].content.response[responseIndex].details.string}
                         label={rules[ruleIndex].content.response[responseIndex].type === "message" ? "message string" : "emoji name"}
-                        onChange={e => setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{ ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }] } })} />
+                        onChange={e => { setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{ ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }] } }); autoSave(); }} />
                         : <></>}
                 </Grid>
             </Grid>
@@ -198,28 +219,42 @@ function EditBot({bot, botId, user}) {
             <Paper className={classes.paper}>
                 <Grid container spacing={3}>
                     <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth value={botName} onChange={e => setBotName(e.target.value)} label="Name"></TextField>
+                        <TextField variant="outlined" fullWidth value={botName} onChange={e => { setBotName(e.target.value); autoSave();}} label="Name"></TextField>
                     </Grid>
                     <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => setBotPrefix(e.target.value)}></TextField>
+                        <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => {setBotPrefix(e.target.value); autoSave();}}></TextField>
                     </Grid>
                     <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth label="Developer Token" value={botPrefix} onChange={e => setBotPrefix(e.target.value)}></TextField>
+                        <TextField variant="outlined" fullWidth label="Developer Token" value={botPrefix} onChange={e => { setBotPrefix(e.target.value); autoSave(); }}></TextField>
                     </Grid>
                     <Grid item xs={12} className={classes.grid}>
-                        <TextField variant="outlined" fullWidth label="Description" value={botDescription} onChange={e => setBotDescription(e.target.value)}></TextField>
+                        <TextField variant="outlined" fullWidth label="Description" value={botDescription} onChange={e => { setBotDescription(e.target.value); autoSave(); }}></TextField>
                     </Grid>
                 </Grid>
                 <Divider />
 
                 {rules.map((rule, i) => <Box key={i}><RuleForm i={i} /></Box>)}
                 <Button onClick={addRule} >Add rule</Button>
+
                 <Grid container spacing={3} justify="flex-end" style={{paddingRight: 35}}>
+                    {autoSaveMsg 
+                    ?   <Grid item xs>
+                            <Alert variant="outlined" severity="success">
+                                {autoSaveMsg}
+                            </Alert>
+                        </Grid>
+                    : null 
+                    }
                     <Grid item xs={3} sm={1}>
                         <Button onClick={saveBot} size="medium" variant="contained" color="primary">Save</Button>
                     </Grid>
                     <Grid item xs={3} sm={1} >
-                        <Button onClick={saveBot} size="medium" variant="contained" color="primary">{bot.name ? "SUBMIT CHANGES" : "CREATE"}</Button>
+                        <Button onClick={()=> { saveBot();
+                                                setIsDraft(false);
+                                            }} 
+                                size="medium" 
+                                variant="contained" 
+                                color="primary">{bot.name ? "SUBMIT CHANGES" : "CREATE"}</Button>
                     </Grid>
                 </Grid>
             </Paper>
