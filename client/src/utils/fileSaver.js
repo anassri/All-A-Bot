@@ -2,13 +2,16 @@ import { saveAs } from 'file-saver'
 
 // Function that simple takes in a string, turns it into a blob, then runs the saveAs function to initiate download
 export function fileDownload(file) {
-    const blob = new Blob([file], {type: "text/plain;charset=utf-8"})
+    const blob = new Blob([file], {type: "text/javascsript;charset=utf-8"})
 
     saveAs(blob, 'bot.js')
 }
 
 // Blob for the package.json that will be needed to run the bot
-const packageBlob = new Blob([
+
+// Function for downloading the package.json file
+export const packageDownload = () => {
+    const packageBlob = new Blob([
 `{
     "name": "template-bot",
     "version": "1.0.0",
@@ -23,6 +26,5 @@ const packageBlob = new Blob([
         "discord.js-poll-embed": "^1.0.2"
     }
 }`], {type: "application/json"})
-
-// Function for downloading the package.json file
-export const packageDownload = packageBlob => saveAs(packageBlob, 'package.json')
+    saveAs(packageBlob, 'package.json')
+}
