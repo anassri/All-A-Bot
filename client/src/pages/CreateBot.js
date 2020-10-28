@@ -16,7 +16,7 @@ export default function CreateBot(props) {
     for (let i=0; i<allBots.length; i++){
         if (maxId <= allBots[i].id) maxId = allBots[i].id + 1
     }
-    newId = maxId
+    newId = maxId + 1
     console.log(newId);
 
     if (newId > -1) props.history.push(`/edit-bot/${newId}`);
