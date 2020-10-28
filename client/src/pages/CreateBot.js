@@ -1,4 +1,4 @@
-import React, { Redirect, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadAllBots } from '../store/bots';
 
@@ -18,11 +18,6 @@ export default function CreateBot(props) {
     }
     newId = maxId
     console.log(newId);
-
-    // const renderCreatePage = () => {
-    //     if (newId > -1) return <Redirect to={`/edit-bot/${newId}`} />;
-    //     else return <h1>Loading...</h1>;
-    // }
 
     if (newId > -1) props.history.push(`/edit-bot/${newId}`);
 
