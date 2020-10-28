@@ -56,7 +56,7 @@ function EditBot({bot, botId, user}) {
     const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "" }}, response: [BLANK_RESPONSE] } };
 
     const [botName, setBotName] = useState("");
-    const [rules, setRules] = useState([BLANK_RULE]);
+    const [rules, setRules] = useState([]);
     const [botPrefix, setBotPrefix] = useState("");
     const [botDescription, setBotDescription] = useState("");
 
@@ -66,7 +66,7 @@ function EditBot({bot, botId, user}) {
         // console.log(bot);
         // console.log(bot.rules);
         // console.log(rules);
-        if ( bot.rules[0] && (rules.length === 0 || (rules[0] !== bot.rules[0]))){
+        if (rules.length === 0){
             setRules(bot.rules);
         }
         if (botName === "") setBotName(bot.name);
@@ -159,7 +159,7 @@ function EditBot({bot, botId, user}) {
                             onChange={(e) => setRule(ruleIndex, {...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), {...rules[ruleIndex].content.response[responseIndex], type: e.target.value}, ...rules[ruleIndex].content.response.slice(responseIndex+1)] }})}
                             label="Select a Response"
                         >
-                            <MenuItem value="message">Message</MenuItem>
+                            <MenuItem value="message">message</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
