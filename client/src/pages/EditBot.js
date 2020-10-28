@@ -61,6 +61,7 @@ function EditBot({bot, botId, user}) {
     const [botDescription, setBotDescription] = useState("");
     const [isDraft, setIsDraft] = useState(true);
     const [autoSaveMsg, setAutoSaveMsg] = useState("");
+    const [isSaving, setIsSaving] = useState(false);
     
     const classes = useStyle();
 
@@ -90,13 +91,16 @@ function EditBot({bot, botId, user}) {
     }
     
     const autoSave = () =>{
-        setIsDraft(true);
-        setTimeout(()=>{
-            saveBot();
-            setAutoSaveMsg("Draft bot saved.");
-            setTimeout(()=>{setAutoSaveMsg("")}, 5000);
-        },10000);
-
+        if (!isSaving){
+            setIsSaving(true);
+            setIsDraft(true);
+            setTimeout(async ()=>{
+                await saveBot();
+                setIsSaving(false);
+                setAutoSaveMsg("Draft bot saved.");
+                setTimeout(()=>{setAutoSaveMsg("")}, 5000);
+            },20000);
+        }
     }
     const setRule = (i, newRule) => {
         setRules([...rules.slice(0, i), newRule, ...rules.slice(i+1)]);
@@ -123,7 +127,7 @@ function EditBot({bot, botId, user}) {
                                     variant="outlined"
                                     value={rules[i].content.trigger.type}
                                     fullWidth
-                                    onChange={(e) => setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, type: e.target.value } } })}
+                                        onChange={(e) => { setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, type: e.target.value } } }); autoSave(); }}
                                     label="Select a Trigger"
                                 >
                                     <MenuItem value="message">Message</MenuItem>
@@ -137,7 +141,7 @@ function EditBot({bot, botId, user}) {
                                         fullWidth
                                         value={rules[i].content.trigger.details.string}
                                         label="Message"
-                                        onChange={e => setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } } } })} />
+                                        onChange={e => { setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } } } }); autoSave(); }} />
                                 : <></>}
                         </Grid>
                     </Grid>
@@ -168,7 +172,7 @@ function EditBot({bot, botId, user}) {
                             variant="outlined"
                             value={rules[ruleIndex].content.response[responseIndex].type}
                             fullWidth
-                            onChange={(e) => setRule(ruleIndex, {...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), {...rules[ruleIndex].content.response[responseIndex], type: e.target.value}, ...rules[ruleIndex].content.response.slice(responseIndex+1)] }})}
+                            onChange={(e) => { setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), { ...rules[ruleIndex].content.response[responseIndex], type: e.target.value }, ...rules[ruleIndex].content.response.slice(responseIndex + 1)] } }); autoSave(); }}
                             label="Select a Response"
                         >
                             <MenuItem value="message">Message</MenuItem>
@@ -182,7 +186,7 @@ function EditBot({bot, botId, user}) {
                         fullWidth
                         value={rules[ruleIndex].content.response[responseIndex].details.string}
                         label="Response message: "
-                        onChange={e => setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{ ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }] } })} />
+                            onChange={e => { setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{ ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }] } }); autoSave(); }} />
                         : <></>}
                 </Grid>
             </Grid>
@@ -200,13 +204,13 @@ function EditBot({bot, botId, user}) {
                         <TextField variant="outlined" fullWidth value={botName} onChange={e => { setBotName(e.target.value); autoSave();}} label="Name"></TextField>
                     </Grid>
                     <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => setBotPrefix(e.target.value)}></TextField>
+                        <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => {setBotPrefix(e.target.value); autoSave();}}></TextField>
                     </Grid>
                     <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth label="Developer Token" value={botPrefix} onChange={e => setBotPrefix(e.target.value)}></TextField>
+                        <TextField variant="outlined" fullWidth label="Developer Token" value={botPrefix} onChange={e => { setBotPrefix(e.target.value); autoSave(); }}></TextField>
                     </Grid>
                     <Grid item xs={12} className={classes.grid}>
-                        <TextField variant="outlined" fullWidth label="Description" value={botDescription} onChange={e => setBotDescription(e.target.value)}></TextField>
+                        <TextField variant="outlined" fullWidth label="Description" value={botDescription} onChange={e => { setBotDescription(e.target.value); autoSave(); }}></TextField>
                     </Grid>
                 </Grid>
                 <Divider />
