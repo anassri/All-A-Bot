@@ -15,6 +15,7 @@ import Divider from '@material-ui/core/Divider';
 const useStyle = makeStyles((theme) => ({
     root: {
         marginTop: 10,
+        boxSizing: 'border-box'
         
     },
     paper: {
@@ -143,10 +144,10 @@ export default function Bot(){
                             )}
                     </div>
                     <div className={classes.icons}>
-                        <Link key={id} to={``} style={{ color: 'inherit' }}>
+                        <Link key={id} to={``} style={{ color: 'inherit' }} title="Download Bot">
                             <i className="fas fa-download fa-lg"></i>
                         </Link>
-                        <Link key={id} to={``} style={{ color: 'inherit' }}>
+                        <Link key={id} to={``} style={{ color: 'inherit' }} title="Clone Bot">
                             <i className="fas fa-clone fa-lg"></i>
                         </Link>
                     </div>

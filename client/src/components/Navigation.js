@@ -28,7 +28,22 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 35,
   },
 }));
+function NavBtn({link, label, icon}){
+  const classes = useStyles();
 
+  return (
+    <div>
+      <NavLink to={link} activeclass='active'>
+        <div className={classes.navButton}>
+          <Button>
+            <i className={icon}></i>
+            <div>{label}</div>
+          </Button>
+        </div>
+      </NavLink>
+    </div>
+  )
+}
 export function Navigation({ logoutDispatch, user }) {
   const classes = useStyles();
   const history = useHistory();
@@ -51,37 +66,9 @@ export function Navigation({ logoutDispatch, user }) {
         </NavLink>
       </div>
       <div className={classes.buttons}>
-        <div>
-          <NavLink to='/users' activeclass='active'>
-            <div className={classes.navButton}>
-              <Button>
-                <i className='fas fa-robot'></i>
-                <div>CREATE A BOT</div>
-              </Button>
-            </div>
-          </NavLink>
-        </div>
-        <div>
-          <NavLink to='/' activeclass='active'>
-            <div className={classes.navButton}>
-              <Button>
-                <i className='far fa-compass'></i>
-                <div>EXPLORE BOTS</div>
-              </Button>
-            </div>
-          </NavLink>
-        </div>
-        <div>
-          <NavLink to={user ? '/dashboard' : '/login'} activeclass='active'>
-            <div className={classes.navButton}>
-              <Button>
-                <i className='fas fa-user-circle'></i>
-                <div>DASHBOARD</div>
-              </Button>
-            </div>
-          </NavLink>
-        </div>
-
+        <NavBtn link='/users' label='CREATE A BOT' icon='fas fa-robot' />
+        <NavBtn link='/' label='EXPLORE BOTS' icon='far fa-compass' />
+        <NavBtn link={user ? '/dashboard' : '/login'} label='DASHBOARD' icon='fas fa-user-circle' />
         <div>
           <NavLink to='/login' activeclass='active'>
             <div className={classes.navButton}>

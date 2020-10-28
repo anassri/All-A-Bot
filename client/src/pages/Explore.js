@@ -59,10 +59,10 @@ const ListItem = ({id,name,description,username}) => {
                 </Link>
             </CardActionArea>            
             <div className={classes.content}>
-                <Link key={id} to={``} style={{ color: 'inherit' }}>
+                <Link key={id} to={``} style={{ color: 'inherit' }} title="Download Bot">
                     <i className="fas fa-download fa-lg"></i>
                 </Link>
-                <Link key={id} to={``} style={{ color: 'inherit' }}>
+                <Link key={id} to={``} style={{ color: 'inherit' }} title="Clone Bot">
                     <i className="fas fa-clone fa-lg"></i>
                 </Link>
             </div>
