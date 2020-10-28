@@ -5,8 +5,8 @@ import { loadBot } from '../store/bots'
 
 function EditBot({bot, botId, user}) {
 
-
-    const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "" }}, response: [{type: "", details: { string: "" }}] } };
+    const BLANK_RESPONSE = {type: "", details: { string: "" }}
+    const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "" }}, response: [BLANK_RESPONSE] } };
 
     const [botName, setBotName] = useState("");
     const [rules, setRules] = useState([BLANK_RULE]);
@@ -41,7 +41,12 @@ function EditBot({bot, botId, user}) {
     }
 
     const setRule = (i, newRule) => {
+        // if (newRule.content.response.length > rules[i].content.response.length){
+        //     console.log("got as far as modifying the rule!");
+        //     console.log(newRule.content.response)
+        // }
         setRules([...rules.slice(0, i), newRule, ...rules.slice(i+1)]);
+        // console.log(rules[i].content.response);
     }
 
     const RuleForm = ({i}) => {
@@ -76,8 +81,24 @@ function EditBot({bot, botId, user}) {
                     </Box> : <></>}
                 </div>
 
+                {rules[i].content.response.map((resp, responseIndex) => <ResponseForm key={responseIndex} ruleIndex={i} responseIndex={responseIndex} />)}
 
-                <div>
+                <Button onClick={e => {
+                    addResponse(i);
+                    console.log("Reached the button event!");
+                    }}>Add response</Button>
+
+            </form>
+        </>
+    )}
+
+    const addResponse = i => {
+        setRule(i, {...rules[i], content: { ...rules[i].content, response: [...rules[i].content.response, BLANK_RESPONSE ] }});
+        console.log(rules[i].content.response);
+    }
+
+    const ResponseForm = ({ruleIndex, responseIndex}) => {
+        return (<div>
                 <Button onClick={e => setResponseAnchor(e.currentTarget)}>Response</Button>
                 <Menu
                     keepMounted
@@ -88,19 +109,17 @@ function EditBot({bot, botId, user}) {
                     onClose={() => setResponseAnchor(null)}
                 >
                     <MenuItem onClick={e => {
-                        setRule(i, {...rules[i], content: { ...rules[i].content, response: [{...rules[i].content.response[0], type: "message"}] }})
+                        setRule(ruleIndex, {...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{...rules[ruleIndex].content.response[responseIndex], type: "message"}] }})
                     }}>Message</MenuItem>
 
                 </Menu>
-                {rules[i].content.response[0].type === "message" ? <Box>
+                {rules[ruleIndex].content.response[responseIndex].type === "message" ? <Box>
                     <TextField label="Response message: "
-                               value={rules[i].content.response[0].details.string}
-                               onChange={e => setRule(i, {...rules[i], content: {...rules[i].content, response: [{...rules[i].content.response[0], details: { ...rules[i].content.response[0].details, string: e.target.value }}]}})} />
+                               value={rules[ruleIndex].content.response[responseIndex].details.string}
+                               onChange={e => setRule(ruleIndex, {...rules[ruleIndex], content: {...rules[ruleIndex].content, response: [{...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value }}]}})} />
                     </Box> : <></>}
-                </div>
-            </form>
-        </>
-    )}
+                </div>)
+    }
 
     return (
         <Paper>
