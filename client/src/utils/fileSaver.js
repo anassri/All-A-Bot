@@ -7,14 +7,9 @@ export function fileDownload(file) {
     saveAs(blob, 'bot.js')
 }
 
-<<<<<<< Updated upstream
-// Blob for the package.json that will be needed to run the bot
-const packageBlob = new Blob([
-=======
 // Function for downloading the package.json file
 export const packageDownload = () => {
     const packageBlob = new Blob([
->>>>>>> Stashed changes
 `{
     "name": "template-bot",
     "version": "1.0.0",

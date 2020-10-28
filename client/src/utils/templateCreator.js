@@ -39,14 +39,6 @@ function commandObjectsBuilder(objList) {
     let commandObjects = ``
 
     objList.forEach(cmd => {
-<<<<<<< Updated upstream
-        const varName = cmd.name + '_' + randStringMaker()
-        if (cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'starts') {
-            // This will fire off if the command/rule's trigger is a starts-with trigger, and its response type is that of send (this is largely for prefixed commands)
-            if (cmd.response.send) {
-                commandObjects += `\n${varName} = {name: ${cmd.name}, description: ${cmd.description}, async execute(message, args) {${basicResponseBuilder(cmd.response.send)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
-            }
-=======
         const varName = cmd.trigger.details.string + '_' + randStringMaker()
         if (cmd.trigger.usesPrefix) {
             cmd.response.forEach(res => {
@@ -56,7 +48,6 @@ function commandObjectsBuilder(objList) {
                     commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${banBuilder()}}\nclient.commands.set(${varName}.name, ${varName})\n`
                 }
             })
->>>>>>> Stashed changes
             // Add else if here for events other than send for when a prefixed command has other actions such as kick, delete, or ban
         } else if(cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'includes') {
             // This will fire off if the command/rule's trigger is includes, and its response type is that of send
