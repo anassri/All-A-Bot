@@ -77,10 +77,8 @@ function commandObjectsBuilder(objList) {
 function basicResponseBuilder(response) {
     return `message.channel.send('${response}')`
 }
-// !ban @user cheese => [user, cheese]
+
 function banBuilder() {
-    // <@12341231334234234>
-    // const findUser = `const user = message.guild.members.cache.get(args[0].substring(3, 21))`
     const banAction = 'message.guild.members.ban(args[0].substring(3, 21))'
     return banAction
 }
