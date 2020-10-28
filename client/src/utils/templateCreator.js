@@ -1,15 +1,12 @@
 // Basic stuff required at the start of each file
-const fileStart = `
-const Discord = require('discord.js');
+let fileStart = `const Discord = require('discord.js');
 const client = new Discord.Client();
 
 client.commands = new Discord.Collection();
-
-client.once('ready', () => {
-    console.log('Bot is ready to go!')
-})
-
 `
+
+
+
 // String form of discord.js login function
 const loginString = (token) => {
     return `\nconst login = async (token) => {
@@ -24,14 +21,27 @@ const randStringMaker = () => Math.random().toString(36).substring(2, 15) + Math
 
 // Builds string represesntations of non-message event listeners
 function nonMessageEventsBuidler(events) {
-    let nonMessageEvents = ``
+
+    let onReadyStart = `client.once('ready', () => {
+    console.log('Bot is ready to go!')\n`
 
     events.forEach(event => {
-        let type = event.trigger.type
-        nonMessageEvents += `client.on('${event.type}') {\n    ${event.action}\n}`
+        let eventType = event.trigger.type
+        let funcName = `${event.trigger.details.string}_${randStringMaker()}`
+        let eventStart = `
+function ${funcName}(client) {
+    client.on('${eventType}', `
+
+        event.response.forEach(res => {
+            if (res.type === 'addRole') {
+                    eventStart += autoRoleBuilder(res.details.string)
+                    fileStart += eventStart
+                    onReadyStart += `    ${funcName}(client)`
+            }
+        })
     })
 
-    return nonMessageEvents
+    return onReadyStart + '\n})'
 }
 
 // Creates string representations of the command objects necessary for discord.js to recognize them as commands, and also sets them to the bot/client
@@ -73,6 +83,17 @@ function banBuilder() {
     // const findUser = `const user = message.guild.members.cache.get(args[0].substring(3, 21))`
     const banAction = 'message.guild.members.ban(args[0].substring(3, 21))'
     return banAction
+}
+
+function autoRoleBuilder(roleName) {
+    return (
+`async member => {
+         const role = await member.guild.roles.cache.find(role => role.name === '${roleName}')
+         if (role) {
+            member.roles.add(role)
+         }
+    })
+}\n\n`)
 }
 
 // Builds the switch case inside a conditional for messages that start with a prefix
@@ -122,7 +143,7 @@ function substringMatcher(commands) {
 function messageEventAssembler(prefix, prefixedCommands, unprefixedCommands) {
     let messageEventStart = `\nclient.on('message', message => {\n    if (message.author.bot) return;\n`
 
-    let prefixVar = `\n    const prefix = ${prefix}`
+    let prefixVar = `\n    const prefix = '${prefix}'\n`
 
     let messageEventEnd = `\n    }\n})`
 
@@ -132,17 +153,7 @@ function messageEventAssembler(prefix, prefixedCommands, unprefixedCommands) {
 }
 
 
-export function assembleFullFile(prefix, token, commands, events) {
-    const file = `
-const Discord = require('discord.js');
-const client = new Discord.Client();
-
-client.commands = new Discord.Collection();
-
-client.once('ready', () => {
-    console.log('Bot is ready to go!)
-})\n`
-
+export function assembleFullFile(prefix, token, commands) {
     let prefixedCommands = []
     let unprefixedCommands = []
     let events = []
@@ -150,9 +161,11 @@ client.once('ready', () => {
         commands.forEach(cmd => {
             if (cmd.trigger.usesPrefix) {
                 prefixedCommands.push(cmd)
-            } else if (!cmd.trigger.usesPrefix && cmd.trigger.details.string) {
+            } else if (!cmd.trigger.usesPrefix && cmd.trigger.type === 'message') {
+                console.log('inside else if')
                 unprefixedCommands.push(cmd)
             } else {
+                console.log('here')
                 events.push(cmd)
             }
         })
@@ -169,7 +182,7 @@ client.once('ready', () => {
 
     const loginFunc = loginString(token)
 
-    const fullBot = file + evs + comObjs + msgEventHandler + loginFunc
+    const fullBot = fileStart + evs + comObjs + msgEventHandler + loginFunc
 
     return fullBot
 }
