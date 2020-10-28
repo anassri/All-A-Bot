@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Box, TextField, Button, FormControl, InputLabel, Select, Menu, MenuItem, Divider, Paper } from '@material-ui/core';
 import { loadBot } from '../store/bots'
 import { makeStyles } from '@material-ui/core';
-
+import Alert from '@material-ui/lab/Alert';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -55,10 +55,12 @@ function EditBot({bot, botId, user}) {
 
     const [botName, setBotName] = useState("");
     const [rules, setRules] = useState([BLANK_RULE]);
-    const [botPrefix, setBotPrefix] = useState("");
+    const [botPrefix, setBotPrefix] = useState(" ");
     const [botDescription, setBotDescription] = useState("");
     const [trigger, setTrigger] = useState("");
     const [response, setResponse] = useState("");
+    const [isDraft, setIsDraft] = useState(true);
+    const [autoSaveMsg, setAutoSaveMsg] = useState("");
 
     const classes = useStyle();
 
@@ -83,10 +85,19 @@ function EditBot({bot, botId, user}) {
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({bot: { ...bot, name: botName, prefix: botPrefix, userId: user.id }, rules }),
+            body: JSON.stringify({ bot: { ...bot, name: botName, prefix: botPrefix, userId: user.id, is_draft: isDraft }, rules }),
         });
     }
+    
+    const autoSave = () =>{
+        setIsDraft(true);
+        setTimeout(()=>{
+            saveBot();
+            setAutoSaveMsg("Draft bot saved.");
+            setTimeout(()=>{setAutoSaveMsg("")}, 5000);
+        },10000);
 
+    }
     const setRule = (i, newRule) => {
         setRules([...rules.slice(0, i), newRule, ...rules.slice(i+1)]);
     }
@@ -184,7 +195,7 @@ function EditBot({bot, botId, user}) {
             <Paper className={classes.paper}>
                 <Grid container spacing={3}>
                     <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth value={botName} onChange={e => setBotName(e.target.value)} label="Name"></TextField>
+                        <TextField variant="outlined" fullWidth value={botName} onChange={e => { setBotName(e.target.value); autoSave();}} label="Name"></TextField>
                     </Grid>
                     <Grid item xs className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => setBotPrefix(e.target.value)}></TextField>
@@ -199,12 +210,25 @@ function EditBot({bot, botId, user}) {
                 <Divider />
 
                 {rules.map((rule, i) => <Box key={i}><RuleForm i={i} /></Box>)}
-                <Grid container spacing={3} justify="flex-end" style={{paddingRight: 35}}>
+                <Grid container spacing={3} justify="flex-end" alignItems="flex-end" style={{paddingRight: 35}}>
+                    {autoSaveMsg 
+                    ?   <Grid item xs>
+                            <Alert variant="outlined" severity="success">
+                                {autoSaveMsg}
+                            </Alert>
+                        </Grid>
+                    : null 
+                    }
                     <Grid item xs={3} sm={1}>
                         <Button onClick={saveBot} size="medium" variant="contained" color="primary">Save</Button>
                     </Grid>
                     <Grid item xs={3} sm={1} >
-                        <Button onClick={saveBot} size="medium" variant="contained" color="primary">{bot.name ? "SUBMIT CHANGES" : "CREATE"}</Button>
+                        <Button onClick={()=> { saveBot();
+                                                setIsDraft(false);
+                                            }} 
+                                size="medium" 
+                                variant="contained" 
+                                color="primary">{bot.name ? "SUBMIT CHANGES" : "CREATE"}</Button>
                     </Grid>
                 </Grid>
             </Paper>
