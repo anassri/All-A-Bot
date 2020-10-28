@@ -40,6 +40,7 @@ export function Navigation({ logoutDispatch, user }) {
 
   const handleLogout = e => {
     e.preventDefault();
+    history.push('/');
     logoutDispatch();
   };
 
