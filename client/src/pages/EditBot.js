@@ -70,7 +70,7 @@ function EditBot({bot, botId, user}) {
             setRules(bot.rules);
         }
         if (botName === "") setBotName(bot.name);
-        if (botPrefix !== bot.prefix) setBotPrefix(bot.prefix);
+        if (botPrefix === "") setBotPrefix(bot.prefix);
     })
 
     const addRule = () => {
@@ -79,6 +79,7 @@ function EditBot({bot, botId, user}) {
     }
 
     const saveBot = async () => {
+        console.log(botPrefix);
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
