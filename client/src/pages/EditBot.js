@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, TextField, Button, FormControl, InputLabel, Select, Menu, MenuItem, Divider, Paper } from '@material-ui/core';
 import { loadBot } from '../store/bots'
+import { loadUser } from '../store/auth';
 import { makeStyles } from '@material-ui/core';
 
 import Grid from '@material-ui/core/Grid';
@@ -80,10 +81,11 @@ function EditBot({bot, botId, user}) {
 
     const saveBot = async () => {
         console.log(botPrefix);
+        console.log(user);
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({bot: { ...bot, name: botName, prefix: botPrefix, userId: user.id }, rules }),
+            body: JSON.stringify({bot: { ...bot, name: botName, prefix: (botPrefix || null), userId: user.id, isDraft: true }, rules }),
         });
     }
 
@@ -226,6 +228,7 @@ export default function EditBotContainer(props) {
 
     useEffect(() => {
         if (bot.id !== botId) dispatch(loadBot(botId))
+        if (!user) dispatch(loadUser())
     }, []);
 
     return (<EditBot bot={bot} user={user} botId={botId} />);
