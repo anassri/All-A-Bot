@@ -27,6 +27,7 @@ function nonMessageEventsBuidler(events) {
     let nonMessageEvents = ``
 
     events.forEach(event => {
+        let type = event.trigger.type
         nonMessageEvents += `client.on('${event.type}') {\n    ${event.action}\n}`
     })
 
@@ -38,12 +39,24 @@ function commandObjectsBuilder(objList) {
     let commandObjects = ``
 
     objList.forEach(cmd => {
+<<<<<<< Updated upstream
         const varName = cmd.name + '_' + randStringMaker()
         if (cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'starts') {
             // This will fire off if the command/rule's trigger is a starts-with trigger, and its response type is that of send (this is largely for prefixed commands)
             if (cmd.response.send) {
                 commandObjects += `\n${varName} = {name: ${cmd.name}, description: ${cmd.description}, async execute(message, args) {${basicResponseBuilder(cmd.response.send)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
             }
+=======
+        const varName = cmd.trigger.details.string + '_' + randStringMaker()
+        if (cmd.trigger.usesPrefix) {
+            cmd.response.forEach(res => {
+                if (res.type === "message") {
+                    commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${basicResponseBuilder(res.details.string)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
+                } else if (res.type === "ban") {
+                    commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${banBuilder()}}\nclient.commands.set(${varName}.name, ${varName})\n`
+                }
+            })
+>>>>>>> Stashed changes
             // Add else if here for events other than send for when a prefixed command has other actions such as kick, delete, or ban
         } else if(cmd.trigger.includesOrStarts && cmd.trigger.includesOrStarts === 'includes') {
             // This will fire off if the command/rule's trigger is includes, and its response type is that of send
@@ -63,8 +76,13 @@ function commandObjectsBuilder(objList) {
 function basicResponseBuilder(response) {
     return `message.channel.send('${response}')`
 }
-
-
+// !ban @user cheese => [user, cheese]
+function banBuilder() {
+    // <@12341231334234234>
+    // const findUser = `const user = message.guild.members.cache.get(args[0].substring(3, 21))`
+    const banAction = 'message.guild.members.ban(args[0].substring(3, 21))'
+    return banAction
+}
 
 // Builds the switch case inside a conditional for messages that start with a prefix
 function switchCaseWithPrefixBuilder(prefix, commands) {
@@ -117,7 +135,7 @@ function messageEventAssembler(prefix, prefixedCommands, unprefixedCommands) {
 
     let switches = switchCaseWithPrefixBuilder(prefix, prefixedCommands) + substringMatcher(unprefixedCommands)
 
-    return messageEventStart + switches + messageEventEnd
+    return messageEventStart + prefixVar + switches + messageEventEnd
 }
 
 
@@ -134,12 +152,15 @@ client.once('ready', () => {
 
     let prefixedCommands = []
     let unprefixedCommands = []
+    let events = []
     if (commands) {
         commands.forEach(cmd => {
             if (cmd.trigger.prefix === 'starts') {
                 prefixedCommands.push(cmd)
-            } else {
+            } else if (!cmd.trigger.usesPrefix && cmd.trigger.details.string) {
                 unprefixedCommands.push(cmd)
+            } else {
+                events.push(cmd)
             }
         })
     }
