@@ -1,7 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, TextField, Button, Checkbox, Menu, MenuItem, FormLabel, Paper } from '@material-ui/core';
+import { Box, TextField, Button, FormControl, InputLabel, Select, Menu, MenuItem, Divider, Paper } from '@material-ui/core';
 import { loadBot } from '../store/bots'
+import { makeStyles } from '@material-ui/core';
+
+import Grid from '@material-ui/core/Grid';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+
+const useStyle = makeStyles((theme) => ({
+    root: {
+        marginTop: 10,
+        boxSizing: 'border-box'
+
+    },
+    paper: {
+        height: '60vh',
+        padding: '55px 65px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
+    },
+    title: {
+        fontWeight: 'bold',
+        textAlign: 'left',
+        margin: '15px 0',
+    },
+    label: {
+        textAlign: 'left',
+        color: "rgba(232,232,232,0.7)",
+        paddingTop: 15,
+        // marginBottom: 10
+    },
+    content: {
+        textAlign: 'left',
+        color: "rgba(232,232,232,1)",
+        fontWeight: 'bold',
+        paddingTop: 10,
+    },
+    grid: {
+        // maxWidth: '10%'
+    },
+    icons: {
+        textAlign: 'right',
+        opacity: 0.7
+    },
+    formControl: {
+        minWidth: '100%',
+    }
+}));
 
 function EditBot({bot, botId, user}) {
 
@@ -11,17 +58,19 @@ function EditBot({bot, botId, user}) {
     const [botName, setBotName] = useState("");
     const [rules, setRules] = useState([BLANK_RULE]);
     const [botPrefix, setBotPrefix] = useState("");
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [responseAnchor, setResponseAnchor] = useState(null);
+    const [botDescription, setBotDescription] = useState("");
+    const [trigger, setTrigger] = useState("");
+    const [response, setResponse] = useState("");
+
+    const classes = useStyle();
 
     useEffect(() => {
         // console.log(bot);
         // console.log(bot.rules);
         // console.log(rules);
         console.log(bot);
-        if (rules.length === 0 || bot.rules[0] && (rules[0] !== bot.rules[0])){
+        if ( bot.rules[0] && (rules.length === 0 || (rules[0] !== bot.rules[0]))){
             setRules(bot.rules);
-            console.log(rules);
         }
         if (botName === "") setBotName(bot.name);
         if (botPrefix !== bot.prefix) setBotPrefix(bot.prefix);
@@ -52,42 +101,51 @@ function EditBot({bot, botId, user}) {
     const RuleForm = ({i}) => {
         return (
         <>
-            <h4>Rule:</h4>
             <form>
                 <div>
                 {/* this is the div which contains the trigger form. the next div down is the response form. */}
-                <Button onClick={e => setAnchorEl(e.currentTarget)}>Trigger</Button>
-                <Menu
-                    keepMounted
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    label="On"
-                    className="trigger-menu"
-                    onClose={() => setAnchorEl(null)}
-                >
-                    <MenuItem onClick={e => {
-                        setRule(i, {...rules[i], content: { ...rules[i].content, trigger: {...rules[i].content.trigger, type: "message"} }})
-                        // this is how we have to modify a rule - it's important to spread all of the intermediate nested objects into the new rule to make sure
-                        // that nothing is being overwritten.
-                        // we can't just modify the rule directly because it is part of the state.
-                        // we follow this same pattern below when we are setting the string in the trigger details using the "trigger message" field.
-                    }}>Message</MenuItem>
-
-                </Menu>
-                {rules[i].content.trigger.type === "message" ? <Box>
-                    <TextField label="Trigger message: "
-                               value={rules[i].content.trigger.details.string}
-                               onChange={e => setRule(i, {...rules[i], content: {...rules[i].content, trigger: {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }}}})} />
-                    </Box> : <></>}
+                    <Grid container spacing={3}>
+                        <Grid item xs={2} sm={1} className={classes.grid}>
+                            <Typography variant="subtitle2" component="h2" className={classes.label}>
+                                Rule:
+                            </Typography>
+                        </Grid>
+                        <Grid item xs className={classes.grid}>
+                            <FormControl variant="outlined" className={classes.formControl}>
+                                <InputLabel id="trigger-select-input-label">Select a Trigger</InputLabel>
+                                <Select
+                                    labelId="trigger-select-label"
+                                    id="trigger-select"
+                                    variant="outlined"
+                                    value={trigger}
+                                    fullWidth
+                                    onChange={(e) => setTrigger(e.target.value)}
+                                    label="Select a Trigger"
+                                >
+                                    <MenuItem onClick={e => {
+                                        setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, type: "message" } } })
+                                        // this is how we have to modify a rule - it's important to spread all of the intermediate nested objects into the new rule to make sure
+                                        // that nothing is being overwritten.
+                                        // we can't just modify the rule directly because it is part of the state.
+                                        // we follow this same pattern below when we are setting the string in the trigger details using the "trigger message" field.
+                                    }}>Message</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs className={classes.grid}>
+                            {rules[i].content.trigger.type === "message"
+                                ? <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        value={rules[i].content.trigger.details.string}
+                                        label="Message"
+                                        onChange={e => setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } } } })} />
+                                : <></>}
+                        </Grid>
+                    </Grid>
                 </div>
-
-                {rules[i].content.response.map((resp, responseIndex) => <ResponseForm key={responseIndex} ruleIndex={i} responseIndex={responseIndex} />)}
-
-                <Button onClick={e => {
-                    addResponse(i);
-                    console.log("Reached the button event!");
-                    }}>Add response</Button>
-
+                {rules[i].content.response.map((resp, responseIndex) => <ResponseForm ruleIndex={i} responseIndex={responseIndex} />)}
+                <Button onClick={() => addResponse(i)}>Add response</Button>
             </form>
         </>
     )}
@@ -99,41 +157,74 @@ function EditBot({bot, botId, user}) {
 
     const ResponseForm = ({ruleIndex, responseIndex}) => {
         return (<div>
-                <Button onClick={e => setResponseAnchor(e.currentTarget)}>Response</Button>
-                <Menu
-                    keepMounted
-                    anchorEl={responseAnchor}
-                    open={Boolean(responseAnchor)}
-                    label="On"
-                    className="response-menu"
-                    onClose={() => setResponseAnchor(null)}
-                >
-                    <MenuItem onClick={e => {
-                        setRule(ruleIndex, {...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{...rules[ruleIndex].content.response[responseIndex], type: "message"}] }})
-                    }}>Message</MenuItem>
-
-                </Menu>
-                {rules[ruleIndex].content.response[responseIndex].type === "message" ? <Box>
-                    <TextField label="Response message: "
-                               value={rules[ruleIndex].content.response[responseIndex].details.string}
-                               onChange={e => setRule(ruleIndex, {...rules[ruleIndex], content: {...rules[ruleIndex].content, response: [{...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value }}]}})} />
-                    </Box> : <></>}
-                </div>)
+            <Grid container spacing={3}>
+                <Grid item xs className={classes.grid}>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                        <InputLabel id="response-select-input-label">Select a Response</InputLabel>
+                        <Select
+                            labelId="response-select-label"
+                            id="response-select"
+                            variant="outlined"
+                            value={response}
+                            fullWidth
+                            onChange={(e) => setResponse(e.target.value)}
+                            label="Select a Response"
+                        >
+                            <MenuItem onClick={e => {
+                                setRule(ruleIndex, {...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{...rules[ruleIndex].content.response[responseIndex], type: "message"}] }})
+                            }}>Message</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs className={classes.grid}>
+                    {rules[ruleIndex].content.response[responseIndex].type === "message"
+                        ? <TextField
+                        variant="outlined"
+                        fullWidth
+                        value={rules[ruleIndex].content.response[responseIndex].details.string}
+                        label="Response message: "
+                        onChange={e => setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{ ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }] } })} />
+                        : <></>}
+                </Grid>
+            </Grid>
+        </div>)
     }
 
     return (
-        <Paper>
-            <h1>Create your bot</h1>
-            <Box>
-                <form>
-                    <TextField value={botName} onChange={e => setBotName(e.target.value)} label="Name"></TextField>
-                    <TextField label="Prefix" value={botPrefix} onChange={e => setBotPrefix(e.target.value)}></TextField>
-                    <Button onClick={addRule}>Add rule</Button>
-                </form>
-            </Box>
-            {rules.map((rule, i) => <Box key={i}><RuleForm i={i} /></Box>)}
-            <Button onClick={saveBot}>Save</Button>
-        </Paper>
+        <Container className={`${classes.container} paper-container`}>
+            <Typography variant="h4" component="h2" className={classes.title}>
+                {bot.name ? "EDIT " + bot.name.toUpperCase() : "CREATE A BOT "}
+            </Typography>
+            <Paper className={classes.paper}>
+                <Grid container spacing={3}>
+                    <Grid item xs className={classes.grid}>
+                        <TextField variant="outlined" fullWidth value={botName} onChange={e => setBotName(e.target.value)} label="Name"></TextField>
+                    </Grid>
+                    <Grid item xs className={classes.grid}>
+                        <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => setBotPrefix(e.target.value)}></TextField>
+                    </Grid>
+                    <Grid item xs className={classes.grid}>
+                        <TextField variant="outlined" fullWidth label="Developer Token" value={botPrefix} onChange={e => setBotPrefix(e.target.value)}></TextField>
+                    </Grid>
+                    <Grid item xs={12} className={classes.grid}>
+                        <TextField variant="outlined" fullWidth label="Description" value={botDescription} onChange={e => setBotDescription(e.target.value)}></TextField>
+                    </Grid>
+                </Grid>
+                <Divider />
+
+                {rules.map((rule, i) => <Box key={i}><RuleForm i={i} /></Box>)}
+                <Button onClick={addRule} >Add rule</Button>
+                <Grid container spacing={3} justify="flex-end" style={{paddingRight: 35}}>
+                    <Grid item xs={3} sm={1}>
+                        <Button onClick={saveBot} size="medium" variant="contained" color="primary">Save</Button>
+                    </Grid>
+                    <Grid item xs={3} sm={1} >
+                        <Button onClick={saveBot} size="medium" variant="contained" color="primary">{bot.name ? "SUBMIT CHANGES" : "CREATE"}</Button>
+                    </Grid>
+                </Grid>
+            </Paper>
+        </Container>
+
     )
 }
 
