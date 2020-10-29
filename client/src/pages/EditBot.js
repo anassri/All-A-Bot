@@ -51,7 +51,7 @@ const useStyle = makeStyles((theme) => ({
     }
 }));
 
-function EditBot({bot, botId, user}) {
+function EditBot({bot, botId, user, history}) {
 
     const BLANK_RESPONSE = {type: "", details: { string: "" }}
     const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "", includesOrBeginsWith: "begins with" }}, response: [BLANK_RESPONSE] } };
@@ -63,8 +63,10 @@ function EditBot({bot, botId, user}) {
     const [isDraft, setIsDraft] = useState(true);
     const [autoSaveMsg, setAutoSaveMsg] = useState("");
     const [isSaving, setIsSaving] = useState(false);
-    
+
     const classes = useStyle();
+
+    if (!user || bot && bot.userId !== user.id) history.push('/login');
 
     useEffect(() => {
         if (rules.length === 0){
@@ -88,7 +90,7 @@ function EditBot({bot, botId, user}) {
             body: JSON.stringify({bot: { ...bot, name: botName, prefix: (botPrefix || null), userId: user.id, isDraft: isDraft }, rules }),
         });
     }
-    
+
     const autoSave = () =>{
         if (!isSaving){
             setIsSaving(true);
@@ -237,13 +239,13 @@ function EditBot({bot, botId, user}) {
                 <Button onClick={addRule} >Add rule</Button>
 
                 <Grid container spacing={3} justify="flex-end" style={{paddingRight: 35}}>
-                    {autoSaveMsg 
+                    {autoSaveMsg
                     ?   <Grid item xs>
                             <Alert variant="outlined" severity="success">
                                 {autoSaveMsg}
                             </Alert>
                         </Grid>
-                    : null 
+                    : null
                     }
                     <Grid item xs={3} sm={1}>
                         <Button onClick={saveBot} size="medium" variant="contained" color="primary">Save</Button>
@@ -251,9 +253,9 @@ function EditBot({bot, botId, user}) {
                     <Grid item xs={3} sm={1} >
                         <Button onClick={()=> { saveBot();
                                                 setIsDraft(false);
-                                            }} 
-                                size="medium" 
-                                variant="contained" 
+                                            }}
+                                size="medium"
+                                variant="contained"
                                 color="primary">{bot.name ? "SUBMIT CHANGES" : "CREATE"}</Button>
                     </Grid>
                 </Grid>
@@ -276,6 +278,6 @@ export default function EditBotContainer(props) {
         if (!user) dispatch(loadUser())
     }, []);
 
-    return (<EditBot bot={bot} user={user} botId={botId} />);
+    return (<EditBot bot={bot} user={user} botId={botId} history={props.history} />);
 
 }
