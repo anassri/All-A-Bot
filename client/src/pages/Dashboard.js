@@ -51,7 +51,7 @@ function a11yProps(index) {
 
 const useStyles = makeStyles(theme => ({
   container: {
-    'margin-left': '25%',
+    marginLeft: '25%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -121,8 +121,8 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
           index={0}
           style={{
             backgroundColor: '#282828',
-            'border-bottom-left-radius': '5px',
-            'border-bottom-right-radius': '5px',
+            borderBottomLeftRadius: '5px',
+            borderBottomRightRadius: '5px',
           }}>
           <div>
             {bots
@@ -166,8 +166,8 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
           index={1}
           style={{
             backgroundColor: '#282828',
-            'border-bottom-left-radius': '5px',
-            'border-bottom-right-radius': '5px',
+            borderBottomLeftRadius: '5px',
+            borderBottomRightRadius: '5px',
           }}>
           <div>
             {bots
