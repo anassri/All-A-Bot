@@ -117,7 +117,7 @@ export function Explore({ bots }) {
                 onChange={handleSearch}
                 size='medium'
                 variant='filled'
-                fullWidth='true'
+                fullWidth
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position='end'>
