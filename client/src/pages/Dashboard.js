@@ -306,7 +306,8 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
 
 export default function DashboardContainer() {
   const dispatch = useDispatch();
-  const user = useSelector(state => state.auth.user);
+  //const user = useSelector(state => state.auth.user);
+  const user = JSON.parse(window.localStorage.getItem('auth/USER'));
   const token = useSelector(state => state.auth.token);
   const bots = useSelector(state => state.bots.list);
   const loadBotDispatch = botId => dispatch(loadBot(botId));
