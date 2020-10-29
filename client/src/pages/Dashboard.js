@@ -129,7 +129,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
               .filter(bot => bot.is_draft === false)
               .map(bot => {
                 return (
-                  <>
+                  <div key={bot.id}>
                     <CardActionArea key={bot.id}>
                       <Link key={bot.id} to={`/bots/${bot.id}`} style={{ color: 'inherit' }}>
                         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
@@ -156,7 +156,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                       </div>
                     </div>
                     <Divider />
-                  </>
+                  </div>
                 );
               })}
           </div>
@@ -210,7 +210,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
               .filter(bot => bot.user_id === user.id)
               .map(bot => {
                 return (
-                  <>
+                  <div key={bot.id}>
                     <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                       <Typography variant='h5' style={{ fontWeight: 'bold' }}>
                         {bot.name}
@@ -228,7 +228,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                       </div>
                     </div>
                     <Divider />
-                  </>
+                  </div>
                 );
               })}
           </div>
