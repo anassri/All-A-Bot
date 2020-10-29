@@ -202,8 +202,8 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
           index={2}
           style={{
             backgroundColor: '#282828',
-            'border-bottom-left-radius': '5px',
-            'border-bottom-right-radius': '5px',
+            borderBottomLeftRadius: '5px',
+            borderBottomRightRadius: '5px',
           }}>
           <div>
             {bots
