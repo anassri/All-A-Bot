@@ -63,7 +63,9 @@ class Bot(db.Model):
             'user_id': self.user_id,
             'name': self.name,
             'description': self.description,
-            'is_draft': self.is_draft
+            'is_draft': self.is_draft,
+            'owner': self.owner.to_dict(),
+            'rules': [rule.to_dict() for rule in self.rules]
         }
 
 
