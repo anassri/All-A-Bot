@@ -59,6 +59,8 @@ function commandObjectsBuilder(objList) {
                     objTemplate += `\n    ${banBuilder()}\n`
                 } else if (res.type === "emoji") {
                     objTemplate += `\n    ${reactionBuilder(cmd.trigger.details.string)}`
+                } else if (res.type === "assignRole") {
+                    objTemplate += `\n    ${assignRoleBuilder()}`
                 }
             })
             commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})`
@@ -83,9 +85,6 @@ function commandObjectsBuilder(objList) {
 function basicResponseBuilder(response) {
     return `message.channel.send('${response}')`
 }
-function basicResponseBuilder2(response) {
-    return `message.channel.send('${response}')`
-}
 
 function banBuilder() {
     const banAction = 'message.guild.members.ban(args[0].substring(3, 21))'
@@ -97,13 +96,27 @@ function reactionBuilder(emojiName) {
     if (name.includes(':')) {
         name = name.replace(':', '')
     }
-
+    
     const reactAction = `
     const emoji = await message.guild.emojis.cache.find(emoji => emoji.name === ${emojiName})
     if (emoji) {
         message.react(emoji)
     }
     `
+}
+
+function assignRoleBuilder() {
+    return `    let role = await message.guild.roles.cache.find(x => x.name === args[1]);\n
+    if (typeof role === undefined) {\n
+        message.reply('Role doesn't exist, either create that role or type a valid role');\n
+    } else {\n
+        if (!message.mentions.users.size) {\n
+            return message.reply('you need to tag a user');\n
+        }\n
+        const taggedUser = message.mentions.users.first();\n
+        taggedUser.addRole(role);\n
+        message.reply(taggedUser + ' is now a ' + role);\n
+    }\n`
 }
 
 function autoRoleBuilder(roleName) {
