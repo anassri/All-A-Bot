@@ -130,7 +130,7 @@ export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
                     variant='contained'
                     style={{ backgroundColor: '#7289da' }}
                     href='https://discord.com/oauth2/authorize?client_id=771154573795655680&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fredirect&response_type=code&scope=identify%20email%20connections%20guilds'>
-                    <span style={{ 'margin-right': '5px' }}>
+                    <span style={{ marginRight: '5px' }}>
                       <i className='fab fa-discord' />
                     </span>
                     Log in with Discord
