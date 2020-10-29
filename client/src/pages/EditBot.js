@@ -74,14 +74,15 @@ function EditBot({bot, botId, user, history}) {
     const classes = useStyle();
 
     useEffect(() => {
+        console.log(`name: ${botName}`);
+        console.log(`prefix: ${botPrefix}`);
         if (rules.length === 0){
             setRules(bot.rules);
         }
         if (botName === "") setBotName(bot.name);
-        if (botPrefix === "") setBotPrefix(bot.prefix);
+        if (!botPrefix) setBotPrefix(bot.prefix);
+        if (!botDescription) setBotDescription(bot.description);
         if (!user || ((bot.name) && (bot.userId !== user.id))){
-            console.log(user);
-            console.log(bot.name);
             history.push('/login');
         }
     })
@@ -98,8 +99,9 @@ function EditBot({bot, botId, user, history}) {
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({bot: { ...bot, name: botName, prefix: (botPrefix || null), userId: user.id, isDraft: isDraft }, rules }),
+            body: JSON.stringify({bot: { ...bot, name: botName, prefix: (botPrefix || null), userId: user.id, isDraft: isDraft, description: botDescription }, rules }),
         });
+        if (!bot.name) history.push('/');
     }
 
     const autoSave = () =>{
