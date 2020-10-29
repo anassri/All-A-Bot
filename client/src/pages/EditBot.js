@@ -136,7 +136,7 @@ function EditBot({bot, botId, user, history}) {
                                     variant="outlined"
                                     value={rules[i].content.trigger.type}
                                     fullWidth
-                                        onChange={(e) => { setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, type: e.target.value } } }); autoSave(); }}
+                                        onChange={(e) => { setTrigger(i, {...rules[i].content.trigger, type: e.target.value}); autoSave(); }}
                                     label="Select a Trigger"
                                 >
                                     <MenuItem value="message">Message</MenuItem>
@@ -151,16 +151,16 @@ function EditBot({bot, botId, user, history}) {
                                         fullWidth
                                         value={rules[i].content.trigger.details.string}
                                         label={`message ${rules[i].content.trigger.details.includesOrBeginsWith} string...`}
-                                        onChange={e => setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } } } })} />
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
                                   <FormControl>
                                         <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
-                                            onChange={e => setRule(i, {...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value } } }})}
+                                            onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value }})}
                                 >
                                     <FormControlLabel value="includes" control={<Radio />} label="Includes" />
                                     <FormControlLabel value="begins with" control={<Radio />} label="Begins with" />
                                 </RadioGroup>
                                 <FormControlLabel label="Uses prefix" control={<Checkbox checked={rules[i].content.trigger.usesPrefix}
-                                           onChange={e => setRule(i, {...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, usesPrefix: e.target.checked } } })} />}>Uses prefix</FormControlLabel>
+                                           onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
                                 </FormControl>
                                 <TextField
                                         variant="outlined"
