@@ -149,7 +149,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                           <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
                             <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
                           </Link>
-                          <Link style={{ color: 'inherit' }} title='Delete Bot'>
+                          <Link style={{ color: 'inherit' }} to={``} title='Delete Bot'>
                             <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
                           </Link>
                         </CardActionArea>
@@ -186,7 +186,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                         <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
                           <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
                         </Link>
-                        <Link style={{ color: 'inherit' }} title='Delete Bot'>
+                        <Link style={{ color: 'inherit' }} title='Delete Bot' to={``}>
                           <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
                         </Link>
                       </div>
@@ -222,7 +222,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                         <Link to={''} style={{ color: 'inherit' }} title='Download Bot'>
                           <i onClick={handleDownload} id={`bot-${bot.id}`} className='fas fa-download'></i>
                         </Link>
-                        <Link style={{ color: 'inherit' }} title='Clone Bot'>
+                        <Link to={``} style={{ color: 'inherit' }} title='Clone Bot'>
                           <i onClick={handleClone} id={`bot-${bot.id}`} className='fas fa-clone'></i>
                         </Link>
                       </div>
