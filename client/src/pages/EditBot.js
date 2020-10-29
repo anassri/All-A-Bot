@@ -73,14 +73,17 @@ function EditBot({bot, botId, user, history}) {
 
     const classes = useStyle();
 
-    if (!user || bot && bot.userId !== user.id) history.push('/login');
-
     useEffect(() => {
         if (rules.length === 0){
             setRules(bot.rules);
         }
         if (botName === "") setBotName(bot.name);
         if (botPrefix === "") setBotPrefix(bot.prefix);
+        if (!user || ((bot.name) && (bot.userId !== user.id))){
+            console.log(user);
+            console.log(bot.name);
+            history.push('/login');
+        }
     })
 
     const addRule = () => {
@@ -284,7 +287,7 @@ export default function EditBotContainer(props) {
     const dispatch = useDispatch();
 
     const bot = useSelector(state => state.bots.bot);
-    const user = useSelector(state => state.auth.user);
+    const user = JSON.parse(window.localStorage.getItem('auth/USER'));
 
     const botId = props.match.params.id;
 
