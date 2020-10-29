@@ -194,7 +194,7 @@ function EditBot({bot, botId, user, history}) {
                             variant="outlined"
                             value={rules[ruleIndex].content.response[responseIndex].type}
                             fullWidth
-                            onChange={(e) => { setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), { ...rules[ruleIndex].content.response[responseIndex], type: e.target.value }, ...rules[ruleIndex].content.response.slice(responseIndex + 1)] } }); autoSave(); }}
+                            onChange={(e) => { setResponse(ruleIndex, responseIndex, {...rules[ruleIndex].content.response[responseIndex], type: e.target.value}); autoSave(); }}
                             label="Select a Response"
                         >
                             <MenuItem value="message">Message</MenuItem>
@@ -209,7 +209,7 @@ function EditBot({bot, botId, user, history}) {
                         fullWidth
                         value={rules[ruleIndex].content.response[responseIndex].details.string}
                         label={rules[ruleIndex].content.response[responseIndex].type === "message" ? "message string" : "emoji name"}
-                        onChange={e => { setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{ ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }] } }); autoSave(); }} />
+                        onChange={e => { setResponse(ruleIndex, responseIndex, {...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value }}); autoSave(); }} />
                         : <></>}
                 </Grid>
             </Grid>
