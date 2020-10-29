@@ -1,15 +1,12 @@
 // Basic stuff required at the start of each file
-const fileStart = `
-const Discord = require('discord.js');
+let fileStart = `const Discord = require('discord.js');
 const client = new Discord.Client();
 
 client.commands = new Discord.Collection();
-
-client.once('ready', () => {
-    console.log('Bot is ready to go!')
-})
-
 `
+
+
+
 // String form of discord.js login function
 const loginString = (token) => {
     return `\nconst login = async (token) => {
@@ -24,13 +21,27 @@ const randStringMaker = () => Math.random().toString(36).substring(2, 15) + Math
 
 // Builds string represesntations of non-message event listeners
 function nonMessageEventsBuidler(events) {
-    let nonMessageEvents = ``
+
+    let onReadyStart = `client.once('ready', () => {
+    console.log('Bot is ready to go!')\n`
 
     events.forEach(event => {
-        nonMessageEvents += `client.on('${event.type}') {\n    ${event.action}\n}`
+        let eventType = event.trigger.type
+        let funcName = `${event.trigger.details.string}_${randStringMaker()}`
+        let eventStart = `
+function ${funcName}(client) {
+    client.on('${eventType}', `
+
+        event.response.forEach(res => {
+            if (res.type === 'addRole') {
+                    eventStart += autoRoleBuilder(res.details.string)
+                    fileStart += eventStart
+                    onReadyStart += `    ${funcName}(client)`
+            }
+        })
     })
 
-    return nonMessageEvents
+    return onReadyStart + '\n})'
 }
 
 // Creates string representations of the command objects necessary for discord.js to recognize them as commands, and also sets them to the bot/client
@@ -40,20 +51,26 @@ function commandObjectsBuilder(objList) {
     objList.forEach(cmd => {
         const varName = cmd.trigger.details.string + '_' + randStringMaker()
         if (cmd.trigger.usesPrefix) {
+            let objTemplate = `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {`
             cmd.response.forEach(res => {
                 if (res.type === "message") {
-                    commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${basicResponseBuilder(res.details.string)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
-                } else if (res.type === "roleCreate") {
-                    commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${basicResponseBuilder(cmd.args)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
+                    objTemplate += `\n    ${basicResponseBuilder(res.details.string)}\n`
+                } else if (res.type === "ban") {
+                    objTemplate += `\n    ${banBuilder()}\n`
+                } else if (res.type === "emoji") {
+                    objTemplate += `\n    ${reactionBuilder(cmd.trigger.details.string)}`
                 }
             })
+            commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})`
             // Add else if here for events other than send for when a prefixed command has other actions such as kick, delete, or ban
         } else if (!cmd.trigger.usesPrefix) {
+            let objTemplate = `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {`
             cmd.response.forEach(res => {
                 if (res.type === "message") {
-                    commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${basicResponseBuilder(res.details.string)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
+                    objTemplate += `${basicResponseBuilder(res.details.string)}\n`
                 }
             })
+            commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})`
         } else {
             // Add command object creation for any other types we may add (if they don't get put into else ifs as needed)
         }
@@ -70,7 +87,36 @@ function basicResponseBuilder2(response) {
     return `message.channel.send('${response}')`
 }
 
+function banBuilder() {
+    const banAction = 'message.guild.members.ban(args[0].substring(3, 21))'
+    return banAction
+}
 
+function reactionBuilder(emojiName) {
+    const name = emojiName.trim()
+    if (name.includes(':')) {
+        name = name.replace(':', '')
+    }
+
+    const reactAction = `
+    const emoji = await message.guild.emojis.cache.find(emoji => emoji.name === ${emojiName})
+    if (emoji) {
+        message.react(emoji)
+    }
+    `
+}
+
+function autoRoleBuilder(roleName) {
+    return (
+`async member => {
+        const role = await member.guild.roles.cache.find(role => role.name === '${roleName}')
+        if (!role) {
+            role = await member.guild.roles.create({ data: { name: '${roleName}'}})
+        }
+        member.roles.add(role)
+    })
+}\n\n`)
+}
 
 // Builds the switch case inside a conditional for messages that start with a prefix
 function switchCaseWithPrefixBuilder(prefix, commands) {
@@ -101,7 +147,7 @@ function switchCaseWithPrefixBuilder(prefix, commands) {
 function substringMatcher(commands) {
     let substringCheck = `        const checkContains = (message, term) => message.content.includes(term)\n`
 
-    let ifStatement = `        if (checkContain(message, client.commands.first().name)) {\n            client.commands.get(client.commands.first().name)\n`
+    let ifStatement = `        if (checkContais(message, client.commands.first().name)) {\n            client.commands.get(client.commands.first().name)\n`
 
     let elifStatements = ``
     commands.forEach(command => {
@@ -119,51 +165,46 @@ function substringMatcher(commands) {
 function messageEventAssembler(prefix, prefixedCommands, unprefixedCommands) {
     let messageEventStart = `\nclient.on('message', message => {\n    if (message.author.bot) return;\n`
 
-    let prefixVar = `\n    const prefix = ${prefix}`
+    let prefixVar = `\n    const prefix = '${prefix}'\n`
 
     let messageEventEnd = `\n    }\n})`
 
     let switches = switchCaseWithPrefixBuilder(prefix, prefixedCommands) + substringMatcher(unprefixedCommands)
 
-    return messageEventStart + switches + messageEventEnd
+    return messageEventStart + prefixVar + switches + messageEventEnd
 }
 
 
-export function assembleFullFile(prefix, token, commands, events) {
-    const file = `
-const Discord = require('discord.js');
-const client = new Discord.Client();
-
-client.commands = new Discord.Collection();
-
-client.once('ready', () => {
-    console.log('Bot is ready to go!)
-})\n`
-
+export function assembleFullFile(prefix, token, commands) {
     let prefixedCommands = []
     let unprefixedCommands = []
+    let events = []
     if (commands) {
         commands.forEach(cmd => {
             if (cmd.trigger.usesPrefix) {
                 prefixedCommands.push(cmd)
-            } else {
+            } else if (!cmd.trigger.usesPrefix && cmd.trigger.type === 'message') {
                 unprefixedCommands.push(cmd)
+            } else {
+                events.push(cmd)
             }
         })
     }
+    console.log('UNPREFIXED: ', unprefixedCommands)
+    console.log('EVENTS: ', events)
 
     let evs = ``
     if (events) {
         evs = nonMessageEventsBuidler(events)
     }
 
-    const comObjs = commandObjectsBuilder(commands)
+    const comObjs = commandObjectsBuilder([...prefixedCommands, ...unprefixedCommands])
 
     const msgEventHandler = messageEventAssembler(prefix, prefixedCommands, unprefixedCommands)
 
     const loginFunc = loginString(token)
 
-    const fullBot = file + evs + comObjs + msgEventHandler + loginFunc
+    const fullBot = fileStart + evs + comObjs + msgEventHandler + loginFunc
 
     return fullBot
 }

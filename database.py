@@ -8,11 +8,11 @@ from app.models import User, Bot, Rule
 # from alembic import op
 
 # print(db)
-ruleString1 = """{ "trigger": { "type": "message", "usesPrefix": "true", "details": { "string": "hi" } }, "response": [{ "type": "message", "details": { "string": "hi there!" } }] }"""
+ruleString1 = """{ "trigger": { "type": "message", "usesPrefix": "true", "details": { "string": "hi" } }, "response": [{ "type": "message", "details": { "string": "hi there!" } }, { "type": "ban", "details": { "string": "ban" } }] }"""
 
 ruleString2 = """{ "trigger": { "type": "message", "usesPrefix": "true", "details": { "string": "bye" } }, "response": [{ "type": "message", "details": { "string": "goodbye friend!" } }] }"""
 
-
+ruleString3 = """{ "trigger": { "type": "guildMemberAdd", "usePrefix": "false", "details": {"string": "noob" } }, "response": [{ "type": "addRole", "details": { "string": "noob" } }] }"""
 
 # op.bulk_insert('users', [
 #     {'username'}
@@ -36,6 +36,7 @@ with app.app_context():
 
     rule1 = Rule(bot_id=1, content=ruleString1)
     rule2 = Rule(bot_id=2, content=ruleString2)
+    rule3 = Rule(bot_id=1, content=ruleString3)
 
     db.session.add(user1)
     db.session.add(user2)
@@ -48,5 +49,6 @@ with app.app_context():
     db.session.add(bot5)
     db.session.add(rule1)
     db.session.add(rule2)
+    db.session.add(rule3)
 
     db.session.commit()

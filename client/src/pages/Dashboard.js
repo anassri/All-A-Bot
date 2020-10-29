@@ -16,6 +16,7 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { useConfirm } from 'material-ui-confirm';
 import { CardActionArea } from '@material-ui/core';
 import { loadBots, deleteBot } from '../store/bots';
+import Guide from '../components/Guide';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -114,6 +115,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
             <Tab label='Bots' {...a11yProps(0)} />
             <Tab label='Drafts' {...a11yProps(1)} />
             <Tab label='Bookmarked' {...a11yProps(2)} />
+            <Tab label='Guide' {...a11yProps(3)} />
           </Tabs>
         </AppBar>
         <TabPanel
@@ -232,6 +234,16 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                 );
               })}
           </div>
+        </TabPanel>
+        <TabPanel
+         value={value}
+         index={3}
+         style={{
+           backgroundColor: '#282828',
+           'border-bottom-left-radius': '5px',
+           'border-bottom-right-radius': '5px',
+         }}>
+           <Guide />
         </TabPanel>
       </div>
     </div>
