@@ -112,9 +112,9 @@ function assignRoleBuilder() {
         if (!message.mentions.users.size) {\n
             return message.reply('you need to tag a user');\n
         }\n
-        const taggedUser = message.mentions.users.first();\n
-        taggedUser.addRole(role);\n
-        message.reply(taggedUser + ' is now a ' + role);\n
+        const user = message.mentions.members.first()\n
+        user.roles.add(role);\n
+        message.reply(user.user.username + ' is now a ' + role.name);\n
     }\n`
 }
 

@@ -8,13 +8,13 @@ from app.models import User, Bot, Rule
 # from alembic import op
 
 # print(db)
-ruleString1 = """{ "trigger": { "type": "message", "usesPrefix": "true", "details": { "string": "hi" } }, "response": [{ "type": "message", "details": { "string": "hi there!" } }, { "type": "emoji", "details": { "string": "ok_hand" } }] }"""
+ruleString1 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": { "string": "hi" } }, "response": [{ "type": "message", "details": { "string": "hi there!" } }, { "type": "emoji", "details": { "string": "ok_hand" } }] }"""
 
-ruleString2 = """{ "trigger": { "type": "message", "usesPrefix": "true", "details": { "string": "bye" } }, "response": [{ "type": "message", "details": { "string": "goodbye friend!" } }] }"""
+ruleString2 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": { "string": "bye" } }, "response": [{ "type": "message", "details": { "string": "goodbye friend!" } }] }"""
 
-ruleString3 = """{ "trigger": { "type": "guildMemberAdd", "usePrefix": "false", "details": {"string": "noob" } }, "response": [{ "type": "addRole", "details": { "string": "noob" } }] }"""
+ruleString3 = """{ "trigger": { "type": "guildMemberAdd", "usePrefix": false, "details": {"string": "noob" } }, "response": [{ "type": "addRole", "details": { "string": "noob" } }] }"""
 
-ruleString4 = """{ "trigger": { "type": "message", "usePrefix": "true", "details": {"string": "role" } }, "response": [{ "type": "assignRole", "details": { "string": "" } }] }"""
+ruleString4 = """{ "trigger": { "type": "message", "usePrefix": true, "details": {"string": "role" } }, "response": [{ "type": "assignRole", "details": { "string": "" } }] }"""
 
 # op.bulk_insert('users', [
 #     {'username'}
