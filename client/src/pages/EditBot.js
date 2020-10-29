@@ -162,12 +162,7 @@ function EditBot({bot, botId, user, history}) {
                                 <FormControlLabel label="Uses prefix" control={<Checkbox checked={rules[i].content.trigger.usesPrefix}
                                            onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
                                 </FormControl>
-                                <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        value={rules[i].content.trigger.details.string}
-                                        label={`message ${rules[i].content.trigger.details.includesOrBeginsWith} string...`}
-                                        onChange={e => { setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } } } }); autoSave(); }} /></>
+                                </>
                                 : <></>
                             }
                         </Grid>
