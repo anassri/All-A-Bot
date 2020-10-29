@@ -2,21 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
 import { Link } from 'react-router-dom';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import EditIcon from '@material-ui/icons/Edit';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  AppBar,
+  Button,
+  Tabs,
+  Tab,
+  Typography,
+  Box,
+  Divider,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+} from '@material-ui/core/';
 import { useConfirm } from 'material-ui-confirm';
 import { CardActionArea } from '@material-ui/core';
-import { loadBots, deleteBot } from '../store/bots';
-import Guide from '../components/Guide';
+import { loadBot, loadBots, deleteBot } from '../store/bots';
+import { assembleFullFile } from '../utils/templateCreator';
+import { fileDownload, packageDownload } from '../utils/fileSaver';
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -66,17 +74,25 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispatch }) {
+export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch, deleteBotDispatch }) {
   const history = useHistory();
   const confirm = useConfirm();
 
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [botSyncNeeded, setBotSyncNeeded] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [developerToken, setDeveloperToken] = useState('');
 
   useEffect(() => {
     if (user) loadBotsDispatch(user, token);
   }, [user, botSyncNeeded]);
+
+  const handleOpen = () => setOpen(true);
+
+  const handleClose = () => setOpen(false);
+
+  const updateDeveloperToken = e => setDeveloperToken(e.target.value);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -97,7 +113,19 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
     const botId = event.target.id.match(/\d+/)[0];
   };
 
-  const handleDownload = event => {};
+  const handleDownload = botId => async event => {
+    const bot = bots.filter(bot => bot.id === botId);
+
+    const parsedRules = [];
+
+    if (bot.rules) bot.rules.forEach(rule => parsedRules.push(JSON.parse(rule.content)));
+
+    const file = assembleFullFile(bot.prefix, developerToken, parsedRules);
+
+    fileDownload(file);
+    packageDownload();
+    handleClose();
+  };
 
   const handleClone = event => {};
 
@@ -145,9 +173,28 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
                         <CardActionArea>
-                          <Link to={''} style={{ color: 'inherit' }} title='Download Bot'>
-                            <i onClick={handleDownload} id={`bot-${bot.id}`} className='fas fa-download'></i>
-                          </Link>
+                          <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
+                          <Dialog open={open} onClose={handleClose}>
+                            <DialogTitle>Developer Token</DialogTitle>
+                            <DialogContent>
+                              <DialogContentText>Enter your bot token:</DialogContentText>
+                            </DialogContent>
+                            <TextField
+                              autoFocus
+                              margin='dense'
+                              label='Developer Token'
+                              type='text'
+                              fullWidth
+                              onChange={updateDeveloperToken}
+                            />
+                            <DialogActions>
+                              <Button onClick={handleClose}>Cancel</Button>
+                              <Button onClick={handleDownload(bot.id)} className={`bot`}>
+                                Create my bot!
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+
                           <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
                             <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
                           </Link>
@@ -221,9 +268,28 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
-                        <Link to={''} style={{ color: 'inherit' }} title='Download Bot'>
-                          <i onClick={handleDownload} id={`bot-${bot.id}`} className='fas fa-download'></i>
-                        </Link>
+                        <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
+
+                        <Dialog open={open} onClose={handleClose}>
+                          <DialogTitle>Developer Token</DialogTitle>
+                          <DialogContent>
+                            <DialogContentText>Enter your bot token:</DialogContentText>
+                          </DialogContent>
+                          <TextField
+                            autoFocus
+                            margin='dense'
+                            label='Developer Token'
+                            type='text'
+                            fullWidth
+                            onChange={updateDeveloperToken}
+                          />
+                          <DialogActions>
+                            <Button onClick={handleClose}>Cancel</Button>
+                            <Button onClick={handleDownload(bot.id)} className={`bot`}>
+                              Create my bot!
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
                         <Link style={{ color: 'inherit' }} title='Clone Bot'>
                           <i onClick={handleClone} id={`bot-${bot.id}`} className='fas fa-clone'></i>
                         </Link>
@@ -255,6 +321,7 @@ export default function DashboardContainer() {
   const user = useSelector(state => state.auth.user);
   const token = useSelector(state => state.auth.token);
   const bots = useSelector(state => state.bots.list);
+  const loadBotDispatch = botId => dispatch(loadBot(botId));
   const loadBotsDispatch = (userId, token) => dispatch(loadBots(userId, token));
   const deleteBotDispatch = (botId, token) => dispatch(deleteBot(botId, token));
 
@@ -263,6 +330,7 @@ export default function DashboardContainer() {
       user={user}
       token={token}
       bots={bots}
+      loadBotDispatch={loadBotDispatch}
       loadBotsDispatch={loadBotsDispatch}
       deleteBotDispatch={deleteBotDispatch}
     />
