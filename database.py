@@ -39,6 +39,7 @@ with app.app_context():
     rule1 = Rule(bot_id=1, content=ruleString1)
     rule2 = Rule(bot_id=2, content=ruleString2)
     rule3 = Rule(bot_id=1, content=ruleString3)
+    rule4 = Rule(bot_id=4, content=ruleString4)
 
     db.session.add(user1)
     db.session.add(user2)
@@ -52,5 +53,6 @@ with app.app_context():
     db.session.add(rule1)
     db.session.add(rule2)
     db.session.add(rule3)
+    db.session.add(rule4)
 
     db.session.commit()
