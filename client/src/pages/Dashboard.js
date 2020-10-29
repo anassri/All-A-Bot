@@ -177,7 +177,6 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
                             <DialogContent>
                               <DialogContentText>Enter your bot token:</DialogContentText>
                             </DialogContent>
-                            <div>{bot.id}</div>
                             <TextField
                               autoFocus
                               margin='dense'
@@ -267,32 +266,28 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Typography variant='body2'>{bot.description}</Typography>
                       <div>
-                        <div>
-                          <button style={{ color: 'inherit' }} title='Download Bot'>
-                            <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
-                          </button>
-                          <Dialog open={open} onClose={handleClose}>
-                            <DialogTitle>Developer Token</DialogTitle>
-                            <DialogContent>
-                              <DialogContentText>Enter your bot token:</DialogContentText>
-                            </DialogContent>
-                            <div>{bot.id}</div>
-                            <TextField
-                              autoFocus
-                              margin='dense'
-                              label='Developer Token'
-                              type='text'
-                              fullWidth
-                              onChange={updateDeveloperToken}
-                            />
-                            <DialogActions>
-                              <Button onClick={handleClose}>Cancel</Button>
-                              <Button onClick={handleDownload(bot.id)} className={`bot`}>
-                                Create my bot!
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
-                        </div>
+                        <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
+
+                        <Dialog open={open} onClose={handleClose}>
+                          <DialogTitle>Developer Token</DialogTitle>
+                          <DialogContent>
+                            <DialogContentText>Enter your bot token:</DialogContentText>
+                          </DialogContent>
+                          <TextField
+                            autoFocus
+                            margin='dense'
+                            label='Developer Token'
+                            type='text'
+                            fullWidth
+                            onChange={updateDeveloperToken}
+                          />
+                          <DialogActions>
+                            <Button onClick={handleClose}>Cancel</Button>
+                            <Button onClick={handleDownload(bot.id)} className={`bot`}>
+                              Create my bot!
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
                         <Link style={{ color: 'inherit' }} title='Clone Bot'>
                           <i onClick={handleClone} id={`bot-${bot.id}`} className='fas fa-clone'></i>
                         </Link>

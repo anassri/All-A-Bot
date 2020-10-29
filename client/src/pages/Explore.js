@@ -101,7 +101,6 @@ const ListItem = ({ id, bot, name, description, username }) => {
             <DialogContent>
               <DialogContentText>Enter your bot token:</DialogContentText>
             </DialogContent>
-            <div>{bot.id}</div>
             <TextField
               autoFocus
               margin='dense'
