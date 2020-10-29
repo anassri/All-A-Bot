@@ -12,6 +12,7 @@ import DashboardContainer from './Dashboard';
 import ExploreContainer from './Explore';
 import BotContainer from './Bot';
 import CreateBot from './CreateBot';
+import RedirectContainer from './Redirect';
 
 export function Pages({ loadUserDispatch }) {
   useEffect(() => {
@@ -27,7 +28,7 @@ export function Pages({ loadUserDispatch }) {
       <Route exact path='/create-bot/' component={CreateBot}></Route>
       <Route exact path='/dashboard' component={DashboardContainer}></Route>
       <Route exact path='/bots/:id' component={BotContainer} />
-
+      <Route path='/auth/:code' component={RedirectContainer} />
     </>
   );
 }

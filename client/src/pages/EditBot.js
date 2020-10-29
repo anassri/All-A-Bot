@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Divider, Paper, RadioGroup, Radio, FormControlLabel } from '@material-ui/core';
+import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Divider, Paper, RadioGroup, Radio, FormControlLabel, Checkbox } from '@material-ui/core';
 import { loadBot } from '../store/bots'
 import { loadUser } from '../store/auth';
 import { makeStyles } from '@material-ui/core';
@@ -48,10 +48,16 @@ const useStyle = makeStyles((theme) => ({
     },
     formControl: {
         minWidth: '100%',
+    },
+    gridOverflow: {
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        width: '100%',
+        paddingTop: '10px'
     }
 }));
 
-function EditBot({bot, botId, user}) {
+function EditBot({bot, botId, user, history}) {
 
     const BLANK_RESPONSE = {type: "", details: { string: "" }}
     const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "", includesOrBeginsWith: "begins with" }}, response: [BLANK_RESPONSE] } };
@@ -63,13 +69,12 @@ function EditBot({bot, botId, user}) {
     const [isDraft, setIsDraft] = useState(true);
     const [autoSaveMsg, setAutoSaveMsg] = useState("");
     const [isSaving, setIsSaving] = useState(false);
-    
+
     const classes = useStyle();
 
+    if (!user || bot && bot.userId !== user.id) history.push('/login');
+
     useEffect(() => {
-        // console.log(bot);
-        // console.log(bot.rules);
-        // console.log(rules);
         if (rules.length === 0){
             setRules(bot.rules);
         }
@@ -91,7 +96,7 @@ function EditBot({bot, botId, user}) {
             body: JSON.stringify({bot: { ...bot, name: botName, prefix: (botPrefix || null), userId: user.id, isDraft: isDraft }, rules }),
         });
     }
-    
+
     const autoSave = () =>{
         if (!isSaving && user){
             setIsSaving(true);
@@ -107,6 +112,14 @@ function EditBot({bot, botId, user}) {
     }
     const setRule = (i, newRule) => {
         setRules([...rules.slice(0, i), newRule, ...rules.slice(i+1)]);
+    }
+
+    const setTrigger = (i, newTrigger) => {
+        setRule(i, {...rules[i], content: {...rules[i].content, trigger: newTrigger } })
+    }
+
+    const setResponse = (ruleIndex, responseIndex, newResponse) => {
+        setRule(ruleIndex, {...rules[ruleIndex], content: {...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), newResponse, ...rules[ruleIndex].content.response.slice(responseIndex+1)] }})
     }
 
     const RuleForm = ({i}) => {
@@ -130,7 +143,7 @@ function EditBot({bot, botId, user}) {
                                     variant="outlined"
                                     value={rules[i].content.trigger.type}
                                     fullWidth
-                                        onChange={(e) => { setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, type: e.target.value } } }); autoSave(); }}
+                                        onChange={(e) => { setTrigger(i, {...rules[i].content.trigger, type: e.target.value}); autoSave(); }}
                                     label="Select a Trigger"
                                 >
                                     <MenuItem value="message">Message</MenuItem>
@@ -140,20 +153,23 @@ function EditBot({bot, botId, user}) {
                         <Grid item xs className={classes.grid}>
                             {rules[i].content.trigger.type === "message"
                                 ? <>
-                                <FormControl>
-                                <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
-                                            onChange={e => {setRule(i, {...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value } } }}); autoSave();}}
-                                >
-                                    <FormControlLabel value="includes" control={<Radio />} label="Includes" />
-                                    <FormControlLabel value="begins with" control={<Radio />} label="Begins with" />
-                                </RadioGroup>
-                                </FormControl>
                                 <TextField
                                         variant="outlined"
                                         fullWidth
                                         value={rules[i].content.trigger.details.string}
                                         label={`message ${rules[i].content.trigger.details.includesOrBeginsWith} string...`}
-                                        onChange={e => { setRule(i, { ...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } } } }); autoSave(); }} /></>
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
+                                  <FormControl>
+                                        <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
+                                            onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value }})}
+                                >
+                                    <FormControlLabel value="includes" control={<Radio />} label="Includes" />
+                                    <FormControlLabel value="begins with" control={<Radio />} label="Begins with" />
+                                </RadioGroup>
+                                <FormControlLabel label="Uses prefix" control={<Checkbox checked={rules[i].content.trigger.usesPrefix}
+                                           onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
+                                </FormControl>
+                                </>
                                 : <></>
                             }
                         </Grid>
@@ -185,7 +201,7 @@ function EditBot({bot, botId, user}) {
                             variant="outlined"
                             value={rules[ruleIndex].content.response[responseIndex].type}
                             fullWidth
-                            onChange={(e) => { setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), { ...rules[ruleIndex].content.response[responseIndex], type: e.target.value }, ...rules[ruleIndex].content.response.slice(responseIndex + 1)] } }); autoSave(); }}
+                            onChange={(e) => { setResponse(ruleIndex, responseIndex, {...rules[ruleIndex].content.response[responseIndex], type: e.target.value}); autoSave(); }}
                             label="Select a Response"
                         >
                             <MenuItem value="message">Message</MenuItem>
@@ -200,9 +216,8 @@ function EditBot({bot, botId, user}) {
                         variant="outlined"
                         fullWidth
                         value={rules[ruleIndex].content.response[responseIndex].details.string}
-                        label={rules[ruleIndex].content.response[responseIndex].type === "message" ? "message string" 
-                                                                                                    : "emoji name"}
-                        onChange={e => { setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{ ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }] } }); autoSave(); }} />
+                        label={rules[ruleIndex].content.response[responseIndex].type === "message" ? "message string" : "emoji name"}
+                        onChange={e => { setResponse(ruleIndex, responseIndex, {...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value }}); autoSave(); }} />
                         : <></>}
                 </Grid>
             </Grid>
@@ -231,17 +246,19 @@ function EditBot({bot, botId, user}) {
                 </Grid>
                 <Divider />
 
+                <Grid className={classes.gridOverflow}>
                 {rules.map((rule, i) => <Box key={i}><RuleForm i={i} /></Box>)}
                 <Button onClick={addRule} >Add rule</Button>
+                </Grid>
 
                 <Grid container spacing={3} justify="flex-end" style={{paddingRight: 35}}>
-                    {autoSaveMsg 
+                    {autoSaveMsg
                     ?   <Grid item xs>
                             <Alert variant="outlined" severity="success">
                                 {autoSaveMsg}
                             </Alert>
                         </Grid>
-                    : null 
+                    : null
                     }
                     <Grid item xs={3} sm={1}>
                         <Button onClick={saveBot} size="medium" variant="contained" color="primary">Save</Button>
@@ -249,9 +266,9 @@ function EditBot({bot, botId, user}) {
                     <Grid item xs={3} sm={1} >
                         <Button onClick={()=> { saveBot();
                                                 setIsDraft(false);
-                                            }} 
-                                size="medium" 
-                                variant="contained" 
+                                            }}
+                                size="medium"
+                                variant="contained"
                                 color="primary">{bot.name ? "SUBMIT CHANGES" : "CREATE"}</Button>
                     </Grid>
                 </Grid>
@@ -274,6 +291,6 @@ export default function EditBotContainer(props) {
         if (!user) dispatch(loadUser())
     }, []);
 
-    return (<EditBot bot={bot} user={user} botId={botId} />);
+    return (<EditBot bot={bot} user={user} botId={botId} history={props.history} />);
 
 }
