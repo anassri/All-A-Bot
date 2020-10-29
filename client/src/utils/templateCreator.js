@@ -43,6 +43,8 @@ function commandObjectsBuilder(objList) {
             cmd.response.forEach(res => {
                 if (res.type === "message") {
                     commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${basicResponseBuilder(res.details.string)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
+                } else if (res.type === "roleCreate") {
+                    commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${basicResponseBuilder(cmd.args)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
                 }
             })
             // Add else if here for events other than send for when a prefixed command has other actions such as kick, delete, or ban
@@ -62,6 +64,9 @@ function commandObjectsBuilder(objList) {
 
 // Basic helper function for creating basic send message commands
 function basicResponseBuilder(response) {
+    return `message.channel.send('${response}')`
+}
+function basicResponseBuilder2(response) {
     return `message.channel.send('${response}')`
 }
 

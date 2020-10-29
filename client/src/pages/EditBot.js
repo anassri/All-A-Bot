@@ -141,7 +141,7 @@ function EditBot({bot, botId, user}) {
                                 ? <>
                                 <FormControl>
                                 <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
-                                            onChange={e => setRule(i, {...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value } } }})}
+                                            onChange={e => {setRule(i, {...rules[i], content: { ...rules[i].content, trigger: { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value } } }}); autoSave();}}
                                 >
                                     <FormControlLabel value="includes" control={<Radio />} label="Includes" />
                                     <FormControlLabel value="begins with" control={<Radio />} label="Begins with" />
