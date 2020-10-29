@@ -67,7 +67,7 @@ export function Navigation({ logoutDispatch, user }) {
         </NavLink>
       </div>
       <div className={classes.buttons}>
-        <NavBtn link='/create-bot' label='CREATE A BOT' icon='fas fa-robot' />
+        <NavBtn link={user ? '/create-bot' : '/login'} label='CREATE A BOT' icon='fas fa-robot' />
         <NavBtn link='/' label='EXPLORE BOTS' icon='far fa-compass' />
         <NavBtn link={user ? '/dashboard' : '/login'} label='DASHBOARD' icon='fas fa-user-circle' />
         <div>
