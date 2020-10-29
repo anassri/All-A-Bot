@@ -41,17 +41,28 @@ def login():
         return {'msg': 'Incorrect email or password'}, 400
 
 
-@bp.route('/auth', methods=['GET'])
-def auth():
-    print(Oauth.discord_login_url)
-    return redirect(Oauth.discord_login_url)
-
-
-@bp.route('/auth/redirect', methods=['GET'])
-def auth_redirect():
-    code = request.args.get('code')
+@bp.route('/auth/<code>', methods=['GET'])
+def auth_redirect(code):
     access_token = Oauth.get_access_token(code)
     user_json = Oauth.get_user_json(access_token)
     username = user_json.get('username')
     email = user_json.get('email')
-    return {'username': username, 'email': email}
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+        # Sign up
+        user = User(
+            username=email,
+            email=email,
+            password=access_token
+        )
+
+        db.session.add(user)
+        db.session.commit()
+
+        token = create_access_token(identity=user.email)
+        return jsonify(user=user.to_dict(), token=token)
+
+    else:
+        # Log in
+        token = create_access_token(identity=user.email)
+        return jsonify(user=user.to_dict(), token=token)
