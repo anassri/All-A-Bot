@@ -24,7 +24,7 @@ import { CardActionArea } from '@material-ui/core';
 import { loadBot, loadBots, deleteBot } from '../store/bots';
 import { assembleFullFile } from '../utils/templateCreator';
 import { fileDownload, packageDownload } from '../utils/fileSaver';
-
+import Guide from '../components/Guide'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

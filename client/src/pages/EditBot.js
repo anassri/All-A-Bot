@@ -90,6 +90,18 @@ function EditBot({bot, botId, user, history}) {
         setRules([...rules, newRule]);
     }
 
+    function sendMessage() {
+        var request = new XMLHttpRequest();
+        request.open("POST", "https://discord.com/api/webhooks/771496517839224843/od7qFBIvQpoL_GFkM2TBBEd0ZhoX8ApXjTZ7pEFyUW6yd1gEtJ4VCN5YG98RuqennbHV")
+        request.setRequestHeader('Content-type', 'application/json');
+        const params = {
+            username: 'All A Bot Bot',
+            avatar_url: "",
+            content: `New bot created! Check it out here: localhost:3000/bots/${botId}`
+        }
+        request.send(JSON.stringify(params))
+    }
+
     const saveBot = async () => {
         console.log(botPrefix);
         console.log(user);
@@ -98,6 +110,9 @@ function EditBot({bot, botId, user, history}) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({bot: { ...bot, name: botName, prefix: (botPrefix || null), userId: user.id, isDraft: isDraft }, rules }),
         });
+        if (!isDraft && !bot.name) {
+            sendMessage()
+        }
     }
 
     const autoSave = () =>{
