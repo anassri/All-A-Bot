@@ -52,6 +52,7 @@ const useStyle = makeStyles((theme) => ({
     gridOverflow: {
         overflowY: 'auto',
         overflowX: 'hidden',
+        // scrollBar: "rgba(232,232,232,1)",
         width: '100%',
         paddingTop: '10px'
     }
@@ -207,6 +208,7 @@ function EditBot({bot, botId, user, history}) {
                             <MenuItem value="message">Message</MenuItem>
                             <MenuItem value="emoji">Emoji react to triggering message</MenuItem>
                             <MenuItem value="assignRole">Assign a role to member</MenuItem>
+                            <MenuItem value="removeRole">Remove a role from member</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>

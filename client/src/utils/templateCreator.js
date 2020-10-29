@@ -61,6 +61,8 @@ function commandObjectsBuilder(objList) {
                     objTemplate += `\n    ${reactionBuilder(res.details.string)}\n`
                 } else if (res.type === "assignRole") {
                     objTemplate += `\n    ${assignRoleBuilder()}`
+                } else if (res.type === "removeRole") {
+                    objTemplate += `\n    ${removeRoleBuilder()}`
                 }
             })
             commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})\n`
@@ -115,6 +117,19 @@ function assignRoleBuilder() {
         const user = message.mentions.members.first()
         user.roles.add(role);
         message.reply(user.user.username + " is now a " + role.name);
+    }`
+}
+function removeRoleBuilder() {
+    return `    let role = await message.guild.roles.cache.find(x => x.name === args[1]);
+    if (!role) {
+        message.reply("Role doesn't exist, either create that role or type a valid role");
+    } else {
+        if (!message.mentions.users.size) {
+            return message.reply("you need to tag a user");
+        }
+        const user = message.mentions.members.first()
+        user.roles.remove(role);
+        message.reply(user.user.username + " is no longer a " + role.name);
     }`
 }
 
