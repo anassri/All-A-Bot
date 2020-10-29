@@ -58,12 +58,12 @@ function commandObjectsBuilder(objList) {
                 } else if (res.type === "ban") {
                     objTemplate += `\n    ${banBuilder()}\n`
                 } else if (res.type === "emoji") {
-                    objTemplate += `\n    ${reactionBuilder(cmd.trigger.details.string)}`
+                    objTemplate += `\n    ${reactionBuilder(res.details.string)}\n`
                 } else if (res.type === "assignRole") {
                     objTemplate += `\n    ${assignRoleBuilder()}`
                 }
             })
-            commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})`
+            commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})\n`
             // Add else if here for events other than send for when a prefixed command has other actions such as kick, delete, or ban
         } else if (!cmd.trigger.usesPrefix) {
             let objTemplate = `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {`
@@ -72,7 +72,7 @@ function commandObjectsBuilder(objList) {
                     objTemplate += `${basicResponseBuilder(res.details.string)}\n`
                 }
             })
-            commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})`
+            commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})\n`
         } else {
             // Add command object creation for any other types we may add (if they don't get put into else ifs as needed)
         }
@@ -92,17 +92,16 @@ function banBuilder() {
 }
 
 function reactionBuilder(emojiName) {
-    const name = emojiName.trim()
+    let name = emojiName.trim()
     if (name.includes(':')) {
         name = name.replace(':', '')
     }
     
     const reactAction = `
-    const emoji = await message.guild.emojis.cache.find(emoji => emoji.name === ${emojiName})
-    if (emoji) {
-        message.react(emoji)
-    }
+    const emoji = await client.emojis.cache.find(emoji => emoji.name === '${emojiName}')
+    message.react(emoji)
     `
+    return reactAction
 }
 
 function assignRoleBuilder() {
@@ -133,7 +132,7 @@ function autoRoleBuilder(roleName) {
 
 // Builds the switch case inside a conditional for messages that start with a prefix
 function switchCaseWithPrefixBuilder(prefix, commands) {
-    let ifStatement = `    if (!message.content.startsWith('${prefix}')) {\n`
+    let ifStatement = `\n    if (message.content.startsWith('${prefix}')) {\n`
 
     let args = `        const args = message.content.slice(prefix.length).split(/ +/);\n`
 
@@ -160,7 +159,7 @@ function switchCaseWithPrefixBuilder(prefix, commands) {
 function substringMatcher(commands) {
     let substringCheck = `        const checkContains = (message, term) => message.content.includes(term)\n`
 
-    let ifStatement = `        if (checkContais(message, client.commands.first().name)) {\n            client.commands.get(client.commands.first().name)\n`
+    let ifStatement = `        if (checkContains(message, client.commands.first().name)) {\n            client.commands.get(client.commands.first().name)\n`
 
     let elifStatements = ``
     commands.forEach(command => {
@@ -168,7 +167,7 @@ function substringMatcher(commands) {
             `        } else if (checkContains(message, '${command.trigger.details.string}')):\n            client.commands.get('${command.trigger.details.string}').execute(message);\n`)
     })
 
-    let checks = ifStatement + elifStatements + '        }'
+    let checks = ifStatement + elifStatements + '        }\n'
 
     let fullBlock = substringCheck += checks
     return fullBlock
@@ -203,8 +202,6 @@ export function assembleFullFile(prefix, token, commands) {
             }
         })
     }
-    console.log('UNPREFIXED: ', unprefixedCommands)
-    console.log('EVENTS: ', events)
 
     let evs = ``
     if (events) {
