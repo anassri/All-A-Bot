@@ -34,9 +34,13 @@ function ${funcName}(client) {
 
         event.response.forEach(res => {
             if (res.type === 'addRole') {
-                    eventStart += autoRoleBuilder(res.details.string)
-                    fileStart += eventStart
-                    onReadyStart += `    ${funcName}(client)`
+                eventStart += autoRoleBuilder(res.details.string)
+                fileStart += eventStart
+                onReadyStart += `    ${funcName}(client)`
+            } else if (res.type === 'message') {
+                eventStart += leaveJoinMessageBuilder(res.details.string, event.trigger.details.string)
+                fileStart += eventStart
+                onReadyStart += `${funcName}(client)`
             }
         })
     })
@@ -100,6 +104,19 @@ function reactionBuilder(emojiName) {
     message.react(emoji)
     `
     return reactAction
+}
+
+function leaveJoinMessageBuilder(message, channelName) {
+    let start = `async member => {\n`
+    let messageVar = `    let message = ${message}\n`
+    let messageCheck = `
+    if (message.includes('user')) {
+        message.replace('user', \`<@\${message.member.id}>\`)
+    }\n`
+
+    let channelSelect = `    let channel = await member.guild.channels.find(channel => channel.name.toLowerCase() === '${channelName}')\n`
+    let end = `    channel.send(message)\n})}\n\n`
+    return start + messageVar + messageCheck + channelSelect + end
 }
 
 function autoRoleBuilder(roleName) {

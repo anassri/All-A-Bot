@@ -16,6 +16,8 @@ ruleString3 = """{ "trigger": { "type": "guildMemberAdd", "usesPrefix": false, "
 
 ruleString4 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": {"string": "role" } }, "response": [{ "type": "assignRole", "details": { "string": "" } }] }"""
 
+ruleString4 = """{ "trigger": { "type": "guildMemberRemove", "usesPrefix": false, "details": { "string": "general" } }, "response": [{ "type": "message", "details": { "string": "user has left the server" } }] }"""
+
 # op.bulk_insert('users', [
 #     {'username'}
 # ])
