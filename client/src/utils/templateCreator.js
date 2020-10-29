@@ -105,17 +105,17 @@ function reactionBuilder(emojiName) {
 }
 
 function assignRoleBuilder() {
-    return `    let role = await message.guild.roles.cache.find(x => x.name === args[1]);\n
-    if (typeof role === undefined) {\n
-        message.reply('Role doesn't exist, either create that role or type a valid role');\n
-    } else {\n
-        if (!message.mentions.users.size) {\n
-            return message.reply('you need to tag a user');\n
-        }\n
-        const user = message.mentions.members.first()\n
-        user.roles.add(role);\n
-        message.reply(user.user.username + ' is now a ' + role.name);\n
-    }\n`
+    return `    let role = await message.guild.roles.cache.find(x => x.name === args[1]);
+    if (!role) {
+        message.reply("Role doesn't exist, either create that role or type a valid role");
+    } else {
+        if (!message.mentions.users.size) {
+            return message.reply("you need to tag a user");
+        }
+        const user = message.mentions.members.first()
+        user.roles.add(role);
+        message.reply(user.user.username + " is now a " + role.name);
+    }`
 }
 
 function autoRoleBuilder(roleName) {

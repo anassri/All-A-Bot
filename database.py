@@ -12,9 +12,9 @@ ruleString1 = """{ "trigger": { "type": "message", "usesPrefix": true, "details"
 
 ruleString2 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": { "string": "bye" } }, "response": [{ "type": "message", "details": { "string": "goodbye friend!" } }] }"""
 
-ruleString3 = """{ "trigger": { "type": "guildMemberAdd", "usePrefix": false, "details": {"string": "noob" } }, "response": [{ "type": "addRole", "details": { "string": "noob" } }] }"""
+ruleString3 = """{ "trigger": { "type": "guildMemberAdd", "usesPrefix": false, "details": {"string": "noob" } }, "response": [{ "type": "addRole", "details": { "string": "noob" } }] }"""
 
-ruleString4 = """{ "trigger": { "type": "message", "usePrefix": true, "details": {"string": "role" } }, "response": [{ "type": "assignRole", "details": { "string": "" } }] }"""
+ruleString4 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": {"string": "role" } }, "response": [{ "type": "assignRole", "details": { "string": "" } }] }"""
 
 # op.bulk_insert('users', [
 #     {'username'}

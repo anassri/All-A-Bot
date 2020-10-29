@@ -190,19 +190,18 @@ function EditBot({bot, botId, user}) {
                         >
                             <MenuItem value="message">Message</MenuItem>
                             <MenuItem value="emoji">Emoji react to triggering message</MenuItem>
-                            <MenuItem value="assignRole">Assign a role to memeber</MenuItem>
+                            <MenuItem value="assignRole">Assign a role to member</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
                 <Grid item xs className={classes.grid}>
-                    {["message", "emoji", "assignRole"].includes(rules[ruleIndex].content.response[responseIndex].type)
+                    {["message", "emoji"].includes(rules[ruleIndex].content.response[responseIndex].type)
                         ? <TextField
                         variant="outlined"
                         fullWidth
                         value={rules[ruleIndex].content.response[responseIndex].details.string}
                         label={rules[ruleIndex].content.response[responseIndex].type === "message" ? "message string" 
-                                                                                        : "emoji" ? "emoji name"
-                                                                                        : "role"}
+                                                                                                    : "emoji name"}
                         onChange={e => { setRule(ruleIndex, { ...rules[ruleIndex], content: { ...rules[ruleIndex].content, response: [{ ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }] } }); autoSave(); }} />
                         : <></>}
                 </Grid>
