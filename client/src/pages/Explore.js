@@ -95,9 +95,7 @@ const ListItem = ({ id, bot, name, description, username }) => {
       </CardActionArea>
       <div className={classes.content}>
         <div>
-          <button style={{ color: 'inherit' }} title='Download Bot'>
-            <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
-          </button>
+          <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
           <Dialog open={isOpen} onClose={handleClose}>
             <DialogTitle>Developer Token</DialogTitle>
             <DialogContent>
