@@ -94,6 +94,7 @@ function EditBot({bot, botId, user, history}) {
     const saveBot = async () => {
         console.log(botPrefix);
         console.log(user);
+        console.log(botId);
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
