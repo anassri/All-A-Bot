@@ -107,6 +107,14 @@ function EditBot({bot, botId, user, history}) {
         setRules([...rules.slice(0, i), newRule, ...rules.slice(i+1)]);
     }
 
+    const setTrigger = (i, newTrigger) => {
+        setRule(i, {...rules[i], content: {...rules[i].content, trigger: newTrigger } })
+    }
+
+    const setResponse = (ruleIndex, responseIndex, newResponse) => {
+        setRule(ruleIndex, {...rules[ruleIndex], content: {...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), newResponse, ...rules[ruleIndex].content.response.slice(responseIndex+1)] }})
+    }
+
     const RuleForm = ({i}) => {
         return (
         <>
