@@ -51,9 +51,9 @@ const useStyle = makeStyles(theme => ({
 const ListItem = ({ id, name, description, username }) => {
   const classes = useStyle();
   return (
-    <Grid item xs={12} className={classes.bot}>
+    <Grid key={id} item xs={12} className={classes.bot}>
       <CardActionArea className={classes.action}>
-        <Link key={id} to={`/bots/${id}`} style={{ color: 'inherit' }}>
+        <Link to={`/bots/${id}`} style={{ color: 'inherit' }}>
           <Typography variant='h5' component='h2' style={{ fontWeight: 'bold' }}>
             {name}
           </Typography>
@@ -65,10 +65,10 @@ const ListItem = ({ id, name, description, username }) => {
         </Link>
       </CardActionArea>
       <div className={classes.content}>
-        <Link key={id} to={``} style={{ color: 'inherit' }} title='Download Bot'>
+        <Link to={``} style={{ color: 'inherit' }} title='Download Bot'>
           <i className='fas fa-download fa-lg'></i>
         </Link>
-        <Link key={id} to={``} style={{ color: 'inherit' }} title='Clone Bot'>
+        <Link to={``} style={{ color: 'inherit' }} title='Clone Bot'>
           <i className='fas fa-clone fa-lg'></i>
         </Link>
       </div>
@@ -130,6 +130,7 @@ export function Explore({ bots }) {
               {botsMatchingQuery.map(bot => (
                 <ListItem
                   name={bot.name}
+                  key={bot.id}
                   id={bot.id}
                   description={bot.description}
                   username={bot.owner.username}
