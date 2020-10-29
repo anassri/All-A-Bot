@@ -36,11 +36,11 @@ function ${funcName}(client) {
             if (res.type === 'addRole') {
                 eventStart += autoRoleBuilder(res.details.string)
                 fileStart += eventStart
-                onReadyStart += `    ${funcName}(client)`
+                onReadyStart += `    ${funcName}(client)\n`
             } else if (res.type === 'message') {
                 eventStart += leaveJoinMessageBuilder(res.details.string, event.trigger.details.string)
                 fileStart += eventStart
-                onReadyStart += `${funcName}(client)`
+                onReadyStart += `    ${funcName}(client)\n`
             }
         })
     })
@@ -100,22 +100,23 @@ function reactionBuilder(emojiName) {
     }
 
     const reactAction = `
-    const emoji = await client.emojis.cache.find(emoji => emoji.name === '${emojiName}')
+    const emoji = await client.emojis.cache.find(emoji => emoji.name === '${name}')
     message.react(emoji)
     `
     return reactAction
 }
 
-function leaveJoinMessageBuilder(message, channelName) {
+function leaveJoinMessageBuilder(message, channelName = 'general') {
+    channelName = channelName.toLowerCase()
     let start = `async member => {\n`
-    let messageVar = `    let message = ${message}\n`
+    let messageVar = `        let message = '${message}'\n`
     let messageCheck = `
-    if (message.includes('user')) {
-        message.replace('user', \`<@\${message.member.id}>\`)
-    }\n`
+        if (message.includes('user')) {
+            message = message.replace('user', \`<@\${member.id}>\`)
+        }\n`
 
-    let channelSelect = `    let channel = await member.guild.channels.find(channel => channel.name.toLowerCase() === '${channelName}')\n`
-    let end = `    channel.send(message)\n})}\n\n`
+    let channelSelect = `        let channel = await member.guild.channels.cache.find(channel => channel.name === '${channelName}')\n`
+    let end = `        channel.send(message)\n})}\n\n`
     return start + messageVar + messageCheck + channelSelect + end
 }
 

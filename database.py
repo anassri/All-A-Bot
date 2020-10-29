@@ -16,7 +16,9 @@ ruleString3 = """{ "trigger": { "type": "guildMemberAdd", "usesPrefix": false, "
 
 ruleString4 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": {"string": "role" } }, "response": [{ "type": "assignRole", "details": { "string": "" } }] }"""
 
-ruleString4 = """{ "trigger": { "type": "guildMemberRemove", "usesPrefix": false, "details": { "string": "general" } }, "response": [{ "type": "message", "details": { "string": "user has left the server" } }] }"""
+ruleString5 = """{ "trigger": { "type": "guildMemberRemove", "usesPrefix": false, "details": { "string": "general" } }, "response": [{ "type": "message", "details": { "string": "user has left the server" } }] }"""
+
+ruleString6 = """{ "trigger": { "type": "guildMemberAdd", "usesPrefix": false, "details": { "string": "Student" } }, "response": [{ "type": "addRole", "details": { "string": "Student" } }] }"""
 
 # op.bulk_insert('users', [
 #     {'username'}
@@ -41,7 +43,8 @@ with app.app_context():
     rule1 = Rule(bot_id=1, content=ruleString1)
     rule2 = Rule(bot_id=2, content=ruleString2)
     rule3 = Rule(bot_id=1, content=ruleString3)
-    rule4 = Rule(bot_id=4, content=ruleString4)
+    rule4 = Rule(bot_id=4, content=ruleString5)
+    rule5 = Rule(bot_id=4, content=ruleString6)
 
     db.session.add(user1)
     db.session.add(user2)
@@ -56,5 +59,6 @@ with app.app_context():
     db.session.add(rule2)
     db.session.add(rule3)
     db.session.add(rule4)
+    db.session.add(rule5)
 
     db.session.commit()
