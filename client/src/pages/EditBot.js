@@ -48,6 +48,12 @@ const useStyle = makeStyles((theme) => ({
     },
     formControl: {
         minWidth: '100%',
+    },
+    gridOverflow: {
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        width: '100%',
+        paddingTop: '10px'
     }
 }));
 
@@ -238,8 +244,10 @@ function EditBot({bot, botId, user, history}) {
                 </Grid>
                 <Divider />
 
+                <Grid className={classes.gridOverflow}>
                 {rules.map((rule, i) => <Box key={i}><RuleForm i={i} /></Box>)}
                 <Button onClick={addRule} >Add rule</Button>
+                </Grid>
 
                 <Grid container spacing={3} justify="flex-end" style={{paddingRight: 35}}>
                     {autoSaveMsg
