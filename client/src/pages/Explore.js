@@ -10,11 +10,20 @@ import {
   Paper,
   Grid,
   makeStyles,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
 import { loadAllBots } from '../store/bots';
 import '../style/explore.css';
+
+import { assembleFullFile } from '../utils/templateCreator';
+import { fileDownload, packageDownload } from '../utils/fileSaver';
 
 const useStyle = makeStyles(theme => ({
   root: {
@@ -48,8 +57,28 @@ const useStyle = makeStyles(theme => ({
     opacity: 0.7,
   },
 }));
-const ListItem = ({ id, name, description, username }) => {
+const ListItem = ({ id, bot, name, description, username }) => {
   const classes = useStyle();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [developerToken, setDeveloperToken] = useState('');
+
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
+  const updateDeveloperToken = e => setDeveloperToken(e.target.value);
+
+  const handleDownload = () => async event => {
+    const parsedRules = [];
+
+    if (bot.rules) bot.rules.forEach(rule => parsedRules.push(JSON.parse(rule.content)));
+
+    const file = assembleFullFile(bot.prefix, developerToken, parsedRules);
+
+    fileDownload(file);
+    packageDownload();
+    handleClose();
+  };
+
   return (
     <Grid key={id} item xs={12} className={classes.bot}>
       <CardActionArea className={classes.action}>
@@ -65,10 +94,30 @@ const ListItem = ({ id, name, description, username }) => {
         </Link>
       </CardActionArea>
       <div className={classes.content}>
-        <Link to={``} style={{ color: 'inherit' }} title='Download Bot'>
-          <i className='fas fa-download fa-lg'></i>
-        </Link>
-        <Link to={``} style={{ color: 'inherit' }} title='Clone Bot'>
+        <div>
+          <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
+          <Dialog open={isOpen} onClose={handleClose}>
+            <DialogTitle>Developer Token</DialogTitle>
+            <DialogContent>
+              <DialogContentText>Enter your bot token:</DialogContentText>
+            </DialogContent>
+            <TextField
+              autoFocus
+              margin='dense'
+              label='Developer Token'
+              type='text'
+              fullWidth
+              onChange={updateDeveloperToken}
+            />
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button onClick={handleDownload(bot.id)} className={`bot`}>
+                Create my bot!
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+        <Link key={id} to={``} style={{ color: 'inherit' }} title='Clone Bot'>
           <i className='fas fa-clone fa-lg'></i>
         </Link>
       </div>
@@ -132,6 +181,7 @@ export function Explore({ bots }) {
                   name={bot.name}
                   key={bot.id}
                   id={bot.id}
+                  bot={bot}
                   description={bot.description}
                   username={bot.owner.username}
                   style={{ textAlign: 'left' }}
