@@ -51,20 +51,26 @@ function commandObjectsBuilder(objList) {
     objList.forEach(cmd => {
         const varName = cmd.trigger.details.string + '_' + randStringMaker()
         if (cmd.trigger.usesPrefix) {
+            let objTemplate = `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {`
             cmd.response.forEach(res => {
                 if (res.type === "message") {
-                    commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${basicResponseBuilder(res.details.string)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
+                    objTemplate += `\n    ${basicResponseBuilder(res.details.string)}\n`
                 } else if (res.type === "ban") {
-                    commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${banBuilder()}}\nclient.commands.set(${varName}.name, ${varName})\n`
+                    objTemplate += `\n    ${banBuilder()}\n`
+                } else if (res.type === "emoji") {
+                    objTemplate += `\n    ${reactionBuilder(cmd.trigger.details.string)}`
                 }
             })
+            commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})`
             // Add else if here for events other than send for when a prefixed command has other actions such as kick, delete, or ban
         } else if (!cmd.trigger.usesPrefix) {
+            let objTemplate = `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {`
             cmd.response.forEach(res => {
                 if (res.type === "message") {
-                    commandObjects += `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {${basicResponseBuilder(res.details.string)}}}\nclient.commands.set(${varName}.name, ${varName})\n`
+                    objTemplate += `${basicResponseBuilder(res.details.string)}\n`
                 }
             })
+            commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})`
         } else {
             // Add command object creation for any other types we may add (if they don't get put into else ifs as needed)
         }
@@ -83,13 +89,28 @@ function banBuilder() {
     return banAction
 }
 
+function reactionBuilder(emojiName) {
+    const name = emojiName.trim()
+    if (name.includes(':')) {
+        name = name.replace(':', '')
+    }
+
+    const reactAction = `
+    const emoji = await message.guild.emojis.cache.find(emoji => emoji.name === ${emojiName})
+    if (emoji) {
+        message.react(emoji)
+    }
+    `
+}
+
 function autoRoleBuilder(roleName) {
     return (
 `async member => {
-         const role = await member.guild.roles.cache.find(role => role.name === '${roleName}')
-         if (role) {
-            member.roles.add(role)
-         }
+        const role = await member.guild.roles.cache.find(role => role.name === '${roleName}')
+        if (!role) {
+            role = await member.guild.roles.create({ data: { name: '${roleName}'}})
+        }
+        member.roles.add(role)
     })
 }\n\n`)
 }
@@ -123,7 +144,7 @@ function switchCaseWithPrefixBuilder(prefix, commands) {
 function substringMatcher(commands) {
     let substringCheck = `        const checkContains = (message, term) => message.content.includes(term)\n`
 
-    let ifStatement = `        if (checkContain(message, client.commands.first().name)) {\n            client.commands.get(client.commands.first().name)\n`
+    let ifStatement = `        if (checkContais(message, client.commands.first().name)) {\n            client.commands.get(client.commands.first().name)\n`
 
     let elifStatements = ``
     commands.forEach(command => {
@@ -160,21 +181,21 @@ export function assembleFullFile(prefix, token, commands) {
             if (cmd.trigger.usesPrefix) {
                 prefixedCommands.push(cmd)
             } else if (!cmd.trigger.usesPrefix && cmd.trigger.type === 'message') {
-                console.log('inside else if')
                 unprefixedCommands.push(cmd)
             } else {
-                console.log('here')
                 events.push(cmd)
             }
         })
     }
+    console.log('UNPREFIXED: ', unprefixedCommands)
+    console.log('EVENTS: ', events)
 
     let evs = ``
     if (events) {
         evs = nonMessageEventsBuidler(events)
     }
 
-    const comObjs = commandObjectsBuilder(commands)
+    const comObjs = commandObjectsBuilder([...prefixedCommands, ...unprefixedCommands])
 
     const msgEventHandler = messageEventAssembler(prefix, prefixedCommands, unprefixedCommands)
 
