@@ -9,6 +9,7 @@ class Oauth(object):
     redirect_uri = 'http://localhost:3000/auth/redirect'
     discord_login_url = 'https://discord.com/api/oauth2/authorize?client_id=771154573795655680&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fredirect&response_type=code&scope=identify%20email%20connections%20guilds'
     discord_token_url = 'https://discordapp.com/api/oauth2/token'
+    discord_api_url = 'https://discordapp.com/api'
 
     @staticmethod
     def get_access_token(code):
@@ -31,3 +32,15 @@ class Oauth(object):
         print('access_token', access_token.json())
         json = access_token.json()
         return json.get('access_token')
+
+    @staticmethod
+    def get_user_json(access_token):
+        url = Oauth.discord_api_url+'/users/@me'
+
+        headers = {
+            'Authorization': f'Bearer {access_token}'
+        }
+
+        user_object = requests.get(url=url, headers=headers)
+        user_json = user_object.json()
+        return user_json

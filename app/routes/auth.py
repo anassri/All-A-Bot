@@ -51,4 +51,7 @@ def auth():
 def auth_redirect():
     code = request.args.get('code')
     access_token = Oauth.get_access_token(code)
-    return access_token
+    user_json = Oauth.get_user_json(access_token)
+    username = user_json.get('username')
+    email = user_json.get('email')
+    return {'username': username, 'email': email}
