@@ -96,7 +96,7 @@ function reactionBuilder(emojiName) {
     if (name.includes(':')) {
         name = name.replace(':', '')
     }
-    
+
     const reactAction = `
     const emoji = await client.emojis.cache.find(emoji => emoji.name === '${emojiName}')
     message.react(emoji)
@@ -164,7 +164,7 @@ function substringMatcher(commands) {
     let elifStatements = ``
     commands.forEach(command => {
         elifStatements += (
-            `        } else if (checkContains(message, '${command.trigger.details.string}')):\n            client.commands.get('${command.trigger.details.string}').execute(message);\n`)
+            `        } else if (checkContains(message, '${command.trigger.details.string}'));\n            client.commands.get('${command.trigger.details.string}').execute(message);\n`)
     })
 
     let checks = ifStatement + elifStatements + '        }\n'
