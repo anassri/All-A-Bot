@@ -242,9 +242,6 @@ function EditBot({bot, botId, user, history}) {
                     <Grid item xs className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => {setBotPrefix(e.target.value); autoSave();}}></TextField>
                     </Grid>
-                    <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth label="Developer Token" value={botPrefix} onChange={e => { setBotPrefix(e.target.value); autoSave(); }}></TextField>
-                    </Grid>
                     <Grid item xs={12} className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Description" value={botDescription} onChange={e => { setBotDescription(e.target.value); autoSave(); }}></TextField>
                     </Grid>
