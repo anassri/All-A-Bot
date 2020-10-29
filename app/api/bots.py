@@ -15,6 +15,7 @@ def index():
     data = [bot.to_dict() for bot in bots]
     return jsonify(data), 200
 
+
 @bot_routes.route('/<int:id>', methods=['GET'])
 def get_bot(id=0):
     print("Reached the route!")
@@ -71,7 +72,6 @@ def post_bot(id=0):
     return jsonify(True)
 
 
-
 @bot_routes.route('/<int:id>', methods=['DELETE'])
 @jwt_required
 def delete_bot(id):
@@ -88,17 +88,12 @@ def get_all_published_bots():
               .filter_by(is_draft=False) \
               .options(joinedload(Bot.owner)) \
               .all()
-    data = [{
-        "id": bot.id,
-        "name": bot.name,
-        "description": bot.description,
-        "owner": {
-            "username": bot.owner.username
-        }
-    } for bot in bots]
+    data = [bot.to_dict() for bot in bots]
     return jsonify(data=data)
 
 # Grabbing the info of a particular published bots, navigated to from the explore page - Ammar
+
+
 @bot_routes.route("/detail/<int:id>")
 def get_one_published_bot(id):
     bot = Bot.query \
