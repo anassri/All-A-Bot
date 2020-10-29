@@ -80,3 +80,10 @@ class Rule(db.Model):
     # very long in some cases
 
     bot = db.relationship("Bot")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'bot_id': self.bot_id,
+            'content': self.content
+        }
