@@ -84,6 +84,30 @@ export const login = (email, password) => async dispatch => {
   }
 };
 
+export const logInWithDiscord = code => async dispatch => {
+  console.log('login with discord', code);
+  try {
+    const res = await fetch(`/auth/${code}`);
+
+    if (res.ok) {
+      console.log('res ok');
+      const { token, user } = await res.json();
+      setInLocalStorage(token, user);
+      dispatch(setToken(token));
+      dispatch(setUser(user));
+      return {
+        status: 200,
+      };
+    } else {
+      console.log('res not ok');
+      throw { status: 400, msg: (await res.json()).msg };
+    }
+  } catch (e) {
+    console.log('catch e', e);
+    return e;
+  }
+};
+
 export const logout = () => async (dispatch, getState) => {
   const {
     auth: { token },
