@@ -109,7 +109,7 @@ export function Dashboard({ user, token, bots, loadBotsDispatch, deleteBotDispat
       <div className={classes.root}>
         <AppBar
           position='static'
-          style={{ backgroundColor: '#282828', 'border-top-left-radius': '5px', 'border-top-right-radius': '5px' }}>
+          style={{ backgroundColor: '#282828', borderTopLeftRadius: '5px', borderTopRightRadius: '5px' }}>
           <Tabs value={value} onChange={handleChange} aria-label='simple tabs example'>
             <Tab label='Bots' {...a11yProps(0)} />
             <Tab label='Drafts' {...a11yProps(1)} />
