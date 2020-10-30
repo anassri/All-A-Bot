@@ -262,8 +262,8 @@ function EditBot({bot, botId, user, history}) {
                 <Divider />
 
                 <Grid className={classes.gridOverflow}>
-                {rules.map((rule, i) => <Box key={i}><RuleForm i={i} /></Box>)}
-                <Button onClick={addRule} >Add rule</Button>
+                    {rules.map((rule, i) => <Box key={i}><RuleForm i={i} /></Box>)}
+                    <Button onClick={addRule} >Add rule</Button>
                 </Grid>
 
                 <Grid container spacing={3} justify="flex-end" style={{paddingRight: 35}}>

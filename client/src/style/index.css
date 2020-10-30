@@ -1,13 +1,22 @@
 /* TODO Add site wide styles */
 body {
     text-align: center;
-    background: url("../images/background.svg") no-repeat center center fixed;
+    background: url("../images/background.svg") no-repeat center center fixed, url("../images/footer.svg") no-repeat center bottom fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
-    background-size: cover;
+    background-size: auto;
 }
 
 a {
     text-decoration: none;
+}
+footer {
+    text-align: center;
+    vertical-align: bottom;
+    background: url("../images/footer.svg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }

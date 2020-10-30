@@ -31,7 +31,8 @@ const useStyle = makeStyles(theme => ({
     marginTop: 10,
   },
   paper: {
-    height: '60vh',
+    height: '60%',
+    minHeight: '60vh',
     padding: '55px 65px',
   },
   title: {
@@ -40,6 +41,10 @@ const useStyle = makeStyles(theme => ({
   },
   bots: {
     textAlign: 'left',
+    overflowY: 'scroll',
+    overflowX: 'hidden',
+    scrollBar: "rgba(232,232,232,1)",
+    width: '100%',
   },
   bot: {
     display: 'flex',
@@ -175,7 +180,7 @@ export function Explore({ bots }) {
                   ),
                 }}></TextField>
             </div>
-            <div className={classes.bots}>
+            <Grid className={classes.bots}>
               {botsMatchingQuery.map(bot => (
                 <ListItem
                   name={bot.name}
@@ -187,7 +192,7 @@ export function Explore({ bots }) {
                   style={{ textAlign: 'left' }}
                 />
               ))}
-            </div>
+            </Grid>
           </Grid>
         </Paper>
       </Container>
