@@ -257,7 +257,7 @@ function EditBot({bot, botId, user, history}) {
                 name: botName,
                 prefix: (botPrefix || null),
                 userId: user.id,
-                isDraft: isDraft,
+                isDraft: Boolean(isDraft),
                 description: (botDescription || null)
             },
             rules };
