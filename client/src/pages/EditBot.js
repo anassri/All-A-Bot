@@ -224,15 +224,21 @@ function EditBot({bot, botId, user, history}) {
     }
 
     function sendMessage() {
-        var request = new XMLHttpRequest();
-        request.open("POST", "https://discord.com/api/webhooks/771496517839224843/od7qFBIvQpoL_GFkM2TBBEd0ZhoX8ApXjTZ7pEFyUW6yd1gEtJ4VCN5YG98RuqennbHV")
-        request.setRequestHeader('Content-type', 'application/json');
-        const params = {
-            username: 'All A Bot Bot',
-            avatar_url: "",
-            content: `New bot created! Say hello to ${botName}! Check them out here: localhost:3000/bots/${botId}`
+        if (!isDraft && !bot.name) {
+            var request = new XMLHttpRequest();
+            request.open("POST", "https://discord.com/api/webhooks/771496517839224843/od7qFBIvQpoL_GFkM2TBBEd0ZhoX8ApXjTZ7pEFyUW6yd1gEtJ4VCN5YG98RuqennbHV")
+            request.setRequestHeader('Content-type', 'application/json');
+            const params = {
+                username: 'All A Bot Bot',
+                embeds: [{
+                    title: botName,
+                    url: `http://www.all-a-bot.herokuapp.com/bots/${botId}`,
+                    color: 9521796,
+                    description: `New bot created! Say hello to **${botName}**, go check them out.`
+                }]
+            }
+            request.send(JSON.stringify(params))
         }
-        request.send(JSON.stringify(params))
     }
 
     const saveBot = async () => {
@@ -252,12 +258,11 @@ function EditBot({bot, botId, user, history}) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
-
+        // if (!isDraft && !bot.name) {
+        //     sendMessage()
+        // }
         if (!isSaving && (!bot.name || (bot.id !== botId))) {
             history.push('/');
-            if (!isDraft && !bot.name) {
-                sendMessage()
-            }
         }
     }
 
@@ -334,6 +339,7 @@ function EditBot({bot, botId, user, history}) {
                     <Grid item xs={3} sm={1} >
                         <Button onClick={()=> { saveBot();
                                                 setIsDraft(false);
+                                                sendMessage();
                                             }}
                                 size="medium"
                                 variant="contained"
