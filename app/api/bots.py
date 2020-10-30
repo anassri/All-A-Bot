@@ -34,6 +34,8 @@ def get_bot(id=0):
             'name': bot.name,
             'prefix': bot.prefix,
             'userId': bot.user_id,
+            'description': bot.description,
+            'isDraft': bot.is_draft,
             'rules': rules
         })
     else:
@@ -43,13 +45,14 @@ def get_bot(id=0):
 @bot_routes.route('/<int:id>', methods=['POST'])
 def post_bot(id=0):
     incoming = request.get_json()
-    print(incoming["rules"])
+    print(incoming)
     new_rules = incoming["rules"]
     bot = Bot.query.get(id)
     if bot:
         bot.name = incoming["bot"]["name"]
         bot.prefix = incoming["bot"]["prefix"]
         bot.user_id = incoming["bot"]["userId"]
+        bot.description = incoming["bot"]["description"]
         bot.is_draft = incoming["bot"]["isDraft"]
         for old_rule in bot.rules:
             db.session.delete(old_rule)
@@ -58,16 +61,18 @@ def post_bot(id=0):
             db.session.add(Rule(content=new_rule_content,
                                 bot_id=bot.id))
     else:
-        print(incoming["bot"]["prefix"])
         bot = Bot(name=incoming["bot"]["name"],
                   prefix=incoming["bot"]["prefix"],
                   user_id=incoming["bot"]["userId"],
+                  description=incoming["bot"]["description"],
                   is_draft=incoming["bot"]["isDraft"])
+        db.session.add(bot)
+        db.session.commit()
+        print(bot)
         for new_rule in new_rules:
             new_rule_content = json.dumps(new_rule["content"])
             db.session.add(Rule(content=new_rule_content,
                                 bot_id=bot.id))
-        db.session.add(bot)
     db.session.commit()
     return jsonify(True)
 

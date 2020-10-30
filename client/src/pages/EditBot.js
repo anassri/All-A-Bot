@@ -167,6 +167,7 @@ function EditBot({bot, botId, user, history}) {
     const [isDraft, setIsDraft] = useState(true);
     const [autoSaveMsg, setAutoSaveMsg] = useState("");
     const [isSaving, setIsSaving] = useState(false);
+    const [autosavePermitted, setAutosavePermitted] = useState(false)
 
     const classes = useStyle();
 
@@ -178,7 +179,9 @@ function EditBot({bot, botId, user, history}) {
         }
         if (botName === "") setBotName(bot.name);
         if (!botPrefix) setBotPrefix(bot.prefix);
+        console.log(botDescription)
         if (!botDescription) setBotDescription(bot.description);
+        setAutosavePermitted(true);
         if (!user || ((bot.name) && (bot.userId !== user.id))){
             history.push('/login');
         }
@@ -190,16 +193,14 @@ function EditBot({bot, botId, user, history}) {
     }
 
     const saveBot = async () => {
-        console.log(botPrefix);
-        console.log(user);
-        console.log(botId);
+        console.log(botDescription);
         const data = {
             bot: { ...bot,
                 name: botName,
                 prefix: (botPrefix || null),
                 userId: user.id,
                 isDraft: isDraft,
-                description: botDescription
+                description: (botDescription || null)
             },
             rules };
         console.log(data);
@@ -208,11 +209,12 @@ function EditBot({bot, botId, user, history}) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
-        if (!bot.name) history.push('/');
+        if (!isSaving && (!bot.name || (bot.id !== botId))) history.push('/');
     }
 
     const autoSave = () =>{
-        if (!isSaving && user){
+        if (!isSaving && user && autosavePermitted){
+            console.log("autosaving...")
             setIsSaving(true);
             setIsDraft(true);
             setTimeout(async ()=>{
