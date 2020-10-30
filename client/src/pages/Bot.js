@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-
-import { assembleFullFile } from '../utils/templateCreator';
-import { fileDownload, packageDownload } from '../utils/fileSaver'
 import { loadOne } from '../store/bots'
 import { 
     makeStyles,
