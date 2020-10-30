@@ -20,7 +20,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
-import { loadAllBots, bookmarkBot } from '../store/bots';
+import { loadAllBots, bookmarkBot, loadBookmarks } from '../store/bots';
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -76,8 +76,24 @@ const useStyle = makeStyles(theme => ({
     opacity: 0.7,
   },
 }));
-const ListItem = ({ id, bot, token, name, description, username, user, bookmarkBotDispatch }) => {
+const ListItem = ({
+  id,
+  bot,
+  token,
+  name,
+  description,
+  username,
+  user,
+  bookmarkBotDispatch,
+  loadBookmarksDispatch,
+}) => {
   const classes = useStyle();
+
+  useEffect(() => {
+    if (user) loadBookmarksDispatch(user.id, token);
+  }, user);
+
+  const bookmarks = useSelector(state => state.bots.bookmarks);
 
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [popoverIsOpen, setPopoverIsOpen] = useState(false);
@@ -110,11 +126,16 @@ const ListItem = ({ id, bot, token, name, description, username, user, bookmarkB
 
   const handleBookmark = () => async event => {
     bookmarkBotDispatch(bot.id, user.id, token);
+    loadBookmarksDispatch(user.id, token);
   };
 
   return (
     <Grid key={id} item xs={12} className={classes.bot}>
-      <i onClick={handleBookmark(bot.id)} className='fas fa-bookmark fa-2x'></i>
+      <i
+        onClick={handleBookmark(bot.id)}
+        className={
+          bookmarks ? (bookmarks.some(b => b.id === bot.id) ? 'fas fa-bookmark fa-2x' : 'far fa-bookmark fa-2x') : ''
+        }></i>
       <CardActionArea className={classes.action}>
         <div className={classes.content}></div>
         <Link to={`/bots/${id}`} style={{ color: 'inherit' }}>
@@ -191,7 +212,7 @@ const ListItem = ({ id, bot, token, name, description, username, user, bookmarkB
   );
 };
 
-export function Explore({ bots, user, token, bookmarkBotDispatch }) {
+export function Explore({ bots, user, token, bookmarkBotDispatch, loadBookmarksDispatch }) {
   const classes = useStyle();
   const [botsMatchingQuery, setBotsMatchingQuery] = useState([...bots]);
 
@@ -252,6 +273,7 @@ export function Explore({ bots, user, token, bookmarkBotDispatch }) {
                   username={bot.owner.username}
                   user={user}
                   bookmarkBotDispatch={bookmarkBotDispatch}
+                  loadBookmarksDispatch={loadBookmarksDispatch}
                   token={token}
                   style={{ textAlign: 'left' }}
                 />
@@ -271,6 +293,7 @@ export default function ExploreContainer() {
   const dispatch = useDispatch();
 
   const bookmarkBotDispatch = (botId, userId, token) => dispatch(bookmarkBot(botId, userId, token));
+  const loadBookmarksDispatch = (userId, token) => dispatch(loadBookmarks(userId, token));
 
   useEffect(() => {
     dispatch(loadAllBots());
@@ -278,5 +301,13 @@ export default function ExploreContainer() {
 
   if (!bots) return null;
 
-  return <Explore bots={bots} user={user} token={token} bookmarkBotDispatch={bookmarkBotDispatch} />;
+  return (
+    <Explore
+      bots={bots}
+      user={user}
+      token={token}
+      bookmarkBotDispatch={bookmarkBotDispatch}
+      loadBookmarksDispatch={loadBookmarksDispatch}
+    />
+  );
 }
