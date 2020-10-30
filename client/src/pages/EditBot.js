@@ -108,14 +108,14 @@ function EditBot({bot, botId, user, history}) {
         console.log(botPrefix);
         console.log(user);
         console.log(botId);
-        const data = { 
-            bot: { ...bot, 
-                name: botName, 
-                prefix: (botPrefix || null), 
-                userId: user.id, 
-                isDraft: isDraft, 
-                description: botDescription 
-            }, 
+        const data = {
+            bot: { ...bot,
+                name: botName,
+                prefix: (botPrefix || null),
+                userId: user.id,
+                isDraft: isDraft,
+                description: botDescription
+            },
             rules };
         console.log(data);
         await fetch(`/api/bots/${botId}`, {
@@ -179,6 +179,8 @@ function EditBot({bot, botId, user, history}) {
                                     label="Select a Trigger"
                                 >
                                     <MenuItem value="message">Message</MenuItem>
+                                    <MenuItem value="guildMemberAdd">Server Join</MenuItem>
+                                    <MenuItem value="guildMemberAdd">Server Leave</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -201,6 +203,24 @@ function EditBot({bot, botId, user, history}) {
                                 <FormControlLabel label="Uses prefix" control={<Checkbox checked={rules[i].content.trigger.usesPrefix}
                                            onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
                                 </FormControl>
+                                </>
+                                : rules[i].content.trigger.type === "guildMemberAdd"
+                                ? <>
+                                <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        value={rules[i].content.trigger.details.string}
+                                        label={`channel name...`}
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
+                                </>
+                                : rules[i].content.trigger.type === "guildMemberRemove"
+                                ? <>
+                                <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        value={rules[i].content.trigger.details.string}
+                                        label={`channel name...`}
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
                                 </>
                                 : <></>
                             }
@@ -237,9 +257,9 @@ function EditBot({bot, botId, user, history}) {
                             label="Select a Response"
                         >
                             <MenuItem value="message">Message</MenuItem>
-                            <MenuItem value="emoji">Emoji react to triggering message</MenuItem>
-                            <MenuItem value="assignRole">Assign a role to member</MenuItem>
-                            <MenuItem value="removeRole">Remove a role from member</MenuItem>
+                            { rules[ruleIndex].content.trigger.type === 'message' ? <MenuItem value="emoji">Emoji react to triggering message</MenuItem> : <></> }
+                            { rules[ruleIndex].content.trigger.type ==='message' || rules[ruleIndex].content.trigger.type ==='guildMemberAdd' ? <MenuItem value="assignRole">Assign a role to member</MenuItem> : <></> }
+                            { rules[ruleIndex].content.trigger.type === 'message' ? <MenuItem value="removeRole">Remove a role from member</MenuItem> : <></> }
                         </Select>
                     </FormControl>
                 </Grid>
