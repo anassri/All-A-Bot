@@ -109,7 +109,7 @@ const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, cla
                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
                             </FormControl>
                             </>
-                            : : rules[i].content.trigger.type === "guildMemberAdd"
+                            : rules[i].content.trigger.type === "guildMemberAdd"
                                 ? <>
                                 <TextField
                                         variant="outlined"
