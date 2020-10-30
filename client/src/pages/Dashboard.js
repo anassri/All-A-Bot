@@ -21,10 +21,10 @@ import {
 } from '@material-ui/core/';
 import { useConfirm } from 'material-ui-confirm';
 import { CardActionArea } from '@material-ui/core';
-import { loadBot, loadBots, deleteBot } from '../store/bots';
+import { loadBot, loadBots, deleteBot, loadBookmarks } from '../store/bots';
 import { assembleFullFile } from '../utils/templateCreator';
 import { fileDownload, packageDownload } from '../utils/fileSaver';
-import Guide from '../components/Guide'
+import Guide from '../components/Guide';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -74,7 +74,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch, deleteBotDispatch }) {
+export function Dashboard({
+  user,
+  token,
+  bots,
+  loadBotDispatch,
+  loadBotsDispatch,
+  deleteBotDispatch,
+  loadBookmarksDispatch,
+  bookmarks,
+}) {
   const history = useHistory();
   const confirm = useConfirm();
 
@@ -85,7 +94,10 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
   const [developerToken, setDeveloperToken] = useState('');
 
   useEffect(() => {
-    if (user) loadBotsDispatch(user, token);
+    if (user) {
+      loadBotsDispatch(user, token);
+      loadBookmarksDispatch(user.id, token);
+    }
   }, [user, botSyncNeeded]);
 
   const handleOpen = () => setOpen(true);
@@ -129,7 +141,7 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
 
   const handleClone = event => {};
 
-  if (!bots) return null;
+  if (!bots || !bookmarks) return null;
 
   return (
     <div className={classes.container}>
@@ -255,61 +267,59 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
             borderBottomRightRadius: '5px',
           }}>
           <div>
-            {bots
-              .filter(bot => bot.user_id === user.id)
-              .map(bot => {
-                return (
-                  <div key={bot.id}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                      <Typography variant='h5' style={{ fontWeight: 'bold' }}>
-                        {bot.name}
-                      </Typography>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography variant='body2'>{bot.description}</Typography>
-                      <div>
-                        <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
-
-                        <Dialog open={open} onClose={handleClose}>
-                          <DialogTitle>Developer Token</DialogTitle>
-                          <DialogContent>
-                            <DialogContentText>Enter your bot token:</DialogContentText>
-                          </DialogContent>
-                          <TextField
-                            autoFocus
-                            margin='dense'
-                            label='Developer Token'
-                            type='text'
-                            fullWidth
-                            onChange={updateDeveloperToken}
-                          />
-                          <DialogActions>
-                            <Button onClick={handleClose}>Cancel</Button>
-                            <Button onClick={handleDownload(bot.id)} className={`bot`}>
-                              Create my bot!
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
-                        <Link to={''} style={{ color: 'inherit' }} title='Clone Bot'>
-                          <i onClick={handleClone} id={`bot-${bot.id}`} className='fas fa-clone'></i>
-                        </Link>
-                      </div>
-                    </div>
-                    <Divider />
+            {bookmarks.map(bot => {
+              return (
+                <div key={bot.id}>
+                  <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                      {bot.name}
+                    </Typography>
                   </div>
-                );
-              })}
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography variant='body2'>{bot.description}</Typography>
+                    <div>
+                      <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
+
+                      <Dialog open={open} onClose={handleClose}>
+                        <DialogTitle>Developer Token</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>Enter your bot token:</DialogContentText>
+                        </DialogContent>
+                        <TextField
+                          autoFocus
+                          margin='dense'
+                          label='Developer Token'
+                          type='text'
+                          fullWidth
+                          onChange={updateDeveloperToken}
+                        />
+                        <DialogActions>
+                          <Button onClick={handleClose}>Cancel</Button>
+                          <Button onClick={handleDownload(bot.id)} className={`bot`}>
+                            Create my bot!
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                      <Link to={''} style={{ color: 'inherit' }} title='Clone Bot'>
+                        <i onClick={handleClone} id={`bot-${bot.id}`} className='fas fa-clone'></i>
+                      </Link>
+                    </div>
+                  </div>
+                  <Divider />
+                </div>
+              );
+            })}
           </div>
         </TabPanel>
         <TabPanel
-         value={value}
-         index={3}
-         style={{
-           backgroundColor: '#282828',
-           'border-bottom-left-radius': '5px',
-           'border-bottom-right-radius': '5px',
-         }}>
-           <Guide />
+          value={value}
+          index={3}
+          style={{
+            backgroundColor: '#282828',
+            'border-bottom-left-radius': '5px',
+            'border-bottom-right-radius': '5px',
+          }}>
+          <Guide />
         </TabPanel>
       </div>
     </div>
@@ -322,18 +332,22 @@ export default function DashboardContainer() {
   const user = JSON.parse(window.localStorage.getItem('auth/USER'));
   const token = useSelector(state => state.auth.token);
   const bots = useSelector(state => state.bots.list);
+  const bookmarks = useSelector(state => state.bots.bookmarks);
   const loadBotDispatch = botId => dispatch(loadBot(botId));
   const loadBotsDispatch = (userId, token) => dispatch(loadBots(userId, token));
   const deleteBotDispatch = (botId, token) => dispatch(deleteBot(botId, token));
+  const loadBookmarksDispatch = (userId, token) => dispatch(loadBookmarks(userId, token));
 
   return (
     <Dashboard
       user={user}
       token={token}
       bots={bots}
+      bookmarks={bookmarks}
       loadBotDispatch={loadBotDispatch}
       loadBotsDispatch={loadBotsDispatch}
       deleteBotDispatch={deleteBotDispatch}
+      loadBookmarksDispatch={loadBookmarksDispatch}
     />
   );
 }
