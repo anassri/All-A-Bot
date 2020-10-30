@@ -114,7 +114,9 @@ const ListItem = ({ id, bot, token, name, description, username, user, bookmarkB
 
   return (
     <Grid key={id} item xs={12} className={classes.bot}>
+      <i onClick={handleBookmark(bot.id)} className='fas fa-bookmark fa-2x'></i>
       <CardActionArea className={classes.action}>
+        <div className={classes.content}></div>
         <Link to={`/bots/${id}`} style={{ color: 'inherit' }}>
           <Typography variant='h5' component='h2' style={{ fontWeight: 'bold' }}>
             {name}
@@ -153,7 +155,6 @@ const ListItem = ({ id, bot, token, name, description, username, user, bookmarkB
         <Link key={id} to={``} style={{ color: 'inherit' }} title='Clone Bot'>
           <i className='fas fa-clone fa-lg'></i>
         </Link>
-        <i onClick={handleBookmark(bot.id)} className='fas fa-bookmark fa-lg'></i>
         <i onClick={handleOpenPopover} className='fas fa-share-alt' />
         <Popover
           open={popoverIsOpen}
@@ -225,7 +226,7 @@ export function Explore({ bots, user, token, bookmarkBotDispatch }) {
             <Typography variant='h4' component='h2' className={classes.title}>
               RECENT BOTS
             </Typography>
-            <div>
+            <div style={{ marginBottom: 20 }}>
               <TextField
                 placeholder='Search...'
                 onChange={handleSearch}
