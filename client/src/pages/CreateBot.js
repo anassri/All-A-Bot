@@ -14,13 +14,11 @@ export default function CreateBot(props) {
         return <h1>Loading...</h1>;
     }
     let newId = null;
-    console.log(allBots);
     let maxId = -1;
     for (let i=0; i<allBots.length; i++){
         if (maxId <= allBots[i].id) maxId = allBots[i].id + 1
     }
     newId = maxId + 1
-    console.log(newId);
 
     if (newId > -1) props.history.push(`/edit-bot/${newId}`);
 
