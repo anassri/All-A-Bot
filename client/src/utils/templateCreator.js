@@ -75,7 +75,9 @@ function commandObjectsBuilder(objList) {
             let objTemplate = `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {`
             cmd.response.forEach(res => {
                 if (res.type === "message") {
-                    objTemplate += `${basicResponseBuilder(res.details.string)}\n`
+                    objTemplate += `\n    ${basicResponseBuilder(res.details.string)}\n`
+                } else if (res.type === "ban") {
+                    objTemplate += `\n    ${banAuthorBuilder()}\n`
                 }
             })
             commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})\n`
@@ -90,6 +92,10 @@ function commandObjectsBuilder(objList) {
 // Basic helper function for creating basic send message commands
 function basicResponseBuilder(response) {
     return `message.channel.send('${response}')`
+}
+
+function banAuthorBuilder() {
+    return 'message.guild.members.ban(message.author.id)'
 }
 
 function banBuilder() {
@@ -112,6 +118,7 @@ function reactionBuilder(emojiName) {
 
 function leaveJoinMessageBuilder(message, channelName = 'general') {
     channelName = channelName.toLowerCase()
+    channelName = channelName.replace(' ', '-')
     let start = `async member => {\n`
     let messageVar = `        let message = '${message}'\n`
     let messageCheck = `
@@ -131,7 +138,7 @@ function assignRoleBuilder() {
     }
     if (!role) {
         return message.reply("Role doesn't exist, either create that role or type a valid role");
-    } 
+    }
     const user = message.mentions.members.first()
     user.roles.add(role);
     message.reply(user.user.username + " is now a " + role.name);\n`
@@ -144,7 +151,7 @@ function removeRoleBuilder() {
     }
     if (!role) {
         return message.reply("Role doesn't exist, either create that role or type a valid role");
-    } 
+    }
     const user = message.mentions.members.first()
     user.roles.remove(role);
     message.reply(user.user.username + " is no longer a " + role.name);\n`
@@ -153,7 +160,7 @@ function removeRoleBuilder() {
 function autoRoleBuilder(roleName) {
     return (
 `async member => {
-        const role = await member.guild.roles.cache.find(role => role.name === '${roleName}')
+        let role = await member.guild.roles.cache.find(role => role.name === '${roleName}')
         if (!role) {
             role = await member.guild.roles.create({ data: { name: '${roleName}'}})
         }
@@ -196,7 +203,7 @@ function substringMatcher(commands) {
     let elifStatements = ``
     commands.forEach(command => {
         elifStatements += (
-            `        } else if (checkContains(message, '${command.trigger.details.string}'));\n            client.commands.get('${command.trigger.details.string}').execute(message);\n`)
+            `        } else if (checkContains(message, '${command.trigger.details.string}')) {\n            client.commands.get('${command.trigger.details.string}').execute(message);\n`)
     })
 
     let checks = ifStatement + elifStatements + '        }\n'

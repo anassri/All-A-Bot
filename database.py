@@ -20,6 +20,7 @@ ruleString5 = """{ "trigger": { "type": "guildMemberRemove", "usesPrefix": false
 
 ruleString6 = """{ "trigger": { "type": "guildMemberAdd", "usesPrefix": false, "details": { "string": "Student" } }, "response": [{ "type": "addRole", "details": { "string": "Student" } }] }"""
 
+ruleString7 = """{ "trigger": { "type": "message", "usesPrefix": false, "details": { "string": "cowabunga"} }, "response": [{ "type": "ban", "details": { "string": "" } }] }"""
 # op.bulk_insert('users', [
 #     {'username'}
 # ])
@@ -47,8 +48,8 @@ with app.app_context():
     rule3 = Rule(bot_id=1, content=ruleString3)
     rule4 = Rule(bot_id=4, content=ruleString5)
     rule5 = Rule(bot_id=4, content=ruleString6)
-    rule4 = Rule(bot_id=6, content=ruleString4)
-    rule5 = Rule(bot_id=7, content=ruleString5)
+    rule6 = Rule(bot_id=6, content=ruleString6)
+    rule7 = Rule(bot_id=1, content=ruleString7)
 
     db.session.add(user1)
     db.session.add(user2)
@@ -66,5 +67,7 @@ with app.app_context():
     db.session.add(rule3)
     db.session.add(rule4)
     db.session.add(rule5)
+    db.session.add(rule6)
+    db.session.add(rule7)
 
     db.session.commit()

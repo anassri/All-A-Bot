@@ -83,6 +83,8 @@ const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, cla
                                 label="Select a Trigger"
                             >
                                 <MenuItem value="message">Message</MenuItem>
+                                <MenuItem value="guildMemberAdd">Server Join</MenuItem>
+                                <MenuItem value="guildMemberRemove">Server Leave</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
@@ -113,7 +115,7 @@ const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, cla
                                         fullWidth
                                         value={rules[i].content.trigger.details.string}
                                         label={`channel name...`}
-                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value, usesPrefix: false }})} />
                                 </>
                                 : rules[i].content.trigger.type === "guildMemberRemove"
                                 ? <>
@@ -122,7 +124,7 @@ const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, cla
                                         fullWidth
                                         value={rules[i].content.trigger.details.string}
                                         label={`channel name...`}
-                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value, usesPrefix: false }})} />
                                 </>
                                 : <></>
                             }
@@ -151,9 +153,10 @@ const ResponseForm = ({ruleIndex, responseIndex, rules, setResponse, autoSave, c
                         label="Select a Response"
                     >
                         <MenuItem value="message">Message</MenuItem>
-                        <MenuItem value="emoji">Emoji react to triggering message</MenuItem>
-                        <MenuItem value="assignRole">Assign a role to member</MenuItem>
-                        <MenuItem value="removeRole">Remove a role from member</MenuItem>
+                        { rules[ruleIndex].content.trigger.type === 'message' ? <MenuItem value="emoji">Emoji react to triggering message</MenuItem> : <></> }
+                        { rules[ruleIndex].content.trigger.type ==='message' || rules[ruleIndex].content.trigger.type ==='guildMemberAdd' ? <MenuItem value="addRole">Assign a role to member</MenuItem> : <></> }
+                        { rules[ruleIndex].content.trigger.type === 'message' ? <MenuItem value="removeRole">Remove a role from member</MenuItem> : <></> }
+                        { rules[ruleIndex].content.trigger.type === 'message' ? <MenuItem value="ban">Ban a user</MenuItem> : <></> }
                     </Select>
                 </FormControl>
             </Grid>
@@ -166,7 +169,18 @@ const ResponseForm = ({ruleIndex, responseIndex, rules, setResponse, autoSave, c
                     value={rules[ruleIndex].content.response[responseIndex].details.string}
                     label={rules[ruleIndex].content.response[responseIndex].type === "message" ? "message string" : "emoji name"}
                     onChange={e => { setResponse(ruleIndex, responseIndex, {...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value }}); autoSave(); }} />
-                    : <></>}
+
+                    : ["addRole"].includes(rules[ruleIndex].content.response[responseIndex].type) && rules[ruleIndex].content.trigger.type === "guildMemberAdd"
+                    ? <TextField
+                    variant="outlined"
+                    fullWidth
+                    id={`responsetext${ruleIndex}-${responseIndex}`}
+                    value={rules[ruleIndex].content.response[responseIndex].details.string}
+                    label={"role name"}
+                    onChange={e => { setResponse(ruleIndex, responseIndex, {...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value }}); autoSave(); }} />
+
+                    : <></>
+                }
             </Grid>
         </Grid>
     </div>)
