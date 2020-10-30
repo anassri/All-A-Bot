@@ -106,3 +106,12 @@ class User_Bookmark(db.Model):
         'users_bookmarks', cascade='all'))
     bot = db.relationship('Bot', backref=db.backref(
         'users_bookmarks', cascade='all'))
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'userId': self.userId,
+            'botId': self.botId,
+            'user': self.user.to_dict(),
+            'bot': self.bot.to_dict(),
+        }
