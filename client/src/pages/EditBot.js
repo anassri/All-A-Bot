@@ -91,7 +91,9 @@ const RuleForm = ({ i, rules, setTrigger, autoSave, setResponse, addResponse, re
                                     onChange={(e) => { setTrigger(i, { ...rules[i].content.trigger, type: e.target.value }); autoSave(); }}
                                     label="Select a Trigger"
                                 >
-                                    <MenuItem value="message">Message</MenuItem>
+                                <MenuItem value="message">Message</MenuItem>
+                                <MenuItem value="guildMemberAdd">Server Join</MenuItem>
+                                <MenuItem value="guildMemberRemove">Server Leave</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -155,9 +157,10 @@ const ResponseForm = ({ ruleIndex, responseIndex, rules, setResponse, autoSave, 
                         label="Select a Response"
                     >
                         <MenuItem value="message">Message</MenuItem>
-                        <MenuItem value="emoji">Emoji react to triggering message</MenuItem>
-                        <MenuItem value="assignRole">Assign a role to member</MenuItem>
-                        <MenuItem value="removeRole">Remove a role from member</MenuItem>
+                        { rules[ruleIndex].content.trigger.type === 'message' ? <MenuItem value="emoji">Emoji react to triggering message</MenuItem> : <></> }
+                        { rules[ruleIndex].content.trigger.type ==='message' || rules[ruleIndex].content.trigger.type ==='guildMemberAdd' ? <MenuItem value="addRole">Assign a role to member</MenuItem> : <></> }
+                        { rules[ruleIndex].content.trigger.type === 'message' ? <MenuItem value="removeRole">Remove a role from member</MenuItem> : <></> }
+                        { rules[ruleIndex].content.trigger.type === 'message' ? <MenuItem value="ban">Ban a user</MenuItem> : <></> }
                     </Select>
                 </FormControl>
             </Grid>
@@ -220,6 +223,24 @@ function EditBot({ bot, botId, user, history }) {
         setRules(rules.slice(0, rules.length - 1))
     }
 
+    function sendMessage() {
+        if (!isDraft && !bot.name) {
+            var request = new XMLHttpRequest();
+            request.open("POST", "https://discord.com/api/webhooks/771496517839224843/od7qFBIvQpoL_GFkM2TBBEd0ZhoX8ApXjTZ7pEFyUW6yd1gEtJ4VCN5YG98RuqennbHV")
+            request.setRequestHeader('Content-type', 'application/json');
+            const params = {
+                username: 'All A Bot Bot',
+                embeds: [{
+                    title: botName,
+                    url: `http://www.all-a-bot.herokuapp.com/bots/${botId}`,
+                    color: 9521796,
+                    description: `New bot created! Say hello to **${botName}**, go check them out.`
+                }]
+            }
+            request.send(JSON.stringify(params))
+        }
+    }
+
     const saveBot = async () => {
         console.log(botDescription);
         console.log(`Saving isDraft as ${isDraft}`)
@@ -240,6 +261,11 @@ function EditBot({ bot, botId, user, history }) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
+
+        if (!isDraft && !bot.name) {
+            sendMessage()
+        }
+
         if (!isSaving && (!bot.name || (bot.id !== botId))) history.push('/');
     }
 
