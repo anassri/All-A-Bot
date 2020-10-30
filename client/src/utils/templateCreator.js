@@ -30,7 +30,7 @@ function nonMessageEventsBuidler(events) {
         let funcName = `${event.trigger.details.string}_${randStringMaker()}`
         let eventStart = `
 function ${funcName}(client) {
-    client.on('${eventType}', `
+    client.on('${eventType}', async member => {`
 
         event.response.forEach(res => {
             if (res.type === 'addRole') {
@@ -159,7 +159,7 @@ function removeRoleBuilder() {
 
 function autoRoleBuilder(roleName) {
     return (
-`async member => {
+`
         let role = await member.guild.roles.cache.find(role => role.name === \`${roleName}\`)
         if (!role) {
             role = await member.guild.roles.create({ data: { name: \`${roleName}\`}})
