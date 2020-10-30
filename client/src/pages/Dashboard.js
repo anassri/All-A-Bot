@@ -10,10 +10,8 @@ import {
   Tabs,
   Tab,
   Typography,
-  Container,
   Box,
   Divider,
-  Paper,
   Dialog,
   DialogActions,
   DialogContent,
@@ -26,9 +24,7 @@ import { CardActionArea } from '@material-ui/core';
 import { loadBot, loadBots, deleteBot, loadBookmarks } from '../store/bots';
 import { assembleFullFile } from '../utils/templateCreator';
 import { fileDownload, packageDownload } from '../utils/fileSaver';
-import Guide from '../components/Guide'
-import '../style/explore.css';
-import DownloadBtn from '../components/DownloadBtn';
+import Guide from '../components/Guide';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -64,28 +60,18 @@ function a11yProps(index) {
 
 const useStyles = makeStyles(theme => ({
   container: {
+    marginLeft: '25%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
+    justifyContent: 'flex-start',
   },
   root: {
     flexGrow: 1,
-    maxWidth: 1080,
-    // width: '66.67%',
-    height: '60%',
-    minHeight: '60vh',
-    padding: '55px 65px',
+    backgroundColor: theme.palette.background.paper,
+    width: '66.67%',
     borderRadius: '10px',
-  }, 
-  title: {
-    fontWeight: 'bold',
-    textAlign: 'left',
-    margin: '15px 0',
   },
-  guide: {
-    overflowX: 'hidden',
-    overflowY: 'auto'
-  }
 }));
 
 export function Dashboard({
@@ -159,138 +145,183 @@ export function Dashboard({
 
   return (
     <div className={classes.container}>
-      <Container maxWidth='lg' className='paper-container'>
-        <Typography variant="h4" component="h2" className={classes.title}>
-          DASHBOARD
-        </Typography>
-        <Paper className={classes.root}>
-          <AppBar
-            position='static'
-            style={{ backgroundColor: '#212121' }}>
-            <Tabs value={value} onChange={handleChange} aria-label='simple tabs example'>
-              <Tab label='Bots' {...a11yProps(0)} />
-              <Tab label='Drafts' {...a11yProps(1)} />
-              <Tab label='Bookmarked' {...a11yProps(2)} />
-              <Tab label='Guide' {...a11yProps(3)} />
-            </Tabs>
-          </AppBar>
-          <TabPanel
-            value={value}
-            index={0}
-            style={{
-              borderBottomLeftRadius: '5px',
-              borderBottomRightRadius: '5px',
-            }}>
-            <div>
-              {bots
-                .filter(bot => bot.is_draft === false)
-                .map(bot => {
-                  return (
-                    <div key={bot.id}>
-                      <CardActionArea key={bot.id}>
-                        <Link key={bot.id} to={`/bots/${bot.id}`} style={{ color: 'inherit' }}>
-                          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                            <Typography variant='h5' style={{ fontWeight: 'bold' }}>
-                              {bot.name}
-                            </Typography>
-                          </div>
-                        </Link>
-                      </CardActionArea>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography variant='body2'>{bot.description}</Typography>
-                        <div>
-                          <DownloadBtn bot={bot} />
+      <h1>DASHBOARD</h1>
+
+      <div className={classes.root}>
+        <AppBar
+          position='static'
+          style={{ backgroundColor: '#282828', borderTopLeftRadius: '5px', borderTopRightRadius: '5px' }}>
+          <Tabs value={value} onChange={handleChange} aria-label='simple tabs example'>
+            <Tab label='Bots' {...a11yProps(0)} />
+            <Tab label='Drafts' {...a11yProps(1)} />
+            <Tab label='Bookmarked' {...a11yProps(2)} />
+            <Tab label='Guide' {...a11yProps(3)} />
+          </Tabs>
+        </AppBar>
+        <TabPanel
+          value={value}
+          index={0}
+          style={{
+            backgroundColor: '#282828',
+            borderBottomLeftRadius: '5px',
+            borderBottomRightRadius: '5px',
+          }}>
+          <div>
+            {bots
+              .filter(bot => bot.is_draft === false)
+              .map(bot => {
+                return (
+                  <div key={bot.id}>
+                    <CardActionArea key={bot.id}>
+                      <Link key={bot.id} to={`/bots/${bot.id}`} style={{ color: 'inherit' }}>
+                        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                          <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                            {bot.name}
+                          </Typography>
+                        </div>
+                      </Link>
+                    </CardActionArea>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography variant='body2'>{bot.description}</Typography>
+                      <div>
+                        <CardActionArea>
+                          <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
+                          <Dialog open={open} onClose={handleClose}>
+                            <DialogTitle>Developer Token</DialogTitle>
+                            <DialogContent>
+                              <DialogContentText>Enter your bot token:</DialogContentText>
+                            </DialogContent>
+                            <TextField
+                              autoFocus
+                              margin='dense'
+                              label='Developer Token'
+                              type='text'
+                              fullWidth
+                              onChange={updateDeveloperToken}
+                            />
+                            <DialogActions>
+                              <Button onClick={handleClose}>Cancel</Button>
+                              <Button onClick={handleDownload(bot.id)} className={`bot`}>
+                                Create my bot!
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
 
                           <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
-                            <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit fa-lg' style={{ opacity: 0.7 }}></i>
+                            <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
                           </Link>
                           <Link style={{ color: 'inherit' }} to={``} title='Delete Bot'>
-                            <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash fa-lg' style={{ opacity: 0.7 }}></i>
+                            <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
                           </Link>
-                        </div>
+                        </CardActionArea>
                       </div>
-                      <Divider />
                     </div>
-                  );
-                })}
-            </div>
-          </TabPanel>
-          <TabPanel
-            value={value}
-            index={1}
-            style={{
-              borderBottomLeftRadius: '5px',
-              borderBottomRightRadius: '5px',
-            }}>
-            <div>
-              {bots
-                .filter(bot => bot.is_draft === true)
-                .map(bot => {
-                  return (
-                    <div key={bot.id}>
-                      <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                        <Typography variant='h5' style={{ fontWeight: 'bold' }}>
-                          {bot.name}
-                        </Typography>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography variant='body2'>{bot.description}</Typography>
-                        <div>
-                          <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
-                            <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit fa-lg' style={{ opacity: 0.7 }}></i>
-                          </Link>
-                          <Link style={{ color: 'inherit' }} title='Delete Bot' to={``}>
-                            <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash fa-lg' style={{ opacity: 0.7 }}></i>
-                          </Link>
-                        </div>
-                      </div>
-                      <Divider />
+                    <Divider />
+                  </div>
+                );
+              })}
+          </div>
+        </TabPanel>
+        <TabPanel
+          value={value}
+          index={1}
+          style={{
+            backgroundColor: '#282828',
+            borderBottomLeftRadius: '5px',
+            borderBottomRightRadius: '5px',
+          }}>
+          <div>
+            {bots
+              .filter(bot => bot.is_draft === true)
+              .map(bot => {
+                return (
+                  <div key={bot.id}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                      <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                        {bot.name}
+                      </Typography>
                     </div>
-                  );
-                })}
-            </div>
-          </TabPanel>
-          <TabPanel
-            value={value}
-            index={2}
-            style={{
-              borderBottomLeftRadius: '5px',
-              borderBottomRightRadius: '5px',
-            }}>
-            <div>
-              {bots
-                .filter(bot => bot.user_id === user.id)
-                .map(bot => {
-                  return (
-                    <div key={bot.id}>
-                      <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                        <Typography variant='h5' style={{ fontWeight: 'bold' }}>
-                          {bot.name}
-                        </Typography>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography variant='body2'>{bot.description}</Typography>
+                      <div>
+                        <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
+                          <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
+                        </Link>
+                        <Link style={{ color: 'inherit' }} title='Delete Bot' to={``}>
+                          <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
+                        </Link>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography variant='body2'>{bot.description}</Typography>
-                        <div>
-                          <DownloadBtn bot={bot} />
-                        </div>
-                      </div>
-                      <Divider />
                     </div>
-                  );
-                })}
-            </div>
-          </TabPanel>
-          <TabPanel
+                    <Divider />
+                  </div>
+                );
+              })}
+          </div>
+        </TabPanel>
+        <TabPanel
+          value={value}
+          index={2}
+          style={{
+            backgroundColor: '#282828',
+            borderBottomLeftRadius: '5px',
+            borderBottomRightRadius: '5px',
+          }}>
+          <div>
+            {bookmarks.map(bot => {
+              return (
+                <div key={bot.id}>
+                  <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                      {bot.name}
+                    </Typography>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Typography variant='body2'>{bot.description}</Typography>
+                    <div>
+                      <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
+
+                      <Dialog open={open} onClose={handleClose}>
+                        <DialogTitle>Developer Token</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>Enter your bot token:</DialogContentText>
+                        </DialogContent>
+                        <TextField
+                          autoFocus
+                          margin='dense'
+                          label='Developer Token'
+                          type='text'
+                          fullWidth
+                          onChange={updateDeveloperToken}
+                        />
+                        <DialogActions>
+                          <Button onClick={handleClose}>Cancel</Button>
+                          <Button onClick={handleDownload(bot.id)} className={`bot`}>
+                            Create my bot!
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                      <Link to={''} style={{ color: 'inherit' }} title='Clone Bot'>
+                        <i onClick={handleClone} id={`bot-${bot.id}`} className='fas fa-clone'></i>
+                      </Link>
+                    </div>
+                  </div>
+                  <Divider />
+                </div>
+              );
+            })}
+          </div>
+        </TabPanel>
+        <TabPanel
           value={value}
           index={3}
           style={{
+            backgroundColor: '#282828',
             'border-bottom-left-radius': '5px',
             'border-bottom-right-radius': '5px',
           }}>
-            <Guide className={classes.guide}/>
-          </TabPanel>
-        </Paper>
-      </Container>
+          <Guide />
+        </TabPanel>
+      </div>
     </div>
   );
 }

@@ -9,8 +9,13 @@ import {
   Container,
   Paper,
   Grid,
-  Box,
   makeStyles,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
   Popover,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
@@ -30,7 +35,9 @@ import {
 } from 'react-share';
 
 import '../style/explore.css';
-import DownloadBtn from '../components/DownloadBtn';
+
+import { assembleFullFile } from '../utils/templateCreator';
+import { fileDownload, packageDownload } from '../utils/fileSaver';
 
 const useStyle = makeStyles(theme => ({
   root: {
@@ -38,8 +45,7 @@ const useStyle = makeStyles(theme => ({
     marginTop: 10,
   },
   paper: {
-    height: 715,
-    // minHeight: '60vh',
+    height: '60vh',
     padding: '55px 65px',
   },
   popover: {
@@ -53,10 +59,6 @@ const useStyle = makeStyles(theme => ({
   },
   bots: {
     textAlign: 'left',
-    overflowY: 'auto',
-    overflowX: 'hidden',
-    // scrollBar: "rgba(232,232,232,1)",
-    width: '100%',
   },
   bot: {
     display: 'flex',
@@ -71,22 +73,40 @@ const useStyle = makeStyles(theme => ({
     alignItems: 'flex-end',
     marginBottom: 5,
     paddingLeft: 20,
-    
+    opacity: 0.7,
   },
 }));
 const ListItem = ({ id, bot, token, name, description, username, user, bookmarkBotDispatch }) => {
   const classes = useStyle();
 
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [popoverIsOpen, setPopoverIsOpen] = useState(false);
+  const [developerToken, setDeveloperToken] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleOpenDialog = () => setDialogIsOpen(true);
+  const handleCloseDialog = () => setDialogIsOpen(false);
 
   const handleOpenPopover = event => {
     setPopoverIsOpen(true);
     setAnchorEl(event.currentTarget);
   };
   const handleClosePopover = () => setPopoverIsOpen(false);
+  const updateDeveloperToken = e => setDeveloperToken(e.target.value);
 
   const handleShare = () => {};
+
+  const handleDownload = () => async event => {
+    const parsedRules = [];
+
+    if (bot.rules) bot.rules.forEach(rule => parsedRules.push(JSON.parse(rule.content)));
+
+    const file = assembleFullFile(bot.prefix, developerToken, parsedRules);
+
+    fileDownload(file);
+    packageDownload();
+    handleCloseDialog();
+  };
 
   const handleBookmark = () => async event => {
     bookmarkBotDispatch(bot.id, user.id, token);
@@ -108,10 +128,33 @@ const ListItem = ({ id, bot, token, name, description, username, user, bookmarkB
       </CardActionArea>
       <div className={classes.content}>
         <div>
-          <DownloadBtn bot={bot} />
+          <i onClick={handleOpenDialog} id={`bot-${bot.id}`} className='fas fa-download'></i>
+          <Dialog open={dialogIsOpen} onClose={handleCloseDialog}>
+            <DialogTitle>Developer Token</DialogTitle>
+            <DialogContent>
+              <DialogContentText>Enter your bot token:</DialogContentText>
+            </DialogContent>
+            <TextField
+              autoFocus
+              margin='dense'
+              label='Developer Token'
+              type='text'
+              fullWidth
+              onChange={updateDeveloperToken}
+            />
+            <DialogActions>
+              <Button onClick={handleCloseDialog}>Cancel</Button>
+              <Button onClick={handleDownload(bot.id)} className={`bot`}>
+                Create my bot!
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
-        <i onClick={handleBookmark(bot.id)} title='Bookmark a Bot' className='fas fa-bookmark fa-lg' style={{ cursor: 'pointer', opacity: 0.7, }}></i>
-        <i onClick={handleOpenPopover} title='Share a Bot' className='fas fa-share-alt fa-lg' style={{ cursor: 'pointer', opacity: 0.7, }}/>
+        <Link key={id} to={``} style={{ color: 'inherit' }} title='Clone Bot'>
+          <i className='fas fa-clone fa-lg'></i>
+        </Link>
+        <i onClick={handleBookmark(bot.id)} className='fas fa-bookmark fa-lg'></i>
+        <i onClick={handleOpenPopover} className='fas fa-share-alt' />
         <Popover
           open={popoverIsOpen}
           anchorEl={anchorEl}
@@ -197,9 +240,9 @@ export function Explore({ bots, user, token, bookmarkBotDispatch }) {
                   ),
                 }}></TextField>
             </div>
-            <Grid className={classes.bots}>
+            <div className={classes.bots}>
               {botsMatchingQuery.map(bot => (
-                <Box><ListItem
+                <ListItem
                   name={bot.name}
                   key={bot.id}
                   id={bot.id}
@@ -210,9 +253,9 @@ export function Explore({ bots, user, token, bookmarkBotDispatch }) {
                   bookmarkBotDispatch={bookmarkBotDispatch}
                   token={token}
                   style={{ textAlign: 'left' }}
-                /></Box>
+                />
               ))}
-            </Grid>
+            </div>
           </Grid>
         </Paper>
       </Container>
