@@ -61,12 +61,12 @@ def post_bot(id=0):
             db.session.add(Rule(content=new_rule_content,
                                 bot_id=bot.id))
     else:
-        print(incoming["bot"]["prefix"])
         bot = Bot(name=incoming["bot"]["name"],
                   prefix=incoming["bot"]["prefix"],
                   user_id=incoming["bot"]["userId"],
                   description=incoming["bot"]["description"],
                   is_draft=incoming["bot"]["isDraft"])
+        print(bot)
         for new_rule in new_rules:
             new_rule_content = json.dumps(new_rule["content"])
             db.session.add(Rule(content=new_rule_content,

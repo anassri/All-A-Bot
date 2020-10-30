@@ -198,9 +198,10 @@ function EditBot({bot, botId, user, history}) {
                 prefix: (botPrefix || null),
                 userId: user.id,
                 isDraft: isDraft,
-                description: botDescription
+                description: (botDescription || null)
             },
             rules };
+        console.log(data);
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
