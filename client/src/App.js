@@ -9,6 +9,7 @@ import PagesContainer from './pages/Pages';
 import NavigationContainer from './components/Navigation';
 import { LoginPage } from './pages/LoginPage';
 import { ConfirmProvider } from 'material-ui-confirm';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <CssBaseline />
           <NavigationContainer />
           <PagesContainer />
+          <Footer />
         </ConfirmProvider>
       </ThemeProvider>
     </BrowserRouter>
