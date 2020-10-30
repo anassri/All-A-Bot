@@ -181,9 +181,9 @@ function EditBot({bot, botId, user, history}) {
         if (!botPrefix) setBotPrefix(bot.prefix);
         console.log(botDescription)
         if (!botDescription) setBotDescription(bot.description);
+        setAutosavePermitted(true);
         if (!user || ((bot.name) && (bot.userId !== user.id))){
             history.push('/login');
-        setAutosavePermitted(true);
         }
     })
 
@@ -214,6 +214,7 @@ function EditBot({bot, botId, user, history}) {
 
     const autoSave = () =>{
         if (!isSaving && user && autosavePermitted){
+            console.log("autosaving...")
             setIsSaving(true);
             setIsDraft(true);
             setTimeout(async ()=>{
@@ -224,7 +225,6 @@ function EditBot({bot, botId, user, history}) {
                 setTimeout(()=>{setAutoSaveMsg("")}, 5000);
             },20000);
         }
-        console.log("autosave");
     }
     const setRule = (i, newRule) => {
         setRules([...rules.slice(0, i), newRule, ...rules.slice(i+1)]);
