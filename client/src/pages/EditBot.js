@@ -87,28 +87,45 @@ const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, cla
                         </FormControl>
                     </Grid>
                     <Grid item xs className={classes.grid}>
-                        {rules[i].content.trigger.type === "message"
-                            ? <>
-                            <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    value={rules[i].content.trigger.details.string}
-                                    label={`message ${rules[i].content.trigger.details.includesOrBeginsWith} string...`}
-                                    id={`ruletext${i}`}
-                                    onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
-                              <FormControl>
-                                    <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
-                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value }})}
-                            >
-                                <FormControlLabel value="includes" control={<Radio />} label="Includes" />
-                                <FormControlLabel value="begins with" control={<Radio />} label="Begins with" />
-                            </RadioGroup>
-                            <FormControlLabel label="Uses prefix" control={<Checkbox checked={rules[i].content.trigger.usesPrefix}
-                                       onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
-                            </FormControl>
-                            </>
-                            : <></>
-                        }
+                    {rules[i].content.trigger.type === "message"
+                                ? <>
+                                <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        value={rules[i].content.trigger.details.string}
+                                        label={`message ${rules[i].content.trigger.details.includesOrBeginsWith} string...`}
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
+                                  <FormControl>
+                                        <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
+                                            onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value }})}
+                                >
+                                    <FormControlLabel value="includes" control={<Radio />} label="Includes" />
+                                    <FormControlLabel value="begins with" control={<Radio />} label="Begins with" />
+                                </RadioGroup>
+                                <FormControlLabel label="Uses prefix" control={<Checkbox checked={rules[i].content.trigger.usesPrefix}
+                                           onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
+                                </FormControl>
+                                </>
+                                : rules[i].content.trigger.type === "guildMemberAdd"
+                                ? <>
+                                <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        value={rules[i].content.trigger.details.string}
+                                        label={`channel name...`}
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
+                                </>
+                                : rules[i].content.trigger.type === "guildMemberRemove"
+                                ? <>
+                                <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        value={rules[i].content.trigger.details.string}
+                                        label={`channel name...`}
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
+                                </>
+                                : <></>
+                            }
                     </Grid>
                 </Grid>
             </div>
