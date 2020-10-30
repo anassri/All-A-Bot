@@ -23,7 +23,9 @@ class User(db.Model):
         return {
             "id": self.id,
             "username": self.username,
-            "email": self.email
+            "email": self.email,
+            'bots': [bot.to_dict() for bot in self.bots],
+            'bookmarks': [bookmark.to_dict() for bookmark in self.bookmarks]
         }
 
     @property
