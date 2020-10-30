@@ -9,18 +9,13 @@ import {
   Container,
   Paper,
   Grid,
+  Box,
   makeStyles,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
   Popover,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
-import { loadAllBots, bookmarkBot } from '../store/bots';
+import { loadAllBots, bookmarkBot, loadBookmarks } from '../store/bots';
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -35,9 +30,7 @@ import {
 } from 'react-share';
 
 import '../style/explore.css';
-
-import { assembleFullFile } from '../utils/templateCreator';
-import { fileDownload, packageDownload } from '../utils/fileSaver';
+import DownloadBtn from '../components/DownloadBtn';
 
 const useStyle = makeStyles(theme => ({
   root: {
@@ -45,7 +38,8 @@ const useStyle = makeStyles(theme => ({
     marginTop: 10,
   },
   paper: {
-    height: '60vh',
+    height: '60%',
+    minHeight: '60vh',
     padding: '55px 65px',
   },
   popover: {
@@ -59,6 +53,10 @@ const useStyle = makeStyles(theme => ({
   },
   bots: {
     textAlign: 'left',
+    overflowY: 'auto',
+    overflowX: 'hidden',
+    // scrollBar: "rgba(232,232,232,1)",
+    width: '100%',
   },
   bot: {
     display: 'flex',
@@ -73,48 +71,53 @@ const useStyle = makeStyles(theme => ({
     alignItems: 'flex-end',
     marginBottom: 5,
     paddingLeft: 20,
-    opacity: 0.7,
+    
   },
 }));
-const ListItem = ({ id, bot, token, name, description, username, user, bookmarkBotDispatch }) => {
+const ListItem = ({
+  id,
+  bot,
+  token,
+  name,
+  description,
+  username,
+  user,
+  bookmarkBotDispatch,
+  loadBookmarksDispatch,
+}) => {
   const classes = useStyle();
 
-  const [dialogIsOpen, setDialogIsOpen] = useState(false);
-  const [popoverIsOpen, setPopoverIsOpen] = useState(false);
-  const [developerToken, setDeveloperToken] = useState('');
-  const [anchorEl, setAnchorEl] = useState(null);
+  useEffect(() => {
+    if (user) loadBookmarksDispatch(user.id, token);
+  }, user);
 
-  const handleOpenDialog = () => setDialogIsOpen(true);
-  const handleCloseDialog = () => setDialogIsOpen(false);
+  const bookmarks = useSelector(state => state.bots.bookmarks);
+
+  const [popoverIsOpen, setPopoverIsOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleOpenPopover = event => {
     setPopoverIsOpen(true);
     setAnchorEl(event.currentTarget);
   };
   const handleClosePopover = () => setPopoverIsOpen(false);
-  const updateDeveloperToken = e => setDeveloperToken(e.target.value);
 
   const handleShare = () => {};
 
-  const handleDownload = () => async event => {
-    const parsedRules = [];
-
-    if (bot.rules) bot.rules.forEach(rule => parsedRules.push(JSON.parse(rule.content)));
-
-    const file = assembleFullFile(bot.prefix, developerToken, parsedRules);
-
-    fileDownload(file);
-    packageDownload();
-    handleCloseDialog();
-  };
-
   const handleBookmark = () => async event => {
     bookmarkBotDispatch(bot.id, user.id, token);
+    loadBookmarksDispatch(user.id, token);
   };
 
   return (
     <Grid key={id} item xs={12} className={classes.bot}>
+      <i
+        onClick={handleBookmark(bot.id)}
+        className={
+          bookmarks ? (bookmarks.some(b => b.id === bot.id) ? 'fas fa-bookmark fa-2x' : 'far fa-bookmark fa-2x') : ''
+        }></i>
       <CardActionArea className={classes.action}>
+        <div className={classes.content}></div>
         <Link to={`/bots/${id}`} style={{ color: 'inherit' }}>
           <Typography variant='h5' component='h2' style={{ fontWeight: 'bold' }}>
             {name}
@@ -128,33 +131,10 @@ const ListItem = ({ id, bot, token, name, description, username, user, bookmarkB
       </CardActionArea>
       <div className={classes.content}>
         <div>
-          <i onClick={handleOpenDialog} id={`bot-${bot.id}`} className='fas fa-download'></i>
-          <Dialog open={dialogIsOpen} onClose={handleCloseDialog}>
-            <DialogTitle>Developer Token</DialogTitle>
-            <DialogContent>
-              <DialogContentText>Enter your bot token:</DialogContentText>
-            </DialogContent>
-            <TextField
-              autoFocus
-              margin='dense'
-              label='Developer Token'
-              type='text'
-              fullWidth
-              onChange={updateDeveloperToken}
-            />
-            <DialogActions>
-              <Button onClick={handleCloseDialog}>Cancel</Button>
-              <Button onClick={handleDownload(bot.id)} className={`bot`}>
-                Create my bot!
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <DownloadBtn bot={bot} />
         </div>
-        <Link key={id} to={``} style={{ color: 'inherit' }} title='Clone Bot'>
-          <i className='fas fa-clone fa-lg'></i>
-        </Link>
-        <i onClick={handleBookmark(bot.id)} className='fas fa-bookmark fa-lg'></i>
-        <i onClick={handleOpenPopover} className='fas fa-share-alt' />
+        <i onClick={handleBookmark(bot.id)} title='Bookmark a Bot' className='fas fa-bookmark fa-lg' style={{ cursor: 'pointer', opacity: 0.7, }}></i>
+        <i onClick={handleOpenPopover} title='Share a Bot' className='fas fa-share-alt fa-lg' style={{ cursor: 'pointer', opacity: 0.7, }}/>
         <Popover
           open={popoverIsOpen}
           anchorEl={anchorEl}
@@ -190,7 +170,7 @@ const ListItem = ({ id, bot, token, name, description, username, user, bookmarkB
   );
 };
 
-export function Explore({ bots, user, token, bookmarkBotDispatch }) {
+export function Explore({ bots, user, token, bookmarkBotDispatch, loadBookmarksDispatch }) {
   const classes = useStyle();
   const [botsMatchingQuery, setBotsMatchingQuery] = useState([...bots]);
 
@@ -225,7 +205,7 @@ export function Explore({ bots, user, token, bookmarkBotDispatch }) {
             <Typography variant='h4' component='h2' className={classes.title}>
               RECENT BOTS
             </Typography>
-            <div>
+            <div style={{ marginBottom: 20 }}>
               <TextField
                 placeholder='Search...'
                 onChange={handleSearch}
@@ -240,9 +220,9 @@ export function Explore({ bots, user, token, bookmarkBotDispatch }) {
                   ),
                 }}></TextField>
             </div>
-            <div className={classes.bots}>
+            <Grid className={classes.bots}>
               {botsMatchingQuery.map(bot => (
-                <ListItem
+                <Box><ListItem
                   name={bot.name}
                   key={bot.id}
                   id={bot.id}
@@ -251,11 +231,12 @@ export function Explore({ bots, user, token, bookmarkBotDispatch }) {
                   username={bot.owner.username}
                   user={user}
                   bookmarkBotDispatch={bookmarkBotDispatch}
+                  loadBookmarksDispatch={loadBookmarksDispatch}
                   token={token}
                   style={{ textAlign: 'left' }}
-                />
+                /></Box>
               ))}
-            </div>
+            </Grid>
           </Grid>
         </Paper>
       </Container>
@@ -270,6 +251,7 @@ export default function ExploreContainer() {
   const dispatch = useDispatch();
 
   const bookmarkBotDispatch = (botId, userId, token) => dispatch(bookmarkBot(botId, userId, token));
+  const loadBookmarksDispatch = (userId, token) => dispatch(loadBookmarks(userId, token));
 
   useEffect(() => {
     dispatch(loadAllBots());
@@ -277,5 +259,13 @@ export default function ExploreContainer() {
 
   if (!bots) return null;
 
-  return <Explore bots={bots} user={user} token={token} bookmarkBotDispatch={bookmarkBotDispatch} />;
+  return (
+    <Explore
+      bots={bots}
+      user={user}
+      token={token}
+      bookmarkBotDispatch={bookmarkBotDispatch}
+      loadBookmarksDispatch={loadBookmarksDispatch}
+    />
+  );
 }
