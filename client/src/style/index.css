@@ -1,7 +1,7 @@
 /* TODO Add site wide styles */
 body {
     text-align: center;
-    background: url("../images/background.png") no-repeat center center fixed, url("../images/footer.png") no-repeat center bottom fixed;
+    background: url("../images/background-stars.png") no-repeat center center fixed, url("../images/footer.png") no-repeat center bottom fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
