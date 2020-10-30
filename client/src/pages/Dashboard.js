@@ -140,6 +140,7 @@ export function Dashboard({
   };
 
   const handleDownload = botId => async event => {
+    event.preventDefault();
     const bot = bots.filter(bot => bot.id === botId);
 
     const parsedRules = [];
@@ -206,7 +207,7 @@ export function Dashboard({
                               className='fas fa-edit fa-lg'
                               style={{ opacity: 0.7 }}></i>
                           </Link>
-                          <Link style={{ color: 'inherit' }} to={``} title='Delete Bot'>
+                          <Link style={{ color: 'inherit' }} title='Delete Bot'>
                             <i
                               onClick={handleDelete}
                               id={`bot-${bot.id}`}
@@ -234,6 +235,30 @@ export function Dashboard({
                 .map(bot => {
                   return (
                     <div key={bot.id}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                        <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                          {bot.name}
+                        </Typography>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant='body2'>{bot.description}</Typography>
+                        <div>
+                          <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
+                            <i
+                              onClick={handleEdit}
+                              id={`bot-${bot.id}`}
+                              className='fas fa-edit fa-lg'
+                              style={{ opacity: 0.7 }}></i>
+                          </Link>
+                          <Link style={{ color: 'inherit' }} title='Delete Bot'>
+                            <i
+                              onClick={handleDelete}
+                              id={`bot-${bot.id}`}
+                              className='fas fa-trash fa-lg'
+                              style={{ opacity: 0.7 }}></i>
+                          </Link>
+                        </div>
+                      </div>
                       <CardActionArea key={bot.id}>
                         <Link key={bot.id} to={`/bots/${bot.id}`} style={{ color: 'inherit' }}>
                           <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
