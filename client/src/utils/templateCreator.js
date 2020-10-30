@@ -30,19 +30,19 @@ function nonMessageEventsBuidler(events) {
         let funcName = `${event.trigger.details.string}_${randStringMaker()}`
         let eventStart = `
 function ${funcName}(client) {
-    client.on('${eventType}', async member => {`
-
+    client.on('${eventType}', async member => {\n`
+        let tempHolder
         event.response.forEach(res => {
-            let tempHolder = ``
+            tempHolder = ``
             if (res.type === 'addRole') {
                 tempHolder += autoRoleBuilder(res.details.string)
             } else if (res.type === 'message') {
                 tempHolder += leaveJoinMessageBuilder(res.details.string, event.trigger.details.string)
             }
-            eventStart += tempHolder
         })
-        fileStart += eventStart
-        onReadyStart += `${funcName}(client)\n`
+        eventStart += tempHolder
+        fileStart += eventStart + `})}\n`
+        onReadyStart += `   ${funcName}(client)\n`
     })
 
     return onReadyStart + '\n})'
@@ -119,7 +119,6 @@ function reactionBuilder(emojiName) {
 function leaveJoinMessageBuilder(message, channelName = 'general') {
     channelName = channelName.toLowerCase()
     channelName = channelName.replace(' ', '-')
-    let start = `async member => {\n`
     let messageVar = `        let message = \`${message}\` `
     let messageCheck = `
         if (message.includes('user')) {
@@ -127,8 +126,8 @@ function leaveJoinMessageBuilder(message, channelName = 'general') {
         }\n`
 
     let channelSelect = `        let channel = await member.guild.channels.cache.find(channel => channel.name === \`${channelName}\`)\n`
-    let end = `        channel.send(message)\n})}\n\n`
-    return start + messageVar + messageCheck + channelSelect + end
+    let end = `        channel.send(message)\n`
+    return messageVar + messageCheck + channelSelect + end
 }
 
 function assignRoleBuilder() {
@@ -165,8 +164,7 @@ function autoRoleBuilder(roleName) {
             role = await member.guild.roles.create({ data: { name: \`${roleName}\`}})
         }
         member.roles.add(role)
-    })
-}\n\n`)
+\n\n`)
 }
 
 // Builds the switch case inside a conditional for messages that start with a prefix
