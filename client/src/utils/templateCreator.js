@@ -33,12 +33,16 @@ function ${funcName}(client) {
     client.on('${eventType}', `
 
         event.response.forEach(res => {
+            let tempHolder = ``
             if (res.type === 'addRole') {
-                    eventStart += autoRoleBuilder(res.details.string)
-                    fileStart += eventStart
-                    onReadyStart += `    ${funcName}(client)`
+                tempHolder += autoRoleBuilder(res.details.string)
+            } else if (res.type === 'message') {
+                tempHolder += leaveJoinMessageBuilder(res.details.string, event.trigger.details.string)
             }
         })
+        eventStart += tempHolder
+        fileStart += eventStart
+        onReadyStart += `${funcName}(client)\n`
     })
 
     return onReadyStart + '\n})'
@@ -113,7 +117,7 @@ function assignRoleBuilder() {
     }
     if (!role) {
         return message.reply("Role doesn't exist, either create that role or type a valid role");
-    } 
+    }
     const user = message.mentions.members.first()
     user.roles.add(role);
     message.reply(user.user.username + " is now a " + role.name);\n`
@@ -125,7 +129,7 @@ function removeRoleBuilder() {
     }
     if (!role) {
         return message.reply("Role doesn't exist, either create that role or type a valid role");
-    } 
+    }
     const user = message.mentions.members.first()
     user.roles.remove(role);
     message.reply(user.user.username + " is no longer a " + role.name);\n`
