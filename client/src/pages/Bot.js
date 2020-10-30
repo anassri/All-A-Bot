@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import Modal from 'react-modal'
-
-import { assembleFullFile } from '../utils/templateCreator';
-import { fileDownload, packageDownload } from '../utils/fileSaver'
-import { loadOne } from '../store/bots'
-import { makeStyles } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
 import { useParams } from 'react-router-dom';
-import Divider from '@material-ui/core/Divider';
+import { loadOne } from '../store/bots'
+import { 
+    makeStyles,
+    Grid,
+    Paper,
+    Container,
+    Typography,
+    Divider } from '@material-ui/core';
+import DownloadBtn from '../components/DownloadBtn';
 
 
 const useStyle = makeStyles((theme) => ({
@@ -22,7 +19,8 @@ const useStyle = makeStyles((theme) => ({
 
     },
     paper: {
-        height: '60vh',
+        height: '60%',
+        minHeight: '60vh',
         padding: '55px 65px',
         display: 'flex',
         flexDirection: 'column',
@@ -97,85 +95,15 @@ function Rule({rule}){
 export default function Bot(){
     const classes = useStyle();
     const bot = useSelector(state => state.bots.one)
-    const [modalIsOpen, setIsOpen] = useState(false);
-    const [token, setToken] = useState('')
+    
     const dispatch = useDispatch()
     const {id} = useParams()
+
     useEffect(() => {
         dispatch(loadOne(id))
     }, [])
     if (!bot) return null;
-    console.log(bot)
-
-    const customStyles = {
-        overlay: {
-            backgroundColor: 'rgba(40, 40, 40, 0.75)'
-        },
-        content: {
-            top: '25%',
-            height: '40%',
-            margin: '0 auto',
-            width: '35%',
-            backgroundColor: 'rgba(0, 0, 0)',
-            borderColor: 'black',
-            color: 'inherit',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-        }
-    }
-
-    const inputStyles = {
-        width: '75%',
-        backgroundColor: 'rgba(75, 75, 75)',
-        border: '1px solid',
-        borderRadius: '5px',
-        color: 'inherit',
-        borderColor: 'rgba(75, 75, 75)',
-        padding: '0px 10px',
-        marginTop: '20px'
-    }
-
-
-    const buttonStyles = {
-        backgroundColor: 'rgba(75, 75, 75)',
-        border: '1px solid',
-        borderRadius: '5px',
-        color: 'inherit',
-        borderColor: 'rgba(75, 75, 75)',
-        marginTop: '20px',
-        width: '20%'
-    }
-
-
-    function openModal() {
-        setIsOpen(true);
-    }
-
-    function afterOpenModal() {
-
-    }
-
-    function closeModal() {
-        setIsOpen(false)
-    }
-
-    function updateToken(e) {
-        setToken(e.target.value)
-    }
-
-    async function handleDownload() {
-        console.log(token)
-        closeModal()
-        let parsedRules = []
-        bot.rules.forEach(rule => {
-            parsedRules.push(JSON.parse(rule.content))
-        })
-        const file = assembleFullFile(bot.prefix, token, parsedRules)
-        await fileDownload(file)
-        await packageDownload()
-    }
-
+    
     return (
         <div className={classes.root}>
             <Container maxWidth="lg" className="paper-container">
@@ -219,24 +147,9 @@ export default function Bot(){
                             )}
                     </div>
                     <div className={classes.icons}>
-                        <button key={id} onClick={openModal} style={{ color: 'inherit',
-                            backgroundColor: 'rgba(0, 0, 0, 0)',
-                            borderColor: 'rgba(0, 0, 0, 0)'}} title="Download Bot">
-                            <i className="fas fa-download fa-lg"></i>
-                        </button>
-                        <Modal
-                            isOpen={modalIsOpen}
-                            onRequestClose={closeModal}
-                            contentLabel={'Enter your bot token'}
-                            style={customStyles}
-                        >
-                            <span style={{ marginRight: '10px'}}>Enter your bot token: </span>
-                            <input onChange={updateToken} style={inputStyles}></input>
-                            <button onClick={handleDownload} style={buttonStyles}>Create my bot!</button>
-                        </Modal>
-                        <Link key={id} to={``} style={{ color: 'inherit' }} title="Clone Bot">
-                            <i className="fas fa-clone fa-lg"></i>
-                        </Link>
+                        <div>
+                            <DownloadBtn bot={bot} />
+                        </div>
                     </div>
                 </Paper>
             </Container>
