@@ -78,7 +78,11 @@ export const loadBot = id => async dispatch => {
 };
 
 export const loadBookmarks = (userId, token) => async dispatch => {
-  const res = await fetch(`/api/users/${userId}/bots/bookmarks`);
+  const res = await fetch(`/api/users/${userId}/bots/bookmarks`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+  });
+
   if (res.ok) {
     const bookmarks = await res.json();
     dispatch(setBookmarks(bookmarks));
