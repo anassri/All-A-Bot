@@ -85,7 +85,7 @@ export const loadBookmarks = (userId, token) => async dispatch => {
 
   if (res.ok) {
     const bookmarks = await res.json();
-    dispatch(setBookmarks(bookmarks));
+    dispatch(setBookmarks(bookmarks.bookmarks));
   }
 };
 

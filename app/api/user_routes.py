@@ -29,6 +29,8 @@ def user_bookmarks():
 
 @user_routes.route('/<int:id>/bots/bookmarks', methods=['GET'])
 @jwt_required
-def get_user_bookmarks():
+def get_user_bookmarks(id):
+    print(id)
     user = User.query.get(id)
+    print(user.to_dict())
     return jsonify(bookmarks=[bookmark.to_dict() for bookmark in user.bookmarks])
