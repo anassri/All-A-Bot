@@ -276,7 +276,8 @@ function EditBot({ bot, botId, user, history }) {
                 setTimeout(()=>{setAutoSaveMsg("")}, 5000);
             },20000);
         } */
-        console.log("Autosave disabled.");
+        //console.log("Autosave disabled.");
+        return undefined;
     }
     const setRule = (i, newRule) => {
         setRules([...rules.slice(0, i), newRule, ...rules.slice(i + 1)]);
