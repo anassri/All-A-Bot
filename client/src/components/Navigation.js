@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import '../style/navigation.css';
 import { logout } from '../store/auth';
 
-import logo from '../images/logo.svg';
+import logo from '../images/logo.png';
 
 const useStyles = makeStyles(theme => ({
   root: {
