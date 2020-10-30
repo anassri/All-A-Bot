@@ -16,10 +16,24 @@ import {
   DialogContentText,
   DialogTitle,
   Button,
+  Popover,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
 import { loadAllBots, bookmarkBot } from '../store/bots';
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  LinkedinShareButton,
+  RedditShareButton,
+  TwitterShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  EmailIcon,
+  LinkedinIcon,
+  RedditIcon,
+} from 'react-share';
+
 import '../style/explore.css';
 
 import { assembleFullFile } from '../utils/templateCreator';
@@ -33,6 +47,11 @@ const useStyle = makeStyles(theme => ({
   paper: {
     height: '60vh',
     padding: '55px 65px',
+  },
+  popover: {
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
+    overflow: 'hidden',
   },
   title: {
     fontWeight: 'bold',
@@ -60,12 +79,22 @@ const useStyle = makeStyles(theme => ({
 const ListItem = ({ id, bot, token, name, description, username, user, bookmarkBotDispatch }) => {
   const classes = useStyle();
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
+  const [popoverIsOpen, setPopoverIsOpen] = useState(false);
   const [developerToken, setDeveloperToken] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleOpen = () => setIsOpen(true);
-  const handleClose = () => setIsOpen(false);
+  const handleOpenDialog = () => setDialogIsOpen(true);
+  const handleCloseDialog = () => setDialogIsOpen(false);
+
+  const handleOpenPopover = event => {
+    setPopoverIsOpen(true);
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClosePopover = () => setPopoverIsOpen(false);
   const updateDeveloperToken = e => setDeveloperToken(e.target.value);
+
+  const handleShare = () => {};
 
   const handleDownload = () => async event => {
     const parsedRules = [];
@@ -76,7 +105,7 @@ const ListItem = ({ id, bot, token, name, description, username, user, bookmarkB
 
     fileDownload(file);
     packageDownload();
-    handleClose();
+    handleCloseDialog();
   };
 
   const handleBookmark = () => async event => {
@@ -99,8 +128,8 @@ const ListItem = ({ id, bot, token, name, description, username, user, bookmarkB
       </CardActionArea>
       <div className={classes.content}>
         <div>
-          <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
-          <Dialog open={isOpen} onClose={handleClose}>
+          <i onClick={handleOpenDialog} id={`bot-${bot.id}`} className='fas fa-download'></i>
+          <Dialog open={dialogIsOpen} onClose={handleCloseDialog}>
             <DialogTitle>Developer Token</DialogTitle>
             <DialogContent>
               <DialogContentText>Enter your bot token:</DialogContentText>
@@ -114,7 +143,7 @@ const ListItem = ({ id, bot, token, name, description, username, user, bookmarkB
               onChange={updateDeveloperToken}
             />
             <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
+              <Button onClick={handleCloseDialog}>Cancel</Button>
               <Button onClick={handleDownload(bot.id)} className={`bot`}>
                 Create my bot!
               </Button>
@@ -125,6 +154,37 @@ const ListItem = ({ id, bot, token, name, description, username, user, bookmarkB
           <i className='fas fa-clone fa-lg'></i>
         </Link>
         <i onClick={handleBookmark(bot.id)} className='fas fa-bookmark fa-lg'></i>
+        <i onClick={handleOpenPopover} className='fas fa-share-alt' />
+        <Popover
+          open={popoverIsOpen}
+          anchorEl={anchorEl}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'center', horizontal: 'center' }}
+          anchorPosition={{ top: 10, right: 50 }}
+          onClose={handleClosePopover}
+          PaperProps={{ classes: { root: classes.popover } }}>
+          <div>
+            <EmailShareButton url={`http://localhost:3000/bots/${id}`}>
+              <EmailIcon size={32} round={true} />
+            </EmailShareButton>
+
+            <FacebookShareButton url={`http://localhost:3000/bots/${id}`}>
+              <FacebookIcon size={32} round={true} />
+            </FacebookShareButton>
+
+            <TwitterShareButton url={`http://localhost:3000/bots/${id}`}>
+              <TwitterIcon size={32} round={true} />
+            </TwitterShareButton>
+
+            <LinkedinShareButton url={`http://localhost:3000/bots/${id}`}>
+              <LinkedinIcon size={32} round={true} />
+            </LinkedinShareButton>
+
+            <RedditShareButton url={`http://localhost:3000/bots/${id}`}>
+              <RedditIcon size={32} round={true} bgStyle={{ fill: '#F94503' }} />
+            </RedditShareButton>
+          </div>
+        </Popover>
       </div>
     </Grid>
   );
