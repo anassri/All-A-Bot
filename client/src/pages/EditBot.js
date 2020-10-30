@@ -241,8 +241,11 @@ function EditBot({bot, botId, user, history}) {
         }
     }
 
+    async function updateDraftState(newState) {
+        await setIsDraft(newState)
+    }
+
     const saveBot = async () => {
-        console.log(botDescription);
         const data = {
             bot: { ...bot,
                 name: botName,
@@ -258,9 +261,9 @@ function EditBot({bot, botId, user, history}) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
-        // if (!isDraft && !bot.name) {
-        //     sendMessage()
-        // }
+        if (!isDraft && !bot.name) {
+            sendMessage()
+        }
         if (!isSaving && (!bot.name || (bot.id !== botId))) {
             history.push('/');
         }
@@ -338,13 +341,15 @@ function EditBot({bot, botId, user, history}) {
                         <Button onClick={saveBot} size="medium" variant="contained" color="primary">Save</Button>
                     </Grid>
                     <Grid item xs={3} sm={1} >
-                        <Button onClick={()=> { saveBot();
-                                                setIsDraft(false);
+                        <Button onClick={() => {
+                                                updateDraftState(false);
+                                                saveBot();
                                                 sendMessage();
                                             }}
                                 size="medium"
                                 variant="contained"
-                                color="primary">{bot.name ? "SUBMIT CHANGES" : "CREATE"}</Button>
+                                color="primary"
+                                id="notADraft">{bot.name ? "SUBMIT CHANGES" : "CREATE"}</Button>
                     </Grid>
                 </Grid>
             </Paper>
