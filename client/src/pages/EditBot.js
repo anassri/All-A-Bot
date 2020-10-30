@@ -107,10 +107,21 @@ function EditBot({bot, botId, user, history}) {
     const saveBot = async () => {
         console.log(botPrefix);
         console.log(user);
+        console.log(botId);
+        const data = { 
+            bot: { ...bot, 
+                name: botName, 
+                prefix: (botPrefix || null), 
+                userId: user.id, 
+                isDraft: isDraft, 
+                description: botDescription 
+            }, 
+            rules };
+        console.log(data);
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({bot: { ...bot, name: botName, prefix: (botPrefix || null), userId: user.id, isDraft: isDraft, description: botDescription }, rules }),
+            body: JSON.stringify(data),
         });
         if (!isDraft && !bot.name) {
             sendMessage()
@@ -254,7 +265,7 @@ function EditBot({bot, botId, user, history}) {
             <Paper className={classes.paper}>
                 <Grid container spacing={3}>
                     <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth value={botName} onChange={e => { setBotName(e.target.value); autoSave();}} label="Name"></TextField>
+                        <TextField variant="outlined" fullWidth value={botName} onChange={e => { console.log(e.target.id);setBotName(e.target.value); autoSave();}} label="Name"></TextField>
                     </Grid>
                     <Grid item xs className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => {setBotPrefix(e.target.value); autoSave();}}></TextField>
