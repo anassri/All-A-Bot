@@ -167,6 +167,7 @@ function EditBot({bot, botId, user, history}) {
     const [isDraft, setIsDraft] = useState(true);
     const [autoSaveMsg, setAutoSaveMsg] = useState("");
     const [isSaving, setIsSaving] = useState(false);
+    const [autosavePermitted, setAutosavePermitted] = useState(false)
 
     const classes = useStyle();
 
@@ -182,6 +183,7 @@ function EditBot({bot, botId, user, history}) {
         if (!botDescription) setBotDescription(bot.description);
         if (!user || ((bot.name) && (bot.userId !== user.id))){
             history.push('/login');
+        setAutosavePermitted(true);
         }
     })
 
@@ -211,7 +213,7 @@ function EditBot({bot, botId, user, history}) {
     }
 
     const autoSave = () =>{
-        if (!isSaving && user){
+        if (!isSaving && user && autosavePermitted){
             setIsSaving(true);
             setIsDraft(true);
             setTimeout(async ()=>{
