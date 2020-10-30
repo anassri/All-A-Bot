@@ -108,29 +108,27 @@ function reactionBuilder(emojiName) {
 
 function assignRoleBuilder() {
     return `    let role = await message.guild.roles.cache.find(x => x.name === args[1]);
+    if (!message.mentions.users.size) {
+        return message.reply("you need to tag a user");
+    }
     if (!role) {
-        message.reply("Role doesn't exist, either create that role or type a valid role");
-    } else {
-        if (!message.mentions.users.size) {
-            return message.reply("you need to tag a user");
-        }
-        const user = message.mentions.members.first()
-        user.roles.add(role);
-        message.reply(user.user.username + " is now a " + role.name);
-    }`
+        return message.reply("Role doesn't exist, either create that role or type a valid role");
+    } 
+    const user = message.mentions.members.first()
+    user.roles.add(role);
+    message.reply(user.user.username + " is now a " + role.name);\n`
 }
 function removeRoleBuilder() {
-    return `    let role = await message.guild.roles.cache.find(x => x.name === args[1]);
+    return `let role = await message.guild.roles.cache.find(x => x.name === args[1]);
+    if (!message.mentions.users.size) {
+        return message.reply("you need to tag a user");
+    }
     if (!role) {
-        message.reply("Role doesn't exist, either create that role or type a valid role");
-    } else {
-        if (!message.mentions.users.size) {
-            return message.reply("you need to tag a user");
-        }
-        const user = message.mentions.members.first()
-        user.roles.remove(role);
-        message.reply(user.user.username + " is no longer a " + role.name);
-    }`
+        return message.reply("Role doesn't exist, either create that role or type a valid role");
+    } 
+    const user = message.mentions.members.first()
+    user.roles.remove(role);
+    message.reply(user.user.username + " is no longer a " + role.name);\n`
 }
 
 function autoRoleBuilder(roleName) {
