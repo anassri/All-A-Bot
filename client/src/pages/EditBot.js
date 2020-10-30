@@ -116,7 +116,7 @@ const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, cla
                                     fullWidth
                                     value={rules[i].content.trigger.details.string}
                                     label={`channel name...`}
-                                    onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value, usesPrefix: false }})} />
+                                    onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: false, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
                             </>
                             : rules[i].content.trigger.type === "guildMemberRemove"
                             ? <>
@@ -125,7 +125,7 @@ const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, cla
                                     fullWidth
                                     value={rules[i].content.trigger.details.string}
                                     label={`channel name...`}
-                                    onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value, usesPrefix: false }})} />
+                                    onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: false, details: { ...rules[i].content.trigger.details, string: e.target.value}})} />
                             </>
                             : <></>
                         }
