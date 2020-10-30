@@ -63,6 +63,10 @@ function commandObjectsBuilder(objList) {
                     objTemplate += `\n    ${banBuilder()}\n`
                 } else if (res.type === "emoji") {
                     objTemplate += `\n    ${reactionBuilder(res.details.string)}\n`
+                } else if (res.type === "assignRole") {
+                    objTemplate += `\n    ${assignRoleBuilder()}`
+                } else if (res.type === "removeRole") {
+                    objTemplate += `\n    ${removeRoleBuilder()}`
                 }
             })
             commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})\n`
@@ -120,6 +124,34 @@ function leaveJoinMessageBuilder(message, channelName = 'general') {
     return start + messageVar + messageCheck + channelSelect + end
 }
 
+function assignRoleBuilder() {
+    return `    let role = await message.guild.roles.cache.find(x => x.name === args[1]);
+    if (!role) {
+        message.reply("Role doesn't exist, either create that role or type a valid role");
+    } else {
+        if (!message.mentions.users.size) {
+            return message.reply("you need to tag a user");
+        }
+        const user = message.mentions.members.first()
+        user.roles.add(role);
+        message.reply(user.user.username + " is now a " + role.name);
+    }`
+}
+
+function removeRoleBuilder() {
+    return `    let role = await message.guild.roles.cache.find(x => x.name === args[1]);
+    if (!role) {
+        message.reply("Role doesn't exist, either create that role or type a valid role");
+    } else {
+        if (!message.mentions.users.size) {
+            return message.reply("you need to tag a user");
+        }
+        const user = message.mentions.members.first()
+        user.roles.remove(role);
+        message.reply(user.user.username + " is no longer a " + role.name);
+    }`
+}
+
 function autoRoleBuilder(roleName) {
     return (
 `async member => {
@@ -166,7 +198,7 @@ function substringMatcher(commands) {
     let elifStatements = ``
     commands.forEach(command => {
         elifStatements += (
-            `        } else if (checkContains(message, '${command.trigger.details.string}')):\n            client.commands.get('${command.trigger.details.string}').execute(message);\n`)
+            `        } else if (checkContains(message, '${command.trigger.details.string}'));\n            client.commands.get('${command.trigger.details.string}').execute(message);\n`)
     })
 
     let checks = ifStatement + elifStatements + '        }\n'

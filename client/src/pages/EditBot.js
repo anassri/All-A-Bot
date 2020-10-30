@@ -52,6 +52,7 @@ const useStyle = makeStyles((theme) => ({
     gridOverflow: {
         overflowY: 'auto',
         overflowX: 'hidden',
+        // scrollBar: "rgba(232,232,232,1)",
         width: '100%',
         paddingTop: '10px'
     }
@@ -118,10 +119,11 @@ function EditBot({bot, botId, user, history}) {
     }
 
     const autoSave = () =>{
-        if (!isSaving){
+        if (!isSaving && user){
             setIsSaving(true);
             setIsDraft(true);
             setTimeout(async ()=>{
+                if(!botName) setBotName("<unknown bot>");
                 await saveBot();
                 setIsSaving(false);
                 setAutoSaveMsg("Draft bot saved.");
@@ -225,6 +227,8 @@ function EditBot({bot, botId, user, history}) {
                         >
                             <MenuItem value="message">Message</MenuItem>
                             <MenuItem value="emoji">Emoji react to triggering message</MenuItem>
+                            <MenuItem value="assignRole">Assign a role to member</MenuItem>
+                            <MenuItem value="removeRole">Remove a role from member</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -254,9 +258,6 @@ function EditBot({bot, botId, user, history}) {
                     </Grid>
                     <Grid item xs className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => {setBotPrefix(e.target.value); autoSave();}}></TextField>
-                    </Grid>
-                    <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth label="Developer Token" value={botPrefix} onChange={e => { setBotPrefix(e.target.value); autoSave(); }}></TextField>
                     </Grid>
                     <Grid item xs={12} className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Description" value={botDescription} onChange={e => { setBotDescription(e.target.value); autoSave(); }}></TextField>

@@ -39,12 +39,14 @@ with app.app_context():
     bot3 = Bot(user_id=3, name="fakebot3", prefix="#", description="The third fake bot ever here", is_draft=False)
     bot4 = Bot(user_id=4, name="fakebot4", prefix="//", description="The fourth fake bot ever here", is_draft=False)
     bot5 = Bot(user_id=1, name="fakebot5", prefix= "%", description="The fifth fake bot ever here", is_draft=True)
+    bot6 = Bot(user_id=1, name="fakebot6", prefix= "%", description="The fifth fake bot ever here", is_draft=False)
 
     rule1 = Rule(bot_id=1, content=ruleString1)
     rule2 = Rule(bot_id=2, content=ruleString2)
     rule3 = Rule(bot_id=1, content=ruleString3)
     rule4 = Rule(bot_id=4, content=ruleString5)
     rule5 = Rule(bot_id=4, content=ruleString6)
+    rule4 = Rule(bot_id=6, content=ruleString4)
 
     db.session.add(user1)
     db.session.add(user2)
@@ -55,6 +57,7 @@ with app.app_context():
     db.session.add(bot3)
     db.session.add(bot4)
     db.session.add(bot5)
+    db.session.add(bot6)
     db.session.add(rule1)
     db.session.add(rule2)
     db.session.add(rule3)
