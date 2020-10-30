@@ -1,4 +1,4 @@
-import { SET_BOT, SET_BOTS, SET_ALL, SET_ONE, SET_COMPLETE } from '../constants';
+import { SET_BOT, SET_BOTS, SET_ALL, SET_ONE, SET_COMPLETE, SET_BOOKMARKS } from '../constants';
 
 const setBot = bot => ({
   type: SET_BOT,
@@ -14,42 +14,47 @@ export const setOne = bot => ({
 });
 export const setComplete = completeBots => ({
   type: SET_COMPLETE,
-  completeBots
-})
+  completeBots,
+});
+
+export const setBookmarks = bookmarks => ({
+  type: SET_BOOKMARKS,
+  bookmarks,
+});
 
 export const loadAllBots = () => async dispatch => {
   try {
-    const res = await fetch('/api/bots/all')
-    if(res.ok) {
+    const res = await fetch('/api/bots/all');
+    if (res.ok) {
       const bots = await res.json();
       dispatch(setAll(bots.data));
     }
-  } catch(e) {
-    console.error(e)
+  } catch (e) {
+    console.error(e);
   }
-}
+};
 
 export const loadCompleteBots = () => async dispatch => {
   try {
-    const res = await fetch('/api/bots/complete')
-    if(res.ok) {
+    const res = await fetch('/api/bots/complete');
+    if (res.ok) {
       const bots = await res.json();
       dispatch(setComplete(bots.data));
     }
-  } catch(e) {
-    console.error(e)
+  } catch (e) {
+    console.error(e);
   }
-}
+};
 
-export const loadOne = (id) => async dispatch => {
+export const loadOne = id => async dispatch => {
   try {
-    const res = await fetch(`/api/bots/detail/${id}`)
-    if(res.ok) {
+    const res = await fetch(`/api/bots/detail/${id}`);
+    if (res.ok) {
       const bot = await res.json();
       dispatch(setOne(bot.data));
     }
-  } catch(e) {
-    console.error(e)
+  } catch (e) {
+    console.error(e);
   }
 };
 
@@ -57,7 +62,6 @@ export const setBots = bots => ({
   type: SET_BOTS,
   bots,
 });
-
 
 export const loadBot = id => async dispatch => {
   try {
@@ -73,6 +77,18 @@ export const loadBot = id => async dispatch => {
   }
 };
 
+export const loadBookmarks = (userId, token) => async dispatch => {
+  const res = await fetch(`/api/users/${userId}/bots/bookmarks`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+  });
+
+  if (res.ok) {
+    const bookmarks = await res.json();
+    dispatch(setBookmarks(bookmarks.bookmarks));
+  }
+};
+
 export const deleteBot = (id, token) => async dispatch => {
   const res = await fetch(`/api/bots/${id}`, {
     method: 'DELETE',
@@ -80,6 +96,19 @@ export const deleteBot = (id, token) => async dispatch => {
   });
   if (res.ok) return true;
   else return false;
+};
+
+export const bookmarkBot = (botId, userId, token) => async dispatch => {
+  const res = await fetch('/api/users/bots/bookmarks', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ botId, userId }),
+  });
+
+  if (res.ok) {
+    const data = await res.json();
+    console.log(data);
+  }
 };
 
 export const loadBots = (user, token) => async dispatch => {
@@ -95,19 +124,21 @@ export const loadBots = (user, token) => async dispatch => {
   }
 };
 
-export default function botReducer (state={ bot: { name: "", rules: [] } }, action) {
-    switch (action.type) {
-        case SET_BOT:
-            return { ...state, bot: action.bot };
-        case SET_BOTS:
-            return { ...state, list: action.bots };
-        case SET_ALL:
-            return { ...state, explore: action.bots };
-        case SET_ONE:
-            return { ...state, one: action.bot };
-          case SET_COMPLETE:
-            return { ...state, completeBots: action.completeBots };
-        default:
-            return state;
-        }
-    }
+export default function botReducer(state = { bot: { name: '', rules: [] } }, action) {
+  switch (action.type) {
+    case SET_BOT:
+      return { ...state, bot: action.bot };
+    case SET_BOTS:
+      return { ...state, list: action.bots };
+    case SET_ALL:
+      return { ...state, explore: action.bots };
+    case SET_ONE:
+      return { ...state, one: action.bot };
+    case SET_COMPLETE:
+      return { ...state, completeBots: action.completeBots };
+    case SET_BOOKMARKS:
+      return { ...state, bookmarks: action.bookmarks };
+    default:
+      return state;
+  }
+}
