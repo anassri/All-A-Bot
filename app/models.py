@@ -16,6 +16,9 @@ class User(db.Model):
 
     bots = db.relationship("Bot")
 
+    bookmarks = db.relationship(
+        'Bot', back_populates='users', secondary='users_bookmarks')
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -55,6 +58,8 @@ class Bot(db.Model):
     # to create a draft bot before they have a developer token
 
     owner = db.relationship("User")
+    users = db.relationship('User', back_populates='bots',
+                            secondary='users_bookmarks')
     rules = db.relationship("Rule")
 
     def to_dict(self):
@@ -87,3 +92,15 @@ class Rule(db.Model):
             'bot_id': self.bot_id,
             'content': self.content
         }
+
+
+class User_Bookmark(db.Model):
+    __tablename__ = 'users_bookmarks'
+    id = db.Column(db.Integer, primary_key=True)
+    userId = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    botId = db.Column(db.Integer, db.ForeignKey('bots.id'), nullable=False)
+
+    user = db.relationship('User', backref=db.backref(
+        'users_bookmarks', cascade='all'))
+    bot = db.relationship('Bot', backref=db.backref(
+        'users_bookmarks', cascade='all'))
