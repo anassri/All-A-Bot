@@ -200,10 +200,6 @@ function EditBot({bot, botId, user, history}) {
         const newRule = BLANK_RULE;
         setRules([...rules, newRule]);
     }
-    const removeRule = () => {
-        
-        setRules(rules.slice(rules.length-1));
-    }
 
     const removeRule = () => {
         setRules(rules.slice(0, rules.length - 1))
