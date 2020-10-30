@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { signup, loadUser } from '../store/auth';
 import { makeStyles } from '@material-ui/core';
 import { Box, TextField, Button, Checkbox, Typography, Container, Paper } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
 
 const useStyle = makeStyles(theme => ({
   root: {
@@ -12,8 +11,7 @@ const useStyle = makeStyles(theme => ({
     marginTop: 10,
   },
   paper: {
-    height: '60%',
-    minHeight: '60vh',
+    height: '60vh',
     padding: '55px 65px',
   },
   title: {
@@ -78,14 +76,15 @@ export const SignupPage = ({ user, signupDispatch, loadUserDispatch }) => {
 
   return (
     <Box>
+      <Box>
+        {errors.map(error => (
+          <div>{error}</div>
+        ))}
+      </Box>
+
       <div className={classes.root}>
         <Container maxWidth='lg' className='paper-container'>
           <Paper className={classes.paper}>
-            {errors.length ? <Alert variant="outlined" severity="error">
-              {errors.map(error => (
-                <div style={{textAlign: 'left'}}>{error}</div>
-              ))}
-            </Alert> : null}
             <div className='signup-container'>
               <Typography variant='h4' component='h2' style={{ fontWeight: 'bold', color: 'white' }}>
                 Create an account
