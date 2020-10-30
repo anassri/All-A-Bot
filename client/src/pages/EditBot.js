@@ -93,16 +93,16 @@ const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, cla
                                     variant="outlined"
                                     fullWidth
                                     value={rules[i].content.trigger.details.string}
-                                    label={`message ${rules[i].content.trigger.details.includesOrBeginsWith} string...`}
+                                    label={`message string`}
                                     id={`ruletext${i}`}
                                     onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
                               <FormControl>
-                                    <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
+                              {/*       <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
                                         onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value }})}
                             >
                                 <FormControlLabel value="includes" control={<Radio />} label="Includes" />
                                 <FormControlLabel value="begins with" control={<Radio />} label="Begins with" />
-                            </RadioGroup>
+                            </RadioGroup> */}
                             <FormControlLabel label="Uses prefix" control={<Checkbox checked={rules[i].content.trigger.usesPrefix}
                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
                             </FormControl>
@@ -158,7 +158,7 @@ const ResponseForm = ({ruleIndex, responseIndex, rules, setResponse, autoSave, c
 function EditBot({bot, botId, user, history}) {
 
     const BLANK_RESPONSE = {type: "", details: { string: "" }}
-    const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "", includesOrBeginsWith: "begins with" }}, response: [BLANK_RESPONSE] } };
+    const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "" }}, response: [BLANK_RESPONSE] } };
 
     const [botName, setBotName] = useState("");
     const [rules, setRules] = useState([]);
