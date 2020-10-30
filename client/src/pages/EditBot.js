@@ -89,49 +89,51 @@ const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, cla
                         </FormControl>
                     </Grid>
                     <Grid item xs className={classes.grid}>
-                    {rules[i].content.trigger.type === "message"
-                                ? <>
-                                <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        value={rules[i].content.trigger.details.string}
-                                        label={`message ${rules[i].content.trigger.details.includesOrBeginsWith} string...`}
-                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
-                                  <FormControl>
-                                        <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
-                                            onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value }})}
-                                >
-                                    <FormControlLabel value="includes" control={<Radio />} label="Includes" />
-                                    <FormControlLabel value="begins with" control={<Radio />} label="Begins with" />
-                                </RadioGroup>
-                                <FormControlLabel label="Uses prefix" control={<Checkbox checked={rules[i].content.trigger.usesPrefix}
-                                           onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
-                                </FormControl>
-                                </>
-                                : rules[i].content.trigger.type === "guildMemberAdd"
-                                ? <>
-                                <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        value={rules[i].content.trigger.details.string}
-                                        label={`channel name...`}
-                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value, usesPrefix: false }})} />
-                                </>
-                                : rules[i].content.trigger.type === "guildMemberRemove"
-                                ? <>
-                                <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        value={rules[i].content.trigger.details.string}
-                                        label={`channel name...`}
-                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value, usesPrefix: false }})} />
-                                </>
-                                : <></>
-                            }
+                        {rules[i].content.trigger.type === "message"
+                            ? <>
+                            <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    value={rules[i].content.trigger.details.string}
+                                    label={`message string`}
+                                    id={`ruletext${i}`}
+                                    onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
+                              <FormControl>
+                              {/*       <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value }})}
+                            >
+                                <FormControlLabel value="includes" control={<Radio />} label="Includes" />
+                                <FormControlLabel value="begins with" control={<Radio />} label="Begins with" />
+                            </RadioGroup> */}
+                            <FormControlLabel label="Uses prefix" control={<Checkbox checked={rules[i].content.trigger.usesPrefix}
+                                       onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
+                            </FormControl>
+                            </>
+                            : rules[i].content.trigger.type === "guildMemberAdd"
+                            ? <>
+                            <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    value={rules[i].content.trigger.details.string}
+                                    label={`channel name...`}
+                                    onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value, usesPrefix: false }})} />
+                            </>
+                            : rules[i].content.trigger.type === "guildMemberRemove"
+                            ? <>
+                            <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    value={rules[i].content.trigger.details.string}
+                                    label={`channel name...`}
+                                    onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value, usesPrefix: false }})} />
+                            </>
+                            : <></>
+                        }
+                        }
                     </Grid>
                 </Grid>
             </div>
-            {rules[i].content.response.map((resp, responseIndex) => <ResponseForm ruleIndex={i} responseIndex={responseIndex} rules={rules} setResponse={setResponse} autoSave={autoSave} classes={classes} />)}
+            {rules[i].content.response.map((resp, responseIndex) => <ResponseForm key={i} ruleIndex={i} responseIndex={responseIndex} rules={rules} setResponse={setResponse} autoSave={autoSave} classes={classes} />)}
             <Button onClick={() => addResponse(i)}>Add response</Button>
         </form>
     </>
@@ -189,13 +191,13 @@ const ResponseForm = ({ruleIndex, responseIndex, rules, setResponse, autoSave, c
 function EditBot({bot, botId, user, history}) {
 
     const BLANK_RESPONSE = {type: "", details: { string: "" }}
-    const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "", includesOrBeginsWith: "begins with" }}, response: [BLANK_RESPONSE] } };
+    const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "" }}, response: [BLANK_RESPONSE] } };
 
     const [botName, setBotName] = useState("");
     const [rules, setRules] = useState([]);
     const [botPrefix, setBotPrefix] = useState("");
     const [botDescription, setBotDescription] = useState("");
-    const [isDraft, setIsDraft] = useState(true);
+    const [isDraft, setIsDraft] = useState(null);
     const [autoSaveMsg, setAutoSaveMsg] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [autosavePermitted, setAutosavePermitted] = useState(false)
@@ -216,6 +218,8 @@ function EditBot({bot, botId, user, history}) {
         if (!user || ((bot.name) && (bot.userId !== user.id))){
             history.push('/login');
         }
+        console.log(`isDraft: ${isDraft}`);
+        if (typeof isDraft !== "boolean") setIsDraft(bot.isDraft);
     })
 
     const addRule = () => {
@@ -246,6 +250,8 @@ function EditBot({bot, botId, user, history}) {
     }
 
     const saveBot = async () => {
+        console.log(botDescription);
+        console.log(`Saving isDraft as ${isDraft}`)
         const data = {
             bot: { ...bot,
                 name: botName,
@@ -312,7 +318,7 @@ function EditBot({bot, botId, user, history}) {
             <Paper className={classes.paper}>
                 <Grid container spacing={3}>
                     <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth value={botName} onChange={e => { console.log(e.target.id);setBotName(e.target.value); autoSave();}} label="Name"></TextField>
+                        <TextField variant="outlined" fullWidth value={botName} onChange={e => { setBotName(e.target.value); autoSave();}} label="Name"></TextField>
                     </Grid>
                     <Grid item xs className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => {setBotPrefix(e.target.value); autoSave();}}></TextField>
@@ -337,20 +343,21 @@ function EditBot({bot, botId, user, history}) {
                         </Grid>
                     : null
                     }
+                    <FormControl>
+                        <FormControlLabel label="Draft" onClick={e => setIsDraft(e.target.checked)} control={<Checkbox checked={isDraft} />} />
+                    </FormControl>
                     <Grid item xs={3} sm={1}>
                         <Button onClick={saveBot} size="medium" variant="contained" color="primary">Save</Button>
                     </Grid>
-                    <Grid item xs={3} sm={1} >
-                        <Button onClick={() => {
-                                                updateDraftState(false);
+{/*                     <Grid item xs={3} sm={1} >
+                        <Button onClick={()=> { setIsDraft(false);
+                                                console.log(isDraft);
                                                 saveBot();
-                                                sendMessage();
                                             }}
                                 size="medium"
                                 variant="contained"
-                                color="primary"
-                                id="notADraft">{bot.name ? "SUBMIT CHANGES" : "CREATE"}</Button>
-                    </Grid>
+                                color="primary">{bot.name ? "SUBMIT CHANGES" : "CREATE"}</Button>
+                    </Grid> */}
                 </Grid>
             </Paper>
         </Container>
