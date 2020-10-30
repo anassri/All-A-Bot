@@ -98,7 +98,7 @@ export function Dashboard({
       loadBotsDispatch(user, token);
       loadBookmarksDispatch(user.id, token);
     }
-  }, [user, botSyncNeeded]);
+  }, [botSyncNeeded]);
 
   const handleOpen = () => setOpen(true);
 
