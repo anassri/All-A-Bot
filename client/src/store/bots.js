@@ -1,4 +1,4 @@
-import { SET_BOT, SET_BOTS, SET_ALL, SET_ONE } from '../constants';
+import { SET_BOT, SET_BOTS, SET_ALL, SET_ONE, SET_COMPLETE } from '../constants';
 
 const setBot = bot => ({
   type: SET_BOT,
@@ -12,6 +12,10 @@ export const setOne = bot => ({
   type: SET_ONE,
   bot,
 });
+export const setComplete = completeBots => ({
+  type: SET_COMPLETE,
+  completeBots
+})
 
 export const loadAllBots = () => async dispatch => {
   try {
@@ -24,6 +28,19 @@ export const loadAllBots = () => async dispatch => {
     console.error(e)
   }
 }
+
+export const loadCompleteBots = () => async dispatch => {
+  try {
+    const res = await fetch('/api/bots/complete')
+    if(res.ok) {
+      const bots = await res.json();
+      dispatch(setComplete(bots.data));
+    }
+  } catch(e) {
+    console.error(e)
+  }
+}
+
 export const loadOne = (id) => async dispatch => {
   try {
     const res = await fetch(`/api/bots/detail/${id}`)
@@ -88,6 +105,8 @@ export default function botReducer (state={ bot: { name: "", rules: [] } }, acti
             return { ...state, explore: action.bots };
         case SET_ONE:
             return { ...state, one: action.bot };
+          case SET_COMPLETE:
+            return { ...state, completeBots: action.completeBots };
         default:
             return state;
         }

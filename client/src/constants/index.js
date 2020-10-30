@@ -12,3 +12,5 @@ export const TOKEN = 'auth/TOKEN';
 export const USER = 'auth/USER';
 
 export const SET_BOT = 'bots/GET_BOT';
+
+export const SET_COMPLETE = 'bots/SET_COMPLETE';
