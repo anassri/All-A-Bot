@@ -9,7 +9,10 @@ export default function CreateBot(props) {
         dispatch(loadCompleteBots())
     }, [])
 
-    const allBots = useSelector(state => state.bots.completeBots) || [];
+    const allBots = useSelector(state => state.bots.completeBots) || null;
+    if (allBots === null) {
+        return <h1>Loading...</h1>;
+    }
     let newId = null;
     console.log(allBots);
     let maxId = -1;
