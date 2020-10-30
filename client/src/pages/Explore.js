@@ -120,6 +120,7 @@ const ListItem = ({ id, bot, name, description, username }) => {
         <Link key={id} to={``} style={{ color: 'inherit' }} title='Clone Bot'>
           <i className='fas fa-clone fa-lg'></i>
         </Link>
+        <i className='fas fa-bookmark fa-lg'></i>
       </div>
     </Grid>
   );
