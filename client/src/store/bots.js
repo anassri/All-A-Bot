@@ -69,7 +69,6 @@ export const loadBot = id => async dispatch => {
     if (res.ok) {
       const bot = await res.json();
       bot.rules = bot.rules.map(rule => ({ ...rule, content: JSON.parse(rule.content) }));
-      console.log(bot);
       dispatch(setBot(bot));
     }
   } catch (e) {
@@ -107,7 +106,6 @@ export const bookmarkBot = (botId, userId, token) => async dispatch => {
 
   if (res.ok) {
     const data = await res.json();
-    console.log(data);
   }
 };
 

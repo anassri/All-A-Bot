@@ -196,20 +196,16 @@ function EditBot({ bot, botId, user, history }) {
     const classes = useStyle();
 
     useEffect(() => {
-        console.log(`name: ${botName}`);
-        console.log(`prefix: ${botPrefix}`);
         if (rules.length === 0) {
             setRules(bot.rules);
         }
         if (botName === "") setBotName(bot.name);
         if (!botPrefix) setBotPrefix(bot.prefix);
-        console.log(botDescription)
         if (!botDescription) setBotDescription(bot.description);
         setAutosavePermitted(true);
         if (!user || ((bot.name) && (bot.userId !== user.id))) {
             history.push('/login');
         }
-        console.log(`isDraft: ${isDraft}`);
         if (typeof isDraft !== "boolean") setIsDraft(bot.isDraft);
     })
 
@@ -242,8 +238,6 @@ function EditBot({ bot, botId, user, history }) {
     }
 
     const saveBot = async () => {
-        console.log(botDescription);
-        console.log(`Saving isDraft as ${isDraft}`)
         const data = {
             bot: {
                 ...bot,
@@ -255,7 +249,6 @@ function EditBot({ bot, botId, user, history }) {
             },
             rules
         };
-        console.log(data);
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
@@ -301,11 +294,9 @@ function EditBot({ bot, botId, user, history }) {
 
 
     const addResponse = i => {
-        console.log(rules[i].content.response.length);
         let newResponses = rules[i].content.response;
         newResponses.push(BLANK_RESPONSE);
         setRule(i, { ...rules[i], content: { ...rules[i].content, response: newResponses } });
-        console.log(rules[i].content.response.length);
     }
     const removeResponse = i => {
         let newResponses = rules[i].content.response;
@@ -326,7 +317,7 @@ function EditBot({ bot, botId, user, history }) {
                             variant="outlined"
                             fullWidth
                             value={botName}
-                            onChange={e => { console.log(e.target.id); setBotName(e.target.value); autoSave(); }}
+                            onChange={e => { setBotName(e.target.value); autoSave(); }}
                             label="Name" />
                     </Grid>
                     <Grid item xs className={classes.grid}>
