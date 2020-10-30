@@ -5,7 +5,6 @@ client.commands = new Discord.Collection();
 
 client.once('ready', () => {
     // Simple console indication that the bot is up and running
-    console.log('Bot is ready to go!')
 })
 
 // Events like guild member join and leave can be here, since they do not depend on messages being sent

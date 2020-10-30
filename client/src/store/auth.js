@@ -15,7 +15,6 @@ export const removeAuth = () => ({ type: REMOVE_AUTH });
 
 export const loadUser = () => async dispatch => {
   const { user, token } = getFromLocalStorage();
-  console.log(token);
   if (!user || !token) return;
 
   const res = await fetch('/verify_token', {
@@ -41,8 +40,6 @@ export const signup = (username, email, password) => async dispatch => {
       body: JSON.stringify({ username, email, password }),
     });
 
-    console.log(res.status);
-
     // TODO: Refactor
     if (res.ok) {
       const { token, user } = await res.json();
@@ -55,7 +52,7 @@ export const signup = (username, email, password) => async dispatch => {
     if (res.status === 500) throw { status: 500, msg: 'User with that email address already exists' };
     else throw { status: 400, msg: (await res.json()).msg };
   } catch (e) {
-    console.log('catch e', e);
+    console.error(e);
     return e;
   }
 };
@@ -79,18 +76,16 @@ export const login = (email, password) => async dispatch => {
       };
     } else throw { status: 400, msg: (await res.json()).msg };
   } catch (e) {
-    console.log('catch e', e);
+    console.error(e);
     return e;
   }
 };
 
 export const logInWithDiscord = code => async dispatch => {
-  console.log('login with discord', code);
   try {
     const res = await fetch(`/auth/${code}`);
 
     if (res.ok) {
-      console.log('res ok');
       const { token, user } = await res.json();
       setInLocalStorage(token, user);
       dispatch(setToken(token));
@@ -99,11 +94,10 @@ export const logInWithDiscord = code => async dispatch => {
         status: 200,
       };
     } else {
-      console.log('res not ok');
       throw { status: 400, msg: (await res.json()).msg };
     }
   } catch (e) {
-    console.log('catch e', e);
+    console.error(e);
     return e;
   }
 };
