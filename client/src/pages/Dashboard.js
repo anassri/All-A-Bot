@@ -236,22 +236,26 @@ export function Dashboard({
               .map(bot => {
                 return (
                   <div key={bot.id}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                      <Typography variant='h5' style={{ fontWeight: 'bold' }}>
-                        {bot.name}
-                      </Typography>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography variant='body2'>{bot.description}</Typography>
-                      <div>
-                        <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
-                          <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
-                        </Link>
-                        <Link style={{ color: 'inherit' }} title='Delete Bot' to={``}>
-                          <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
-                        </Link>
+                    <CardActionArea key={bot.id}>
+                      <Link key={bot.id} to={`/bots/${bot.id}`} style={{ color: 'inherit' }}>
+                        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                          <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                            {bot.name}
+                          </Typography>
+                        </div>
+                      </Link>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant='body2'>{bot.description}</Typography>
+                        <div>
+                          <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
+                            <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
+                          </Link>
+                          <Link style={{ color: 'inherit' }} title='Delete Bot' to={``}>
+                            <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
+                          </Link>
+                        </div>
                       </div>
-                    </div>
+                    </CardActionArea>
                     <Divider />
                   </div>
                 );
@@ -270,41 +274,45 @@ export function Dashboard({
             {bookmarks.map(bot => {
               return (
                 <div key={bot.id}>
-                  <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                    <Typography variant='h5' style={{ fontWeight: 'bold' }}>
-                      {bot.name}
-                    </Typography>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant='body2'>{bot.description}</Typography>
-                    <div>
-                      <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
+                  <CardActionArea key={bot.id}>
+                    <Link key={bot.id} to={`/bots/${bot.id}`} style={{ color: 'inherit' }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                        <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                          {bot.name}
+                        </Typography>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Typography variant='body2'>{bot.description}</Typography>
+                        <div>
+                          <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
 
-                      <Dialog open={open} onClose={handleClose}>
-                        <DialogTitle>Developer Token</DialogTitle>
-                        <DialogContent>
-                          <DialogContentText>Enter your bot token:</DialogContentText>
-                        </DialogContent>
-                        <TextField
-                          autoFocus
-                          margin='dense'
-                          label='Developer Token'
-                          type='text'
-                          fullWidth
-                          onChange={updateDeveloperToken}
-                        />
-                        <DialogActions>
-                          <Button onClick={handleClose}>Cancel</Button>
-                          <Button onClick={handleDownload(bot.id)} className={`bot`}>
-                            Create my bot!
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                      <Link to={''} style={{ color: 'inherit' }} title='Clone Bot'>
-                        <i onClick={handleClone} id={`bot-${bot.id}`} className='fas fa-clone'></i>
-                      </Link>
-                    </div>
-                  </div>
+                          <Dialog open={open} onClose={handleClose}>
+                            <DialogTitle>Developer Token</DialogTitle>
+                            <DialogContent>
+                              <DialogContentText>Enter your bot token:</DialogContentText>
+                            </DialogContent>
+                            <TextField
+                              autoFocus
+                              margin='dense'
+                              label='Developer Token'
+                              type='text'
+                              fullWidth
+                              onChange={updateDeveloperToken}
+                            />
+                            <DialogActions>
+                              <Button onClick={handleClose}>Cancel</Button>
+                              <Button onClick={handleDownload(bot.id)} className={`bot`}>
+                                Create my bot!
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                          <Link to={''} style={{ color: 'inherit' }} title='Clone Bot'>
+                            <i onClick={handleClone} id={`bot-${bot.id}`} className='fas fa-clone'></i>
+                          </Link>
+                        </div>
+                      </div>
+                    </Link>
+                  </CardActionArea>
                   <Divider />
                 </div>
               );
