@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { loadOne } from '../store/bots'
-import { 
-    makeStyles,
-    Grid,
-    Paper,
-    Container,
-    Typography,
-    Divider } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 import DownloadBtn from '../components/DownloadBtn';
 
 
@@ -19,8 +18,7 @@ const useStyle = makeStyles((theme) => ({
 
     },
     paper: {
-        height: '60%',
-        minHeight: '60vh',
+        height: '60vh',
         padding: '55px 65px',
         display: 'flex',
         flexDirection: 'column',
@@ -95,15 +93,15 @@ function Rule({rule}){
 export default function Bot(){
     const classes = useStyle();
     const bot = useSelector(state => state.bots.one)
-    
+    const [token, setToken] = useState('')
     const dispatch = useDispatch()
     const {id} = useParams()
-
     useEffect(() => {
         dispatch(loadOne(id))
     }, [])
     if (!bot) return null;
-    
+    console.log(bot)
+
     return (
         <div className={classes.root}>
             <Container maxWidth="lg" className="paper-container">
@@ -147,9 +145,8 @@ export default function Bot(){
                             )}
                     </div>
                     <div className={classes.icons}>
-                        <div>
-                            <DownloadBtn bot={bot} />
-                        </div>
+
+                        <DownloadBtn bot={bot} />
                     </div>
                 </Paper>
             </Container>
