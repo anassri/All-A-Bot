@@ -129,7 +129,6 @@ const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, cla
                                 </>
                                 : <></>
                             }
-                        }
                     </Grid>
                 </Grid>
             </div>
