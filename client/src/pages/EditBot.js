@@ -178,6 +178,7 @@ function EditBot({bot, botId, user, history}) {
         }
         if (botName === "") setBotName(bot.name);
         if (!botPrefix) setBotPrefix(bot.prefix);
+        console.log(botDescription)
         if (!botDescription) setBotDescription(bot.description);
         if (!user || ((bot.name) && (bot.userId !== user.id))){
             history.push('/login');
@@ -190,9 +191,7 @@ function EditBot({bot, botId, user, history}) {
     }
 
     const saveBot = async () => {
-        console.log(botPrefix);
-        console.log(user);
-        console.log(botId);
+        console.log(botDescription);
         const data = {
             bot: { ...bot,
                 name: botName,
@@ -202,13 +201,12 @@ function EditBot({bot, botId, user, history}) {
                 description: botDescription
             },
             rules };
-        console.log(data);
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
-        if (!bot.name) history.push('/');
+        if (!isSaving && (!bot.name || (bot.id !== botId))) history.push('/');
     }
 
     const autoSave = () =>{
