@@ -23,7 +23,7 @@ import {
 } from '@material-ui/core/';
 import { useConfirm } from 'material-ui-confirm';
 import { CardActionArea } from '@material-ui/core';
-import { loadBot, loadBots, deleteBot } from '../store/bots';
+import { loadBot, loadBots, deleteBot, loadBookmarks } from '../store/bots';
 import { assembleFullFile } from '../utils/templateCreator';
 import { fileDownload, packageDownload } from '../utils/fileSaver';
 import Guide from '../components/Guide'
@@ -87,7 +87,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch, deleteBotDispatch }) {
+export function Dashboard({
+  user,
+  token,
+  bots,
+  loadBotDispatch,
+  loadBotsDispatch,
+  deleteBotDispatch,
+  loadBookmarksDispatch,
+  bookmarks,
+}) {
   const history = useHistory();
   const confirm = useConfirm();
 
@@ -98,8 +107,11 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
   const [developerToken, setDeveloperToken] = useState('');
 
   useEffect(() => {
-    if (user) loadBotsDispatch(user, token);
-  }, [user, botSyncNeeded]);
+    if (user) {
+      loadBotsDispatch(user, token);
+      loadBookmarksDispatch(user.id, token);
+    }
+  }, [botSyncNeeded]);
 
   const handleOpen = () => setOpen(true);
 
@@ -142,7 +154,7 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
 
   const handleClone = event => {};
 
-  if (!bots) return null;
+  if (!bots || !bookmarks) return null;
 
   return (
     <div className={classes.container}>
@@ -331,18 +343,22 @@ export default function DashboardContainer() {
   const user = JSON.parse(window.localStorage.getItem('auth/USER'));
   const token = useSelector(state => state.auth.token);
   const bots = useSelector(state => state.bots.list);
+  const bookmarks = useSelector(state => state.bots.bookmarks);
   const loadBotDispatch = botId => dispatch(loadBot(botId));
   const loadBotsDispatch = (userId, token) => dispatch(loadBots(userId, token));
   const deleteBotDispatch = (botId, token) => dispatch(deleteBot(botId, token));
+  const loadBookmarksDispatch = (userId, token) => dispatch(loadBookmarks(userId, token));
 
   return (
     <Dashboard
       user={user}
       token={token}
       bots={bots}
+      bookmarks={bookmarks}
       loadBotDispatch={loadBotDispatch}
       loadBotsDispatch={loadBotsDispatch}
       deleteBotDispatch={deleteBotDispatch}
+      loadBookmarksDispatch={loadBookmarksDispatch}
     />
   );
 }
