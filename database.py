@@ -8,15 +8,19 @@ from app.models import User, Bot, Rule
 # from alembic import op
 
 # print(db)
-ruleString1 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": { "string": "hi" } }, "response": [{ "type": "message", "details": { "string": "hi there!" } }, { "type": "emoji", "details": { "string": "ok_hand" } }] }"""
+ruleString1 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": { "string": "hi" } }, "response": [{ "type": "message", "details": { "string": "hi there!" } }, { "type": "emoji", "details": { "string": "Appacademylogo" } }] }"""
 
 ruleString2 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": { "string": "bye" } }, "response": [{ "type": "message", "details": { "string": "goodbye friend!" } }] }"""
 
 ruleString3 = """{ "trigger": { "type": "guildMemberAdd", "usesPrefix": false, "details": {"string": "noob" } }, "response": [{ "type": "addRole", "details": { "string": "noob" } }] }"""
 
-ruleString4 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": {"string": "addrole" } }, "response": [{ "type": "assignRole", "details": { "string": "" } }] }"""
-ruleString5 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": {"string": "removerole" } }, "response": [{ "type": "removeRole", "details": { "string": "" } }] }"""
+ruleString4 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": {"string": "addRole" } }, "response": [{ "type": "assignRole", "details": { "string": "" } }] }"""
 
+ruleString5 = """{ "trigger": { "type": "guildMemberRemove", "usesPrefix": false, "details": { "string": "general" } }, "response": [{ "type": "message", "details": { "string": "user has left the server" } }] }"""
+
+ruleString6 = """{ "trigger": { "type": "guildMemberAdd", "usesPrefix": false, "details": { "string": "Student" } }, "response": [{ "type": "addRole", "details": { "string": "Student" } }] }"""
+
+ruleString7 = """{ "trigger": { "type": "message", "usesPrefix": false, "details": { "string": "cowabunga"} }, "response": [{ "type": "ban", "details": { "string": "" } }] }"""
 # op.bulk_insert('users', [
 #     {'username'}
 # ])
@@ -43,8 +47,10 @@ with app.app_context():
     rule1 = Rule(bot_id=1, content=ruleString1)
     rule2 = Rule(bot_id=2, content=ruleString2)
     rule3 = Rule(bot_id=1, content=ruleString3)
-    rule4 = Rule(bot_id=6, content=ruleString4)
-    rule5 = Rule(bot_id=7, content=ruleString5)
+    rule4 = Rule(bot_id=4, content=ruleString5)
+    rule5 = Rule(bot_id=4, content=ruleString6)
+    rule6 = Rule(bot_id=6, content=ruleString6)
+    rule7 = Rule(bot_id=1, content=ruleString7)
 
     db.session.add(user1)
     db.session.add(user2)
@@ -63,5 +69,7 @@ with app.app_context():
     db.session.add(rule3)
     db.session.add(rule4)
     db.session.add(rule5)
+    db.session.add(rule6)
+    db.session.add(rule7)
 
     db.session.commit()
