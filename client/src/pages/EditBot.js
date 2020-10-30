@@ -192,7 +192,7 @@ function EditBot({bot, botId, user, history}) {
         setRules([...rules, newRule]);
     }
 
-    const saveBot = async () => {
+    const saveBot = async (autosaveBool=false) => {
         console.log(botDescription);
         const data = {
             bot: { ...bot,
@@ -209,7 +209,7 @@ function EditBot({bot, botId, user, history}) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
-        if (!isSaving && (!bot.name || (bot.id !== botId))) history.push('/');
+        if (!autosaveBool && (!bot.name || (bot.id !== botId))) history.push('/');
     }
 
     const autoSave = () =>{
@@ -219,7 +219,7 @@ function EditBot({bot, botId, user, history}) {
             setIsDraft(true);
             setTimeout(async ()=>{
                 if(!botName) setBotName("<unknown bot>");
-                await saveBot();
+                await saveBot(true);
                 setIsSaving(false);
                 setAutoSaveMsg("Draft bot saved.");
                 setTimeout(()=>{setAutoSaveMsg("")}, 5000);
