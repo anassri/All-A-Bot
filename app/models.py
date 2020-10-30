@@ -24,8 +24,6 @@ class User(db.Model):
             "id": self.id,
             "username": self.username,
             "email": self.email,
-            'bots': [bot.to_dict() for bot in self.bots],
-            'bookmarks': [bookmark.to_dict() for bookmark in self.bookmarks]
         }
 
     @property
@@ -112,6 +110,5 @@ class User_Bookmark(db.Model):
             'id': self.id,
             'userId': self.userId,
             'botId': self.botId,
-            'user': self.user.to_dict(),
             'bot': self.bot.to_dict(),
         }
