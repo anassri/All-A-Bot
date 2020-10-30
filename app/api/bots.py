@@ -66,12 +66,13 @@ def post_bot(id=0):
                   user_id=incoming["bot"]["userId"],
                   description=incoming["bot"]["description"],
                   is_draft=incoming["bot"]["isDraft"])
+        db.session.add(bot)
+        db.session.commit()
         print(bot)
         for new_rule in new_rules:
             new_rule_content = json.dumps(new_rule["content"])
             db.session.add(Rule(content=new_rule_content,
                                 bot_id=bot.id))
-        db.session.add(bot)
     db.session.commit()
     return jsonify(True)
 

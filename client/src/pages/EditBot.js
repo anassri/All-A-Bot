@@ -222,6 +222,7 @@ function EditBot({bot, botId, user, history}) {
                 setTimeout(()=>{setAutoSaveMsg("")}, 5000);
             },20000);
         }
+        console.log("autosave");
     }
     const setRule = (i, newRule) => {
         setRules([...rules.slice(0, i), newRule, ...rules.slice(i+1)]);
