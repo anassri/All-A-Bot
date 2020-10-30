@@ -7,8 +7,6 @@ export function fileDownload(file) {
     saveAs(blob, 'bot.js')
 }
 
-// Blob for the package.json that will be needed to run the bot
-
 // Function for downloading the package.json file
 export const packageDownload = () => {
     const packageBlob = new Blob([

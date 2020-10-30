@@ -80,9 +80,9 @@ const ListItem = ({ id, bot, name, description, username }) => {
   };
 
   return (
-    <Grid item xs={12} className={classes.bot}>
+    <Grid key={id} item xs={12} className={classes.bot}>
       <CardActionArea className={classes.action}>
-        <Link key={id} to={`/bots/${id}`} style={{ color: 'inherit' }}>
+        <Link to={`/bots/${id}`} style={{ color: 'inherit' }}>
           <Typography variant='h5' component='h2' style={{ fontWeight: 'bold' }}>
             {name}
           </Typography>
@@ -166,7 +166,7 @@ export function Explore({ bots }) {
                 onChange={handleSearch}
                 size='medium'
                 variant='filled'
-                fullWidth='true'
+                fullWidth
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position='end'>
@@ -179,6 +179,7 @@ export function Explore({ bots }) {
               {botsMatchingQuery.map(bot => (
                 <ListItem
                   name={bot.name}
+                  key={bot.id}
                   id={bot.id}
                   bot={bot}
                   description={bot.description}

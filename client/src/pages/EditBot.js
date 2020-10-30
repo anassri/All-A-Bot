@@ -52,10 +52,108 @@ const useStyle = makeStyles((theme) => ({
     gridOverflow: {
         overflowY: 'auto',
         overflowX: 'hidden',
+        // scrollBar: "rgba(232,232,232,1)",
         width: '100%',
         paddingTop: '10px'
     }
 }));
+
+const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, classes}) => {
+    return (
+    <>
+        <form>
+            <div>
+            {/* this is the div which contains the trigger form. the next div down is the response form. */}
+                <Grid container spacing={3}>
+                    <Grid item xs={2} sm={1} className={classes.grid}>
+                        <Typography variant="subtitle2" component="h2" className={classes.label}>
+                            Rule:
+                        </Typography>
+                    </Grid>
+                    <Grid item xs className={classes.grid}>
+                        <FormControl variant="outlined" className={classes.formControl}>
+                            <InputLabel id="trigger-select-input-label">Select a Trigger</InputLabel>
+                            <Select
+                                labelId="trigger-select-label"
+                                id="trigger-select"
+                                variant="outlined"
+                                value={rules[i].content.trigger.type}
+                                fullWidth
+                                    onChange={(e) => { setTrigger(i, {...rules[i].content.trigger, type: e.target.value}); autoSave(); }}
+                                label="Select a Trigger"
+                            >
+                                <MenuItem value="message">Message</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs className={classes.grid}>
+                        {rules[i].content.trigger.type === "message"
+                            ? <>
+                            <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    value={rules[i].content.trigger.details.string}
+                                    label={`message ${rules[i].content.trigger.details.includesOrBeginsWith} string...`}
+                                    id={`ruletext${i}`}
+                                    onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
+                              <FormControl>
+                                    <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value }})}
+                            >
+                                <FormControlLabel value="includes" control={<Radio />} label="Includes" />
+                                <FormControlLabel value="begins with" control={<Radio />} label="Begins with" />
+                            </RadioGroup>
+                            <FormControlLabel label="Uses prefix" control={<Checkbox checked={rules[i].content.trigger.usesPrefix}
+                                       onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
+                            </FormControl>
+                            </>
+                            : <></>
+                        }
+                    </Grid>
+                </Grid>
+            </div>
+            {rules[i].content.response.map((resp, responseIndex) => <ResponseForm ruleIndex={i} responseIndex={responseIndex} rules={rules} setResponse={setResponse} autoSave={autoSave} classes={classes} />)}
+            <Button onClick={() => addResponse(i)}>Add response</Button>
+        </form>
+    </>
+)}
+
+const ResponseForm = ({ruleIndex, responseIndex, rules, setResponse, autoSave, classes}) => {
+    return (<div>
+        <Grid container spacing={3}>
+            <Grid item xs className={classes.grid}>
+                <FormControl variant="outlined" className={classes.formControl}>
+                    <InputLabel id="response-select-input-label">Select a Response</InputLabel>
+                    <Select
+                        labelId="response-select-label"
+                        id="response-select"
+                        variant="outlined"
+                        value={rules[ruleIndex].content.response[responseIndex].type}
+                        fullWidth
+                        onChange={(e) => { setResponse(ruleIndex, responseIndex, {...rules[ruleIndex].content.response[responseIndex], type: e.target.value}); autoSave(); }}
+                        label="Select a Response"
+                    >
+                        <MenuItem value="message">Message</MenuItem>
+                        <MenuItem value="emoji">Emoji react to triggering message</MenuItem>
+                        <MenuItem value="assignRole">Assign a role to member</MenuItem>
+                        <MenuItem value="removeRole">Remove a role from member</MenuItem>
+                    </Select>
+                </FormControl>
+            </Grid>
+            <Grid item xs className={classes.grid}>
+                {["message", "emoji"].includes(rules[ruleIndex].content.response[responseIndex].type)
+                    ? <TextField
+                    variant="outlined"
+                    fullWidth
+                    id={`responsetext${ruleIndex}-${responseIndex}`}
+                    value={rules[ruleIndex].content.response[responseIndex].details.string}
+                    label={rules[ruleIndex].content.response[responseIndex].type === "message" ? "message string" : "emoji name"}
+                    onChange={e => { setResponse(ruleIndex, responseIndex, {...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value }}); autoSave(); }} />
+                    : <></>}
+            </Grid>
+        </Grid>
+    </div>)
+}
 
 function EditBot({bot, botId, user, history}) {
 
@@ -72,14 +170,18 @@ function EditBot({bot, botId, user, history}) {
 
     const classes = useStyle();
 
-    if (!user || bot && bot.userId !== user.id) history.push('/login');
-
     useEffect(() => {
+        console.log(`name: ${botName}`);
+        console.log(`prefix: ${botPrefix}`);
         if (rules.length === 0){
             setRules(bot.rules);
         }
         if (botName === "") setBotName(bot.name);
-        if (botPrefix === "") setBotPrefix(bot.prefix);
+        if (!botPrefix) setBotPrefix(bot.prefix);
+        if (!botDescription) setBotDescription(bot.description);
+        if (!user || ((bot.name) && (bot.userId !== user.id))){
+            history.push('/login');
+        }
     })
 
     const addRule = () => {
@@ -90,18 +192,31 @@ function EditBot({bot, botId, user, history}) {
     const saveBot = async () => {
         console.log(botPrefix);
         console.log(user);
+        console.log(botId);
+        const data = {
+            bot: { ...bot,
+                name: botName,
+                prefix: (botPrefix || null),
+                userId: user.id,
+                isDraft: isDraft,
+                description: botDescription
+            },
+            rules };
+        console.log(data);
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({bot: { ...bot, name: botName, prefix: (botPrefix || null), userId: user.id, isDraft: isDraft }, rules }),
+            body: JSON.stringify(data),
         });
+        if (!bot.name) history.push('/');
     }
 
     const autoSave = () =>{
-        if (!isSaving){
+        if (!isSaving && user){
             setIsSaving(true);
             setIsDraft(true);
             setTimeout(async ()=>{
+                if(!botName) setBotName("<unknown bot>");
                 await saveBot();
                 setIsSaving(false);
                 setAutoSaveMsg("Draft bot saved.");
@@ -121,105 +236,12 @@ function EditBot({bot, botId, user, history}) {
         setRule(ruleIndex, {...rules[ruleIndex], content: {...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), newResponse, ...rules[ruleIndex].content.response.slice(responseIndex+1)] }})
     }
 
-    const RuleForm = ({i}) => {
-        return (
-        <>
-            <form>
-                <div>
-                {/* this is the div which contains the trigger form. the next div down is the response form. */}
-                    <Grid container spacing={3}>
-                        <Grid item xs={2} sm={1} className={classes.grid}>
-                            <Typography variant="subtitle2" component="h2" className={classes.label}>
-                                Rule:
-                            </Typography>
-                        </Grid>
-                        <Grid item xs className={classes.grid}>
-                            <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel id="trigger-select-input-label">Select a Trigger</InputLabel>
-                                <Select
-                                    labelId="trigger-select-label"
-                                    id="trigger-select"
-                                    variant="outlined"
-                                    value={rules[i].content.trigger.type}
-                                    fullWidth
-                                        onChange={(e) => { setTrigger(i, {...rules[i].content.trigger, type: e.target.value}); autoSave(); }}
-                                    label="Select a Trigger"
-                                >
-                                    <MenuItem value="message">Message</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs className={classes.grid}>
-                            {rules[i].content.trigger.type === "message"
-                                ? <>
-                                <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        value={rules[i].content.trigger.details.string}
-                                        label={`message ${rules[i].content.trigger.details.includesOrBeginsWith} string...`}
-                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
-                                  <FormControl>
-                                        <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
-                                            onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value }})}
-                                >
-                                    <FormControlLabel value="includes" control={<Radio />} label="Includes" />
-                                    <FormControlLabel value="begins with" control={<Radio />} label="Begins with" />
-                                </RadioGroup>
-                                <FormControlLabel label="Uses prefix" control={<Checkbox checked={rules[i].content.trigger.usesPrefix}
-                                           onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
-                                </FormControl>
-                                </>
-                                : <></>
-                            }
-                        </Grid>
-                    </Grid>
-                </div>
-                {rules[i].content.response.map((resp, responseIndex) => <ResponseForm ruleIndex={i} responseIndex={responseIndex} />)}
-                <Button onClick={() => addResponse(i)}>Add response</Button>
-            </form>
-        </>
-    )}
-
     const addResponse = i => {
         console.log(rules[i].content.response.length);
         let newResponses = rules[i].content.response;
         newResponses.push(BLANK_RESPONSE);
         setRule(i, {...rules[i], content: { ...rules[i].content, response: newResponses }});
         console.log(rules[i].content.response.length);
-    }
-
-    const ResponseForm = ({ruleIndex, responseIndex}) => {
-        return (<div>
-            <Grid container spacing={3}>
-                <Grid item xs className={classes.grid}>
-                    <FormControl variant="outlined" className={classes.formControl}>
-                        <InputLabel id="response-select-input-label">Select a Response</InputLabel>
-                        <Select
-                            labelId="response-select-label"
-                            id="response-select"
-                            variant="outlined"
-                            value={rules[ruleIndex].content.response[responseIndex].type}
-                            fullWidth
-                            onChange={(e) => { setResponse(ruleIndex, responseIndex, {...rules[ruleIndex].content.response[responseIndex], type: e.target.value}); autoSave(); }}
-                            label="Select a Response"
-                        >
-                            <MenuItem value="message">Message</MenuItem>
-                            <MenuItem value="emoji">Emoji react to triggering message</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid item xs className={classes.grid}>
-                    {["message", "emoji"].includes(rules[ruleIndex].content.response[responseIndex].type)
-                        ? <TextField
-                        variant="outlined"
-                        fullWidth
-                        value={rules[ruleIndex].content.response[responseIndex].details.string}
-                        label={rules[ruleIndex].content.response[responseIndex].type === "message" ? "message string" : "emoji name"}
-                        onChange={e => { setResponse(ruleIndex, responseIndex, {...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value }}); autoSave(); }} />
-                        : <></>}
-                </Grid>
-            </Grid>
-        </div>)
     }
 
     return (
@@ -230,13 +252,10 @@ function EditBot({bot, botId, user, history}) {
             <Paper className={classes.paper}>
                 <Grid container spacing={3}>
                     <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth value={botName} onChange={e => { setBotName(e.target.value); autoSave();}} label="Name"></TextField>
+                        <TextField variant="outlined" fullWidth value={botName} onChange={e => { console.log(e.target.id);setBotName(e.target.value); autoSave();}} label="Name"></TextField>
                     </Grid>
                     <Grid item xs className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => {setBotPrefix(e.target.value); autoSave();}}></TextField>
-                    </Grid>
-                    <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth label="Developer Token" value={botPrefix} onChange={e => { setBotPrefix(e.target.value); autoSave(); }}></TextField>
                     </Grid>
                     <Grid item xs={12} className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Description" value={botDescription} onChange={e => { setBotDescription(e.target.value); autoSave(); }}></TextField>
@@ -245,7 +264,7 @@ function EditBot({bot, botId, user, history}) {
                 <Divider />
 
                 <Grid className={classes.gridOverflow}>
-                {rules.map((rule, i) => <Box key={i}><RuleForm i={i} /></Box>)}
+                {rules.map((rule, i) => <Box key={i}><RuleForm i={i} rules={rules} setTrigger={setTrigger} autoSave={autoSave} setResponse={setResponse} addResponse={addResponse} classes={classes} /></Box>)}
                 <Button onClick={addRule} >Add rule</Button>
                 </Grid>
 
@@ -280,7 +299,7 @@ export default function EditBotContainer(props) {
     const dispatch = useDispatch();
 
     const bot = useSelector(state => state.bots.bot);
-    const user = useSelector(state => state.auth.user);
+    const user = JSON.parse(window.localStorage.getItem('auth/USER'));
 
     const botId = props.match.params.id;
 

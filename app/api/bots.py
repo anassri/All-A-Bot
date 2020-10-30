@@ -91,6 +91,14 @@ def get_all_published_bots():
     data = [bot.to_dict() for bot in bots]
     return jsonify(data=data)
 
+@bot_routes.route('/complete')
+def get_all_bots():
+    bots = Bot.query \
+              .options(joinedload(Bot.owner)) \
+              .all()
+    data = [bot.to_dict() for bot in bots]
+    return jsonify(data=data)
+
 # Grabbing the info of a particular published bots, navigated to from the explore page - Ammar
 
 

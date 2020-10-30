@@ -24,6 +24,7 @@ import { CardActionArea } from '@material-ui/core';
 import { loadBot, loadBots, deleteBot } from '../store/bots';
 import { assembleFullFile } from '../utils/templateCreator';
 import { fileDownload, packageDownload } from '../utils/fileSaver';
+import Guide from '../components/Guide'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -59,7 +60,7 @@ function a11yProps(index) {
 
 const useStyles = makeStyles(theme => ({
   container: {
-    'margin-left': '25%',
+    marginLeft: '25%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -137,11 +138,12 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
       <div className={classes.root}>
         <AppBar
           position='static'
-          style={{ backgroundColor: '#282828', 'border-top-left-radius': '5px', 'border-top-right-radius': '5px' }}>
+          style={{ backgroundColor: '#282828', borderTopLeftRadius: '5px', borderTopRightRadius: '5px' }}>
           <Tabs value={value} onChange={handleChange} aria-label='simple tabs example'>
             <Tab label='Bots' {...a11yProps(0)} />
             <Tab label='Drafts' {...a11yProps(1)} />
             <Tab label='Bookmarked' {...a11yProps(2)} />
+            <Tab label='Guide' {...a11yProps(3)} />
           </Tabs>
         </AppBar>
         <TabPanel
@@ -149,16 +151,16 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
           index={0}
           style={{
             backgroundColor: '#282828',
-            'border-bottom-left-radius': '5px',
-            'border-bottom-right-radius': '5px',
+            borderBottomLeftRadius: '5px',
+            borderBottomRightRadius: '5px',
           }}>
           <div>
             {bots
               .filter(bot => bot.is_draft === false)
               .map(bot => {
                 return (
-                  <>
-                    <CardActionArea>
+                  <div key={bot.id}>
+                    <CardActionArea key={bot.id}>
                       <Link key={bot.id} to={`/bots/${bot.id}`} style={{ color: 'inherit' }}>
                         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                           <Typography variant='h5' style={{ fontWeight: 'bold' }}>
@@ -196,14 +198,14 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
                           <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
                             <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
                           </Link>
-                          <Link style={{ color: 'inherit' }} title='Delete Bot'>
+                          <Link style={{ color: 'inherit' }} to={``} title='Delete Bot'>
                             <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
                           </Link>
                         </CardActionArea>
                       </div>
                     </div>
                     <Divider />
-                  </>
+                  </div>
                 );
               })}
           </div>
@@ -213,15 +215,15 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
           index={1}
           style={{
             backgroundColor: '#282828',
-            'border-bottom-left-radius': '5px',
-            'border-bottom-right-radius': '5px',
+            borderBottomLeftRadius: '5px',
+            borderBottomRightRadius: '5px',
           }}>
           <div>
             {bots
               .filter(bot => bot.is_draft === true)
               .map(bot => {
                 return (
-                  <>
+                  <div key={bot.id}>
                     <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                       <Typography variant='h5' style={{ fontWeight: 'bold' }}>
                         {bot.name}
@@ -233,13 +235,13 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
                         <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
                           <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
                         </Link>
-                        <Link style={{ color: 'inherit' }} title='Delete Bot'>
+                        <Link style={{ color: 'inherit' }} title='Delete Bot' to={``}>
                           <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
                         </Link>
                       </div>
                     </div>
                     <Divider />
-                  </>
+                  </div>
                 );
               })}
           </div>
@@ -249,15 +251,15 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
           index={2}
           style={{
             backgroundColor: '#282828',
-            'border-bottom-left-radius': '5px',
-            'border-bottom-right-radius': '5px',
+            borderBottomLeftRadius: '5px',
+            borderBottomRightRadius: '5px',
           }}>
           <div>
             {bots
               .filter(bot => bot.user_id === user.id)
               .map(bot => {
                 return (
-                  <>
+                  <div key={bot.id}>
                     <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                       <Typography variant='h5' style={{ fontWeight: 'bold' }}>
                         {bot.name}
@@ -288,16 +290,26 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
                             </Button>
                           </DialogActions>
                         </Dialog>
-                        <Link style={{ color: 'inherit' }} title='Clone Bot'>
+                        <Link to={''} style={{ color: 'inherit' }} title='Clone Bot'>
                           <i onClick={handleClone} id={`bot-${bot.id}`} className='fas fa-clone'></i>
                         </Link>
                       </div>
                     </div>
                     <Divider />
-                  </>
+                  </div>
                 );
               })}
           </div>
+        </TabPanel>
+        <TabPanel
+         value={value}
+         index={3}
+         style={{
+           backgroundColor: '#282828',
+           'border-bottom-left-radius': '5px',
+           'border-bottom-right-radius': '5px',
+         }}>
+           <Guide />
         </TabPanel>
       </div>
     </div>
@@ -306,7 +318,8 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
 
 export default function DashboardContainer() {
   const dispatch = useDispatch();
-  const user = useSelector(state => state.auth.user);
+  //const user = useSelector(state => state.auth.user);
+  const user = JSON.parse(window.localStorage.getItem('auth/USER'));
   const token = useSelector(state => state.auth.token);
   const bots = useSelector(state => state.bots.list);
   const loadBotDispatch = botId => dispatch(loadBot(botId));
