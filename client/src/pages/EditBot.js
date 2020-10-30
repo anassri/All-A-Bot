@@ -180,7 +180,7 @@ function EditBot({bot, botId, user, history}) {
                                 >
                                     <MenuItem value="message">Message</MenuItem>
                                     <MenuItem value="guildMemberAdd">Server Join</MenuItem>
-                                    <MenuItem value="guildMemberAdd">Server Leave</MenuItem>
+                                    <MenuItem value="guildMemberRemove">Server Leave</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -258,7 +258,7 @@ function EditBot({bot, botId, user, history}) {
                         >
                             <MenuItem value="message">Message</MenuItem>
                             { rules[ruleIndex].content.trigger.type === 'message' ? <MenuItem value="emoji">Emoji react to triggering message</MenuItem> : <></> }
-                            { rules[ruleIndex].content.trigger.type ==='message' || rules[ruleIndex].content.trigger.type ==='guildMemberAdd' ? <MenuItem value="assignRole">Assign a role to member</MenuItem> : <></> }
+                            { rules[ruleIndex].content.trigger.type ==='message' || rules[ruleIndex].content.trigger.type ==='guildMemberAdd' ? <MenuItem value="addRole">Assign a role to member</MenuItem> : <></> }
                             { rules[ruleIndex].content.trigger.type === 'message' ? <MenuItem value="removeRole">Remove a role from member</MenuItem> : <></> }
                         </Select>
                     </FormControl>
