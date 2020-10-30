@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Divider, Paper, RadioGroup, Radio, FormControlLabel, Checkbox, withStyles } from '@material-ui/core';
+import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Divider, Paper, RadioGroup, Radio, FormControlLabel, Checkbox } from '@material-ui/core';
 import { loadBot } from '../store/bots'
 import { loadUser } from '../store/auth';
 import { makeStyles } from '@material-ui/core';
@@ -16,7 +16,7 @@ const useStyle = makeStyles((theme) => ({
 
     },
     paper: {
-        height: '65vh',
+        height: '60vh',
         padding: '55px 65px',
         display: 'flex',
         flexDirection: 'column',
@@ -39,9 +39,8 @@ const useStyle = makeStyles((theme) => ({
         fontWeight: 'bold',
         paddingTop: 10,
     },
-    add: {
-        margin: 10,
-
+    grid: {
+        // maxWidth: '10%'
     },
     icons: {
         textAlign: 'right',
@@ -53,21 +52,13 @@ const useStyle = makeStyles((theme) => ({
     gridOverflow: {
         overflowY: 'auto',
         overflowX: 'hidden',
+        // scrollBar: "rgba(232,232,232,1)",
         width: '100%',
-        paddingTop: '10px',
-        '&::-webkit-scrollbar': {
-            width: 10
-        },
-        '&::-webkit-scrollbar-track': {
-        },
-        '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'rgba(232,232,232,0.7)',
-            borderRadius: 10
-        }
+        paddingTop: '10px'
     }
 }));
 
-const RuleForm = ({ i, rules, setTrigger, autoSave, setResponse, addResponse, removeResponse, classes}) => {
+const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, classes}) => {
     return (
     <>
         <form>
@@ -98,17 +89,17 @@ const RuleForm = ({ i, rules, setTrigger, autoSave, setResponse, addResponse, re
                         </FormControl>
                     </Grid>
                     <Grid item xs className={classes.grid}>
-                            {rules[i].content.trigger.type === "message"
-                                ? <>
-                                    <TextField
-                                        variant="outlined"
-                                        fullWidth
-                                        value={rules[i].content.trigger.details.string}
-                                        label={`message string`}
-                                        id={`ruletext${i}`}
-                                        onChange={e => setTrigger(i, { ...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value } })} />
-                                    <FormControl>
-                                        {/*       <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
+                        {rules[i].content.trigger.type === "message"
+                            ? <>
+                            <TextField
+                                    variant="outlined"
+                                    fullWidth
+                                    value={rules[i].content.trigger.details.string}
+                                    label={`message string`}
+                                    id={`ruletext${i}`}
+                                    onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
+                              <FormControl>
+                              {/*       <RadioGroup value={rules[i].content.trigger.details.includesOrBeginsWith}
                                         onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, includesOrBeginsWith: e.target.value }})}
                             >
                                 <FormControlLabel value="includes" control={<Radio />} label="Includes" />
@@ -118,30 +109,31 @@ const RuleForm = ({ i, rules, setTrigger, autoSave, setResponse, addResponse, re
                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: e.target.checked})} />}>Uses prefix</FormControlLabel>
                             </FormControl>
                             </>
-                            : rules[i].content.trigger.type === "guildMemberAdd"
-                            ? <>
-                            <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    value={rules[i].content.trigger.details.string}
-                                    label={`channel name...`}
-                                    onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: false, details: { ...rules[i].content.trigger.details, string: e.target.value }})} />
-                            </>
-                            : rules[i].content.trigger.type === "guildMemberRemove"
-                            ? <>
-                            <TextField
-                                    variant="outlined"
-                                    fullWidth
-                                    value={rules[i].content.trigger.details.string}
-                                    label={`channel name...`}
-                                    onChange={e => setTrigger(i, {...rules[i].content.trigger, usesPrefix: false, details: { ...rules[i].content.trigger.details, string: e.target.value}})} />
-                            </>
-                            : <></>
+                            : : rules[i].content.trigger.type === "guildMemberAdd"
+                                ? <>
+                                <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        value={rules[i].content.trigger.details.string}
+                                        label={`channel name...`}
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value, usesPrefix: false }})} />
+                                </>
+                                : rules[i].content.trigger.type === "guildMemberRemove"
+                                ? <>
+                                <TextField
+                                        variant="outlined"
+                                        fullWidth
+                                        value={rules[i].content.trigger.details.string}
+                                        label={`channel name...`}
+                                        onChange={e => setTrigger(i, {...rules[i].content.trigger, details: { ...rules[i].content.trigger.details, string: e.target.value, usesPrefix: false }})} />
+                                </>
+                                : <></>
+                            }
                         }
                     </Grid>
                 </Grid>
             </div>
-            {rules[i].content.response.map((resp, responseIndex) => <ResponseForm ruleIndex={i} responseIndex={responseIndex} rules={rules} setResponse={setResponse} autoSave={autoSave} classes={classes} />)}
+            {rules[i].content.response.map((resp, responseIndex) => <ResponseForm key={i} ruleIndex={i} responseIndex={responseIndex} rules={rules} setResponse={setResponse} autoSave={autoSave} classes={classes} />)}
             <Button onClick={() => addResponse(i)}>Add response</Button>
         </form>
     </>
@@ -198,8 +190,8 @@ const ResponseForm = ({ruleIndex, responseIndex, rules, setResponse, autoSave, c
 
 function EditBot({bot, botId, user, history}) {
 
-    const BLANK_RESPONSE = { type: "", details: { string: "" } }
-    const BLANK_RULE = { prefix: "", content: { trigger: { type: "", usesPrefix: true, details: { string: "" } }, response: [BLANK_RESPONSE] } };
+    const BLANK_RESPONSE = {type: "", details: { string: "" }}
+    const BLANK_RULE = { prefix: "", content: { trigger: {type: "", usesPrefix: true, details: { string: "" }}, response: [BLANK_RESPONSE] } };
 
     const [botName, setBotName] = useState("");
     const [rules, setRules] = useState([]);
@@ -215,7 +207,7 @@ function EditBot({bot, botId, user, history}) {
     useEffect(() => {
         console.log(`name: ${botName}`);
         console.log(`prefix: ${botPrefix}`);
-        if (rules.length === 0) {
+        if (rules.length === 0){
             setRules(bot.rules);
         }
         if (botName === "") setBotName(bot.name);
@@ -223,13 +215,12 @@ function EditBot({bot, botId, user, history}) {
         console.log(botDescription)
         if (!botDescription) setBotDescription(bot.description);
         setAutosavePermitted(true);
-        if (!user || ((bot.name) && (bot.userId !== user.id))) {
+        if (!user || ((bot.name) && (bot.userId !== user.id))){
             history.push('/login');
         }
         console.log(`isDraft: ${isDraft}`);
         if (typeof isDraft !== "boolean") setIsDraft(bot.isDraft);
     })
-
 
     const addRule = () => {
         const newRule = BLANK_RULE;
@@ -256,24 +247,20 @@ function EditBot({bot, botId, user, history}) {
 
     async function updateDraftState(newState) {
         await setIsDraft(newState)
-    const removeRule = () => {
-        setRules(rules.slice(0, rules.length - 1))
     }
 
     const saveBot = async () => {
         console.log(botDescription);
         console.log(`Saving isDraft as ${isDraft}`)
         const data = {
-            bot: {
-                ...bot,
+            bot: { ...bot,
                 name: botName,
                 prefix: (botPrefix || null),
                 userId: user.id,
-                isDraft: Boolean(isDraft),
+                isDraft: isDraft,
                 description: (botDescription || null)
             },
-            rules
-        };
+            rules };
         console.log(data);
         await fetch(`/api/bots/${botId}`, {
             method: "POST",
@@ -287,7 +274,6 @@ function EditBot({bot, botId, user, history}) {
             history.push('/');
         }
     }
-
 
     const autoSave = () =>{
         /* if (!isSaving && user && autosavePermitted){
@@ -316,8 +302,6 @@ function EditBot({bot, botId, user, history}) {
         setRule(ruleIndex, {...rules[ruleIndex], content: {...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), newResponse, ...rules[ruleIndex].content.response.slice(responseIndex+1)] }})
     }
 
-
-
     const addResponse = i => {
         console.log(rules[i].content.response.length);
         let newResponses = rules[i].content.response;
@@ -325,12 +309,6 @@ function EditBot({bot, botId, user, history}) {
         setRule(i, {...rules[i], content: { ...rules[i].content, response: newResponses }});
         console.log(rules[i].content.response.length);
     }
-    const removeResponse = i => {
-        let newResponses = rules[i].content.response;
-        newResponses.pop();
-        setRule(i, {...rules[i], content: { ...rules[i].content, response: newResponses }});
-    }
-
 
     return (
         <Container className={`${classes.container} paper-container`}>
@@ -340,12 +318,7 @@ function EditBot({bot, botId, user, history}) {
             <Paper className={classes.paper}>
                 <Grid container spacing={3}>
                     <Grid item xs className={classes.grid}>
-                        <TextField
-                            variant="outlined"
-                            fullWidth
-                            value={botName}
-                            onChange={e => { console.log(e.target.id);setBotName(e.target.value); autoSave();}}
-                            label="Name"/>
+                        <TextField variant="outlined" fullWidth value={botName} onChange={e => { setBotName(e.target.value); autoSave();}} label="Name"></TextField>
                     </Grid>
                     <Grid item xs className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => {setBotPrefix(e.target.value); autoSave();}}></TextField>
@@ -353,37 +326,22 @@ function EditBot({bot, botId, user, history}) {
                     <Grid item xs={12} className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Description" value={botDescription} onChange={e => { setBotDescription(e.target.value); autoSave(); }}></TextField>
                     </Grid>
-                    <Grid item xs={12} className={classes.grid}>
-                        <Divider style={{margintTop: 10}}/>
-                    </Grid>
                 </Grid>
+                <Divider />
 
                 <Grid className={classes.gridOverflow}>
-                    {rules.map((rule, i) => <Box key={i}><RuleForm i={i} rules={rules} setTrigger={setTrigger} autoSave={autoSave} setResponse={setResponse} addResponse={addResponse} removeResponse={removeResponse} classes={classes} /></Box>)}
-                    <Divider />
-                    <Button
-                        size="medium"
-                        variant="contained"
-                        color="primary"
-                        className={classes.add}
-                        onClick={addRule} >Add rule</Button>
-                    {rules.length ? <Button
-                        size="medium"
-                        variant="contained"
-                        color="primary"
-                        className={classes.add}
-                        onClick={removeRule} >Remove rule</Button>
-                    : null }
+                {rules.map((rule, i) => <Box key={i}><RuleForm i={i} rules={rules} setTrigger={setTrigger} autoSave={autoSave} setResponse={setResponse} addResponse={addResponse} classes={classes} /></Box>)}
+                <Button onClick={addRule} >Add rule</Button>
                 </Grid>
 
-                <Grid container spacing={3} justify="flex-end" style={{ paddingRight: 35 }}>
+                <Grid container spacing={3} justify="flex-end" style={{paddingRight: 35}}>
                     {autoSaveMsg
-                        ? <Grid item xs>
+                    ?   <Grid item xs>
                             <Alert variant="outlined" severity="success">
                                 {autoSaveMsg}
                             </Alert>
                         </Grid>
-                        : null
+                    : null
                     }
                     <FormControl>
                         <FormControlLabel label="Draft" onClick={e => setIsDraft(e.target.checked)} control={<Checkbox checked={isDraft} />} />
@@ -391,7 +349,7 @@ function EditBot({bot, botId, user, history}) {
                     <Grid item xs={3} sm={1}>
                         <Button onClick={saveBot} size="medium" variant="contained" color="primary">Save</Button>
                     </Grid>
-                    {/*                     <Grid item xs={3} sm={1} >
+{/*                     <Grid item xs={3} sm={1} >
                         <Button onClick={()=> { setIsDraft(false);
                                                 console.log(isDraft);
                                                 saveBot();
