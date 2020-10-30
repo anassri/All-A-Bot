@@ -15,7 +15,6 @@ ruleString2 = """{ "trigger": { "type": "message", "usesPrefix": true, "details"
 ruleString3 = """{ "trigger": { "type": "guildMemberAdd", "usesPrefix": false, "details": {"string": "noob" } }, "response": [{ "type": "addRole", "details": { "string": "noob" } }] }"""
 
 ruleString4 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": {"string": "addrole" } }, "response": [{ "type": "assignRole", "details": { "string": "" } }] }"""
-ruleString5 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": {"string": "removerole" } }, "response": [{ "type": "removeRole", "details": { "string": "" } }] }"""
 
 ruleString5 = """{ "trigger": { "type": "guildMemberRemove", "usesPrefix": false, "details": { "string": "general" } }, "response": [{ "type": "message", "details": { "string": "user has left the server" } }] }"""
 
