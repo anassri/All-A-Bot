@@ -9,6 +9,7 @@ import {
   Container,
   Paper,
   Grid,
+  Box,
   makeStyles,
   Dialog,
   DialogActions,
@@ -31,8 +32,8 @@ const useStyle = makeStyles(theme => ({
     marginTop: 10,
   },
   paper: {
-    height: '60%',
-    minHeight: '60vh',
+    height: 715,
+    // minHeight: '60vh',
     padding: '55px 65px',
   },
   title: {
@@ -41,9 +42,9 @@ const useStyle = makeStyles(theme => ({
   },
   bots: {
     textAlign: 'left',
-    overflowY: 'scroll',
+    overflowY: 'auto',
     overflowX: 'hidden',
-    scrollBar: "rgba(232,232,232,1)",
+    // scrollBar: "rgba(232,232,232,1)",
     width: '100%',
   },
   bot: {
@@ -100,31 +101,34 @@ const ListItem = ({ id, bot, name, description, username }) => {
       </CardActionArea>
       <div className={classes.content}>
         <div>
-          <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
-          <Dialog open={isOpen} onClose={handleClose}>
+          <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download fa-lg	'></i>
+          <Dialog 
+            open={isOpen} 
+            onClose={handleClose} 
+            maxWidth='sm' 
+            fullWidth
+            className={classes.dialog}>
             <DialogTitle>Developer Token</DialogTitle>
             <DialogContent>
               <DialogContentText>Enter your bot token:</DialogContentText>
+              <TextField
+                autoFocus
+                variant='outlined'
+                margin='dense'
+                style={{width:200}}
+                label='Token'
+                type='text'
+                onChange={updateDeveloperToken}
+              />
             </DialogContent>
-            <TextField
-              autoFocus
-              margin='dense'
-              label='Developer Token'
-              type='text'
-              fullWidth
-              onChange={updateDeveloperToken}
-            />
             <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={handleDownload(bot.id)} className={`bot`}>
+              <Button variant="contained" color="primary" onClick={handleClose}>Cancel</Button>
+              <Button variant="contained" color="primary" onClick={handleDownload(bot.id)} className={`bot`}>
                 Create my bot!
               </Button>
             </DialogActions>
           </Dialog>
         </div>
-        <Link key={id} to={``} style={{ color: 'inherit' }} title='Clone Bot'>
-          <i className='fas fa-clone fa-lg'></i>
-        </Link>
       </div>
     </Grid>
   );
@@ -182,7 +186,7 @@ export function Explore({ bots }) {
             </div>
             <Grid className={classes.bots}>
               {botsMatchingQuery.map(bot => (
-                <ListItem
+                <Box><ListItem
                   name={bot.name}
                   key={bot.id}
                   id={bot.id}
@@ -190,7 +194,7 @@ export function Explore({ bots }) {
                   description={bot.description}
                   username={bot.owner.username}
                   style={{ textAlign: 'left' }}
-                />
+                /></Box>
               ))}
             </Grid>
           </Grid>

@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { login, loadUser, loadToken } from '../store/auth';
 import { makeStyles } from '@material-ui/core';
 import { Box, TextField, Button, Checkbox, Typography, Container, Paper } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 
 const useStyle = makeStyles(theme => ({
   root: {
@@ -11,7 +12,8 @@ const useStyle = makeStyles(theme => ({
     marginTop: 10,
   },
   paper: {
-    height: '60vh',
+    height: '60%',
+    minHeight: '60vh',
     padding: '55px 65px',
   },
   title: {
@@ -33,7 +35,7 @@ const useStyle = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'flex-end',
     marginBottom: 5,
-    paddingLeft: 20,
+    paddingLeft: 20, 
   },
 }));
 
@@ -71,11 +73,12 @@ export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
 
   return (
     <Box>
-      <div>{errors}</div>
-
-      <div className={classes.root}>
+        <div className={classes.root}>
         <Container maxWidth='lg' className='paper-container'>
           <Paper className={classes.paper}>
+            {errors ? <Alert variant="outlined" severity="error">
+              {errors}
+            </Alert> : null}
             <div className='welcome-container'>
               <Typography variant='h4' component='h2' style={{ fontWeight: 'bold', color: 'white' }}>
                 Welcome back!
