@@ -58,7 +58,7 @@ const useStyle = makeStyles((theme) => ({
     }
 }));
 
-const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, classes}) => {
+const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, removeResponse, classes}) => {
     return (
     <>
         <form>
@@ -319,6 +319,11 @@ function EditBot({bot, botId, user, history}) {
         newResponses.push(BLANK_RESPONSE);
         setRule(i, {...rules[i], content: { ...rules[i].content, response: newResponses }});
         console.log(rules[i].content.response.length);
+    }
+    const removeResponse = i => {
+        let newResponses = rules[i].content.response;
+        newResponses.pop();
+        setRule(i, {...rules[i], content: { ...rules[i].content, response: newResponses }});
     }
 
     return (
