@@ -133,7 +133,6 @@ const ListItem = ({
         <div>
           <DownloadBtn bot={bot} />
         </div>
-        <i onClick={handleBookmark(bot.id)} title='Bookmark a Bot' className='fas fa-bookmark fa-lg' style={{ cursor: 'pointer', opacity: 0.7, }}></i>
         <i onClick={handleOpenPopover} title='Share a Bot' className='fas fa-share-alt fa-lg' style={{ cursor: 'pointer', opacity: 0.7, }}/>
         <Popover
           open={popoverIsOpen}
