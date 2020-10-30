@@ -28,7 +28,8 @@ const useStyle = makeStyles((theme) => ({
 
     },
     paper: {
-        height: '60vh',
+        height: '60%',
+        minHeight: '60vh',
         padding: '55px 65px',
         display: 'flex',
         flexDirection: 'column',
@@ -114,7 +115,7 @@ export default function Bot(){
         dispatch(loadOne(id))
     }, [])
     if (!bot) return null;
-
+    console.log(bot)
     const handleOpen = () => setIsOpen(true);
     const handleClose = () => setIsOpen(false);
     const updateDeveloperToken = e => setDeveloperToken(e.target.value);

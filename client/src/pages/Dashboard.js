@@ -187,7 +187,7 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
                         <Typography variant='body2'>{bot.description}</Typography>
                         <div>
                           <CardActionArea>
-                            <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
+                            <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download fa-lg' style={{ opacity: 0.7 }}></i>
                             <Dialog open={open} onClose={handleClose}>
                               <DialogTitle>Developer Token</DialogTitle>
                               <DialogContent>
@@ -210,10 +210,10 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
                             </Dialog>
 
                             <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
-                              <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
+                              <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit fa-lg' style={{ opacity: 0.7 }}></i>
                             </Link>
                             <Link style={{ color: 'inherit' }} to={``} title='Delete Bot'>
-                              <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
+                              <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash fa-lg' style={{ opacity: 0.7 }}></i>
                             </Link>
                           </CardActionArea>
                         </div>
@@ -246,10 +246,10 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
                         <Typography variant='body2'>{bot.description}</Typography>
                         <div>
                           <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
-                            <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit'></i>
+                            <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit fa-lg' style={{ opacity: 0.7 }}></i>
                           </Link>
                           <Link style={{ color: 'inherit' }} title='Delete Bot' to={``}>
-                            <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash'></i>
+                            <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash fa-lg' style={{ opacity: 0.7 }}></i>
                           </Link>
                         </div>
                       </div>
@@ -280,7 +280,7 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant='body2'>{bot.description}</Typography>
                         <div>
-                          <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download'></i>
+                          <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download fa-lg' style={{opacity: 0.7}}></i>
 
                           <Dialog open={open} onClose={handleClose}>
                             <DialogTitle>Developer Token</DialogTitle>
@@ -302,9 +302,6 @@ export function Dashboard({ user, token, bots, loadBotDispatch, loadBotsDispatch
                               </Button>
                             </DialogActions>
                           </Dialog>
-                          <Link to={''} style={{ color: 'inherit' }} title='Clone Bot'>
-                            <i onClick={handleClone} id={`bot-${bot.id}`} className='fas fa-clone'></i>
-                          </Link>
                         </div>
                       </div>
                       <Divider />

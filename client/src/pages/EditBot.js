@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Divider, Paper, RadioGroup, Radio, FormControlLabel, Checkbox } from '@material-ui/core';
+import { Box, TextField, Button, FormControl, InputLabel, Select, MenuItem, Divider, Paper, RadioGroup, Radio, FormControlLabel, Checkbox, withStyles } from '@material-ui/core';
 import { loadBot } from '../store/bots'
 import { loadUser } from '../store/auth';
 import { makeStyles } from '@material-ui/core';
@@ -16,7 +16,7 @@ const useStyle = makeStyles((theme) => ({
 
     },
     paper: {
-        height: '60vh',
+        height: '65vh',
         padding: '55px 65px',
         display: 'flex',
         flexDirection: 'column',
@@ -39,8 +39,9 @@ const useStyle = makeStyles((theme) => ({
         fontWeight: 'bold',
         paddingTop: 10,
     },
-    grid: {
-        // maxWidth: '10%'
+    add: {
+        margin: 10,
+
     },
     icons: {
         textAlign: 'right',
@@ -52,9 +53,17 @@ const useStyle = makeStyles((theme) => ({
     gridOverflow: {
         overflowY: 'auto',
         overflowX: 'hidden',
-        // scrollBar: "rgba(232,232,232,1)",
         width: '100%',
-        paddingTop: '10px'
+        paddingTop: '10px',
+        '&::-webkit-scrollbar': {
+            width: 10
+        },
+        '&::-webkit-scrollbar-track': {
+        },
+        '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(232,232,232,0.7)',
+            borderRadius: 10
+        }
     }
 }));
 
@@ -90,6 +99,10 @@ function EditBot({bot, botId, user, history}) {
     const addRule = () => {
         const newRule = BLANK_RULE;
         setRules([...rules, newRule]);
+    }
+
+    const removeRule = () => {
+        setRules(rules.slice(0, rules.length - 1))
     }
 
     const saveBot = async () => {
@@ -159,6 +172,7 @@ function EditBot({bot, botId, user, history}) {
                                     id="trigger-select"
                                     variant="outlined"
                                     value={rules[i].content.trigger.type}
+                                    className={classes.select}
                                     fullWidth
                                         onChange={(e) => { setTrigger(i, {...rules[i].content.trigger, type: e.target.value}); autoSave(); }}
                                     label="Select a Trigger"
@@ -193,7 +207,19 @@ function EditBot({bot, botId, user, history}) {
                     </Grid>
                 </div>
                 {rules[i].content.response.map((resp, responseIndex) => <ResponseForm ruleIndex={i} responseIndex={responseIndex} />)}
-                <Button onClick={() => addResponse(i)}>Add response</Button>
+                    <Button 
+                        size="medium"
+                        variant="contained"
+                        color="primary" 
+                        className={classes.add}
+                        onClick={() => addResponse(i)}>Add response</Button>
+                    {rules[i].content.response.length ? <Button
+                        size="medium"
+                        variant="contained"
+                        color="primary"
+                        className={classes.add}
+                        onClick={() => removeResponse(i)} >Remove response</Button>
+                        : null}
             </form>
         </>
     )}
@@ -204,6 +230,11 @@ function EditBot({bot, botId, user, history}) {
         newResponses.push(BLANK_RESPONSE);
         setRule(i, {...rules[i], content: { ...rules[i].content, response: newResponses }});
         console.log(rules[i].content.response.length);
+    }
+    const removeResponse = i => {
+        let newResponses = rules[i].content.response;
+        newResponses.pop();
+        setRule(i, {...rules[i], content: { ...rules[i].content, response: newResponses }});
     }
 
     const ResponseForm = ({ruleIndex, responseIndex}) => {
@@ -218,6 +249,7 @@ function EditBot({bot, botId, user, history}) {
                             variant="outlined"
                             value={rules[ruleIndex].content.response[responseIndex].type}
                             fullWidth
+                            
                             onChange={(e) => { setResponse(ruleIndex, responseIndex, {...rules[ruleIndex].content.response[responseIndex], type: e.target.value}); autoSave(); }}
                             label="Select a Response"
                         >
@@ -250,7 +282,12 @@ function EditBot({bot, botId, user, history}) {
             <Paper className={classes.paper}>
                 <Grid container spacing={3}>
                     <Grid item xs className={classes.grid}>
-                        <TextField variant="outlined" fullWidth value={botName} onChange={e => { console.log(e.target.id);setBotName(e.target.value); autoSave();}} label="Name"></TextField>
+                        <TextField 
+                            variant="outlined" 
+                            fullWidth 
+                            value={botName} 
+                            onChange={e => { console.log(e.target.id);setBotName(e.target.value); autoSave();}} 
+                            label="Name"/>
                     </Grid>
                     <Grid item xs className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Prefix" value={botPrefix} onChange={e => {setBotPrefix(e.target.value); autoSave();}}></TextField>
@@ -258,15 +295,30 @@ function EditBot({bot, botId, user, history}) {
                     <Grid item xs={12} className={classes.grid}>
                         <TextField variant="outlined" fullWidth label="Description" value={botDescription} onChange={e => { setBotDescription(e.target.value); autoSave(); }}></TextField>
                     </Grid>
+                    <Grid item xs={12} className={classes.grid}>
+                        <Divider style={{margintTop: 10}}/>
+                    </Grid>
                 </Grid>
-                <Divider />
 
                 <Grid className={classes.gridOverflow}>
                     {rules.map((rule, i) => <Box key={i}><RuleForm i={i} /></Box>)}
-                    <Button onClick={addRule} >Add rule</Button>
+                    <Divider />
+                    <Button 
+                        size="medium"
+                        variant="contained"
+                        color="primary" 
+                        className={classes.add}
+                        onClick={addRule} >Add rule</Button>
+                    {rules.length ? <Button 
+                        size="medium"
+                        variant="contained"
+                        color="primary" 
+                        className={classes.add}
+                        onClick={removeRule} >Remove rule</Button>
+                    : null }
                 </Grid>
 
-                <Grid container spacing={3} justify="flex-end" style={{paddingRight: 35}}>
+                <Grid container spacing={3} justify="flex-end" style={{paddingRight: 35, marginTop: 2}}>
                     {autoSaveMsg
                     ?   <Grid item xs>
                             <Alert variant="outlined" severity="success">
