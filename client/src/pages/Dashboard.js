@@ -26,7 +26,7 @@ import { CardActionArea } from '@material-ui/core';
 import { loadBot, loadBots, deleteBot, loadBookmarks } from '../store/bots';
 import { assembleFullFile } from '../utils/templateCreator';
 import { fileDownload, packageDownload } from '../utils/fileSaver';
-import Guide from '../components/Guide'
+import Guide from '../components/Guide';
 import '../style/explore.css';
 import DownloadBtn from '../components/DownloadBtn';
 
@@ -76,7 +76,7 @@ const useStyles = makeStyles(theme => ({
     minHeight: '60vh',
     padding: '55px 65px',
     borderRadius: '10px',
-  }, 
+  },
   title: {
     fontWeight: 'bold',
     textAlign: 'left',
@@ -84,8 +84,8 @@ const useStyles = makeStyles(theme => ({
   },
   guide: {
     overflowX: 'hidden',
-    overflowY: 'auto'
-  }
+    overflowY: 'auto',
+  },
 }));
 
 export function Dashboard({
@@ -140,6 +140,7 @@ export function Dashboard({
   };
 
   const handleDownload = botId => async event => {
+    event.preventDefault();
     const bot = bots.filter(bot => bot.id === botId);
 
     const parsedRules = [];
@@ -160,13 +161,11 @@ export function Dashboard({
   return (
     <div className={classes.container}>
       <Container maxWidth='lg' className='paper-container'>
-        <Typography variant="h4" component="h2" className={classes.title}>
+        <Typography variant='h4' component='h2' className={classes.title}>
           DASHBOARD
         </Typography>
         <Paper className={classes.root}>
-          <AppBar
-            position='static'
-            style={{ backgroundColor: '#212121' }}>
+          <AppBar position='static' style={{ backgroundColor: '#212121' }}>
             <Tabs value={value} onChange={handleChange} aria-label='simple tabs example'>
               <Tab label='Bots' {...a11yProps(0)} />
               <Tab label='Drafts' {...a11yProps(1)} />
@@ -202,10 +201,18 @@ export function Dashboard({
                           <DownloadBtn bot={bot} />
 
                           <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
-                            <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit fa-lg' style={{ opacity: 0.7 }}></i>
+                            <i
+                              onClick={handleEdit}
+                              id={`bot-${bot.id}`}
+                              className='fas fa-edit fa-lg'
+                              style={{ opacity: 0.7 }}></i>
                           </Link>
-                          <Link style={{ color: 'inherit' }} to={``} title='Delete Bot'>
-                            <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash fa-lg' style={{ opacity: 0.7 }}></i>
+                          <Link style={{ color: 'inherit' }} title='Delete Bot'>
+                            <i
+                              onClick={handleDelete}
+                              id={`bot-${bot.id}`}
+                              className='fas fa-trash fa-lg'
+                              style={{ opacity: 0.7 }}></i>
                           </Link>
                         </div>
                       </div>
@@ -237,13 +244,50 @@ export function Dashboard({
                         <Typography variant='body2'>{bot.description}</Typography>
                         <div>
                           <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
-                            <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit fa-lg' style={{ opacity: 0.7 }}></i>
+                            <i
+                              onClick={handleEdit}
+                              id={`bot-${bot.id}`}
+                              className='fas fa-edit fa-lg'
+                              style={{ opacity: 0.7 }}></i>
                           </Link>
-                          <Link style={{ color: 'inherit' }} title='Delete Bot' to={``}>
-                            <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash fa-lg' style={{ opacity: 0.7 }}></i>
+                          <Link style={{ color: 'inherit' }} title='Delete Bot'>
+                            <i
+                              onClick={handleDelete}
+                              id={`bot-${bot.id}`}
+                              className='fas fa-trash fa-lg'
+                              style={{ opacity: 0.7 }}></i>
                           </Link>
                         </div>
                       </div>
+                      <CardActionArea key={bot.id}>
+                        <Link key={bot.id} to={`/bots/${bot.id}`} style={{ color: 'inherit' }}>
+                          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                            <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                              {bot.name}
+                            </Typography>
+                          </div>
+
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Typography variant='body2'>{bot.description}</Typography>
+                            <div>
+                              <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
+                                <i
+                                  onClick={handleEdit}
+                                  id={`bot-${bot.id}`}
+                                  className='fas fa-edit fa-lg'
+                                  style={{ opacity: 0.7 }}></i>
+                              </Link>
+                              <Link style={{ color: 'inherit' }} title='Delete Bot' to={``}>
+                                <i
+                                  onClick={handleDelete}
+                                  id={`bot-${bot.id}`}
+                                  className='fas fa-trash fa-lg'
+                                  style={{ opacity: 0.7 }}></i>
+                              </Link>
+                            </div>
+                          </div>
+                        </Link>
+                      </CardActionArea>
                       <Divider />
                     </div>
                   );
@@ -263,17 +307,21 @@ export function Dashboard({
                 .map(bot => {
                   return (
                     <div key={bot.id}>
-                      <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                        <Typography variant='h5' style={{ fontWeight: 'bold' }}>
-                          {bot.name}
-                        </Typography>
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Typography variant='body2'>{bot.description}</Typography>
-                        <div>
-                          <DownloadBtn bot={bot} />
-                        </div>
-                      </div>
+                      <CardActionArea key={bot.id}>
+                        <Link key={bot.id} to={`/bots/${bot.id}`} style={{ color: 'inherit' }}>
+                          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                            <Typography variant='h5' style={{ fontWeight: 'bold' }}>
+                              {bot.name}
+                            </Typography>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Typography variant='body2'>{bot.description}</Typography>
+                            <div>
+                              <DownloadBtn bot={bot} />
+                            </div>
+                          </div>
+                        </Link>
+                      </CardActionArea>
                       <Divider />
                     </div>
                   );
@@ -281,13 +329,13 @@ export function Dashboard({
             </div>
           </TabPanel>
           <TabPanel
-          value={value}
-          index={3}
-          style={{
-            'border-bottom-left-radius': '5px',
-            'border-bottom-right-radius': '5px',
-          }}>
-            <Guide className={classes.guide}/>
+            value={value}
+            index={3}
+            style={{
+              'border-bottom-left-radius': '5px',
+              'border-bottom-right-radius': '5px',
+            }}>
+            <Guide className={classes.guide} />
           </TabPanel>
         </Paper>
       </Container>

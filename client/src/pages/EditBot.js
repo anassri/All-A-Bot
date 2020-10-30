@@ -133,8 +133,19 @@ const RuleForm = ({i, rules, setTrigger, autoSave, setResponse, addResponse, cla
                     </Grid>
                 </Grid>
             </div>
-            {rules[i].content.response.map((resp, responseIndex) => <ResponseForm key={i} ruleIndex={i} responseIndex={responseIndex} rules={rules} setResponse={setResponse} autoSave={autoSave} classes={classes} />)}
-            <Button onClick={() => addResponse(i)}>Add response</Button>
+            {rules[i].content.response.map((resp, responseIndex) => <ResponseForm ruleIndex={i} responseIndex={responseIndex} rules={rules} setResponse={setResponse} autoSave={autoSave} classes={classes} />)}
+            <Button
+                size="medium"
+                variant="contained"
+                color="primary"
+                className={classes.add}
+                onClick={() => addResponse(i)}>Add response</Button>
+            <Button
+                size="medium"
+                variant="contained"
+                color="primary"
+                className={classes.add}
+                onClick={() => removeResponse(i)}>Remove response</Button>
         </form>
     </>
 )}
