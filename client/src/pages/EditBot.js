@@ -267,7 +267,7 @@ function EditBot({bot, botId, user, history}) {
     }
 
     const autoSave = () =>{
-        if (!isSaving && user && autosavePermitted){
+        /* if (!isSaving && user && autosavePermitted){
             console.log("autosaving...")
             setIsSaving(true);
             setIsDraft(true);
@@ -278,7 +278,8 @@ function EditBot({bot, botId, user, history}) {
                 setAutoSaveMsg("Draft bot saved.");
                 setTimeout(()=>{setAutoSaveMsg("")}, 5000);
             },20000);
-        }
+        } */
+        console.log("Autosave disabled.");
     }
     const setRule = (i, newRule) => {
         setRules([...rules.slice(0, i), newRule, ...rules.slice(i+1)]);
