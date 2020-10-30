@@ -6,19 +6,13 @@ import { assembleFullFile } from '../utils/templateCreator';
 import { fileDownload, packageDownload } from '../utils/fileSaver'
 import { loadOne } from '../store/bots'
 import { 
-    makeStyles, 
-    Dialog, 
-    DialogTitle, 
-    DialogContent, 
-    DialogContentText, 
-    TextField, 
-    DialogActions, 
-    Button,
+    makeStyles,
     Grid,
     Paper,
     Container,
     Typography,
     Divider } from '@material-ui/core';
+import DownloadBtn from '../components/DownloadBtn';
 
 
 const useStyle = makeStyles((theme) => ({
@@ -105,9 +99,6 @@ export default function Bot(){
     const classes = useStyle();
     const bot = useSelector(state => state.bots.one)
     
-    const [isOpen, setIsOpen] = useState(false);
-    const [developerToken, setDeveloperToken] = useState('');
-    
     const dispatch = useDispatch()
     const {id} = useParams()
 
@@ -115,22 +106,6 @@ export default function Bot(){
         dispatch(loadOne(id))
     }, [])
     if (!bot) return null;
-    console.log(bot)
-    const handleOpen = () => setIsOpen(true);
-    const handleClose = () => setIsOpen(false);
-    const updateDeveloperToken = e => setDeveloperToken(e.target.value);
-
-    const handleDownload = () => async event => {
-        const parsedRules = [];
-
-        if (bot.rules) bot.rules.forEach(rule => parsedRules.push(JSON.parse(rule.content)));
-
-        const file = assembleFullFile(bot.prefix, developerToken, parsedRules);
-
-        fileDownload(file);
-        await packageDownload();
-        await handleClose();
-    };
     
     return (
         <div className={classes.root}>
@@ -176,33 +151,7 @@ export default function Bot(){
                     </div>
                     <div className={classes.icons}>
                         <div>
-                            <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download fa-lg	'></i>
-                            <Dialog
-                                open={isOpen}
-                                onClose={handleClose}
-                                maxWidth='sm'
-                                fullWidth
-                                className={classes.dialog}>
-                                <DialogTitle>Developer Token</DialogTitle>
-                                <DialogContent>
-                                    <DialogContentText>Enter your bot token:</DialogContentText>
-                                    <TextField
-                                        autoFocus
-                                        variant='outlined'
-                                        margin='dense'
-                                        style={{ width: 200 }}
-                                        label='Token'
-                                        type='text'
-                                        onChange={updateDeveloperToken}
-                                    />
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button variant="contained" color="primary" onClick={handleClose}>Cancel</Button>
-                                    <Button variant="contained" color="primary" onClick={handleDownload(bot.id)} className={`bot`}>
-                                        Create my bot!
-              </Button>
-                                </DialogActions>
-                            </Dialog>
+                            <DownloadBtn bot={bot} />
                         </div>
                     </div>
                 </Paper>

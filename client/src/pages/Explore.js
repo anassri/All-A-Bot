@@ -11,12 +11,6 @@ import {
   Grid,
   Box,
   makeStyles,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
   Popover,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
@@ -36,9 +30,7 @@ import {
 } from 'react-share';
 
 import '../style/explore.css';
-
-import { assembleFullFile } from '../utils/templateCreator';
-import { fileDownload, packageDownload } from '../utils/fileSaver';
+import DownloadBtn from '../components/DownloadBtn';
 
 const useStyle = makeStyles(theme => ({
   root: {
@@ -79,40 +71,22 @@ const useStyle = makeStyles(theme => ({
     alignItems: 'flex-end',
     marginBottom: 5,
     paddingLeft: 20,
-    opacity: 0.7,
+    
   },
 }));
 const ListItem = ({ id, bot, token, name, description, username, user, bookmarkBotDispatch }) => {
   const classes = useStyle();
 
-  const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [popoverIsOpen, setPopoverIsOpen] = useState(false);
-  const [developerToken, setDeveloperToken] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleOpenDialog = () => setDialogIsOpen(true);
-  const handleCloseDialog = () => setDialogIsOpen(false);
 
   const handleOpenPopover = event => {
     setPopoverIsOpen(true);
     setAnchorEl(event.currentTarget);
   };
   const handleClosePopover = () => setPopoverIsOpen(false);
-  const updateDeveloperToken = e => setDeveloperToken(e.target.value);
 
   const handleShare = () => {};
-
-  const handleDownload = () => async event => {
-    const parsedRules = [];
-
-    if (bot.rules) bot.rules.forEach(rule => parsedRules.push(JSON.parse(rule.content)));
-
-    const file = assembleFullFile(bot.prefix, developerToken, parsedRules);
-
-    fileDownload(file);
-    packageDownload();
-    handleCloseDialog();
-  };
 
   const handleBookmark = () => async event => {
     bookmarkBotDispatch(bot.id, user.id, token);
@@ -134,39 +108,10 @@ const ListItem = ({ id, bot, token, name, description, username, user, bookmarkB
       </CardActionArea>
       <div className={classes.content}>
         <div>
-          <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download fa-lg	'></i>
-          <Dialog 
-            open={dialogIsOpen} 
-            onClose={handleCloseDialog} 
-            maxWidth='sm' 
-            fullWidth
-            className={classes.dialog}>
-            <DialogTitle>Developer Token</DialogTitle>
-            <DialogContent>
-              <DialogContentText>Enter your bot token:</DialogContentText>
-              <TextField
-                autoFocus
-                variant='outlined'
-                margin='dense'
-                style={{width:200}}
-                label='Token'
-                type='text'
-                onChange={updateDeveloperToken}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button variant="contained" color="primary" onClick={handleCloseDialog}>Cancel</Button>
-              <Button variant="contained" color="primary" onClick={handleDownload(bot.id)} className={`bot`}>
-                Create my bot!
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <DownloadBtn bot={bot} />
         </div>
-        <Link key={id} to={``} style={{ color: 'inherit' }} title='Clone Bot'>
-          <i className='fas fa-clone fa-lg'></i>
-        </Link>
-        <i onClick={handleBookmark(bot.id)} className='fas fa-bookmark fa-lg'></i>
-        <i onClick={handleOpenPopover} className='fas fa-share-alt' />
+        <i onClick={handleBookmark(bot.id)} title='Bookmark a Bot' className='fas fa-bookmark fa-lg' style={{ cursor: 'pointer', opacity: 0.7, }}></i>
+        <i onClick={handleOpenPopover} title='Share a Bot' className='fas fa-share-alt fa-lg' style={{ cursor: 'pointer', opacity: 0.7, }}/>
         <Popover
           open={popoverIsOpen}
           anchorEl={anchorEl}

@@ -28,6 +28,7 @@ import { assembleFullFile } from '../utils/templateCreator';
 import { fileDownload, packageDownload } from '../utils/fileSaver';
 import Guide from '../components/Guide'
 import '../style/explore.css';
+import DownloadBtn from '../components/DownloadBtn';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -198,36 +199,14 @@ export function Dashboard({
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant='body2'>{bot.description}</Typography>
                         <div>
-                          <CardActionArea>
-                            <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download fa-lg' style={{ opacity: 0.7 }}></i>
-                            <Dialog open={open} onClose={handleClose}>
-                              <DialogTitle>Developer Token</DialogTitle>
-                              <DialogContent>
-                                <DialogContentText>Enter your bot token:</DialogContentText>
-                              </DialogContent>
-                              <TextField
-                                autoFocus
-                                margin='dense'
-                                label='Developer Token'
-                                type='text'
-                                fullWidth
-                                onChange={updateDeveloperToken}
-                              />
-                              <DialogActions>
-                                <Button onClick={handleClose}>Cancel</Button>
-                                <Button onClick={handleDownload(bot.id)} className={`bot`}>
-                                  Create my bot!
-                                </Button>
-                              </DialogActions>
-                            </Dialog>
+                          <DownloadBtn bot={bot} />
 
-                            <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
-                              <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit fa-lg' style={{ opacity: 0.7 }}></i>
-                            </Link>
-                            <Link style={{ color: 'inherit' }} to={``} title='Delete Bot'>
-                              <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash fa-lg' style={{ opacity: 0.7 }}></i>
-                            </Link>
-                          </CardActionArea>
+                          <Link to={`edit-bot/${bot.id}`} style={{ color: 'inherit' }} title='Edit Bot'>
+                            <i onClick={handleEdit} id={`bot-${bot.id}`} className='fas fa-edit fa-lg' style={{ opacity: 0.7 }}></i>
+                          </Link>
+                          <Link style={{ color: 'inherit' }} to={``} title='Delete Bot'>
+                            <i onClick={handleDelete} id={`bot-${bot.id}`} className='fas fa-trash fa-lg' style={{ opacity: 0.7 }}></i>
+                          </Link>
                         </div>
                       </div>
                       <Divider />
@@ -292,28 +271,7 @@ export function Dashboard({
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Typography variant='body2'>{bot.description}</Typography>
                         <div>
-                          <i onClick={handleOpen} id={`bot-${bot.id}`} className='fas fa-download fa-lg' style={{opacity: 0.7}}></i>
-
-                          <Dialog open={open} onClose={handleClose}>
-                            <DialogTitle>Developer Token</DialogTitle>
-                            <DialogContent>
-                              <DialogContentText>Enter your bot token:</DialogContentText>
-                            </DialogContent>
-                            <TextField
-                              autoFocus
-                              margin='dense'
-                              label='Developer Token'
-                              type='text'
-                              fullWidth
-                              onChange={updateDeveloperToken}
-                            />
-                            <DialogActions>
-                              <Button onClick={handleClose}>Cancel</Button>
-                              <Button onClick={handleDownload(bot.id)} className={`bot`}>
-                                Create my bot!
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
+                          <DownloadBtn bot={bot} />
                         </div>
                       </div>
                       <Divider />
