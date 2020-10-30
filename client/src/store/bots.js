@@ -1,4 +1,4 @@
-import { SET_BOT, SET_BOTS, SET_ALL, SET_ONE, SET_COMPLETE } from '../constants';
+import { SET_BOT, SET_BOTS, SET_ALL, SET_ONE, SET_COMPLETE, SET_BOOKMARKS } from '../constants';
 
 const setBot = bot => ({
   type: SET_BOT,
@@ -15,6 +15,11 @@ export const setOne = bot => ({
 export const setComplete = completeBots => ({
   type: SET_COMPLETE,
   completeBots,
+});
+
+export const setBookmarks = bookmarks => ({
+  type: SET_BOOKMARKS,
+  bookmarks,
 });
 
 export const loadAllBots = () => async dispatch => {
@@ -72,6 +77,14 @@ export const loadBot = id => async dispatch => {
   }
 };
 
+export const loadBookmarks = (userId, token) => async dispatch => {
+  const res = await fetch(`/api/users/${userId}/bots/bookmarks`);
+  if (res.ok) {
+    const bookmarks = await res.json();
+    dispatch(setBookmarks(bookmarks));
+  }
+};
+
 export const deleteBot = (id, token) => async dispatch => {
   const res = await fetch(`/api/bots/${id}`, {
     method: 'DELETE',
@@ -119,6 +132,8 @@ export default function botReducer(state = { bot: { name: '', rules: [] } }, act
       return { ...state, one: action.bot };
     case SET_COMPLETE:
       return { ...state, completeBots: action.completeBots };
+    case SET_BOOKMARKS:
+      return { ...state, bookmarks: action.bookmarks };
     default:
       return state;
   }
