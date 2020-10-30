@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from app.models import db, User, User_Bookmark
+from flask_jwt_extended import jwt_required
 
 user_routes = Blueprint('users', __name__, url_prefix='/api/users')
 
@@ -11,6 +12,7 @@ def index():
 
 
 @user_routes.route('/bots/bookmarks', methods=['POST'])
+@jwt_required
 def user_bookmarks():
     incoming = request.get_json()
     userBookmark = User_Bookmark(
