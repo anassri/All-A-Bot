@@ -217,7 +217,7 @@ function EditBot({bot, botId, user, history}) {
                 name: botName,
                 prefix: (botPrefix || null),
                 userId: user.id,
-                isDraft: isDraft,
+                isDraft: Boolean(isDraft),
                 description: (botDescription || null)
             },
             rules
@@ -259,7 +259,7 @@ function EditBot({bot, botId, user, history}) {
         setRule(ruleIndex, {...rules[ruleIndex], content: {...rules[ruleIndex].content, response: [...rules[ruleIndex].content.response.slice(0, responseIndex), newResponse, ...rules[ruleIndex].content.response.slice(responseIndex+1)] }})
     }
 
-    
+
 
     const addResponse = i => {
         console.log(rules[i].content.response.length);
@@ -274,7 +274,7 @@ function EditBot({bot, botId, user, history}) {
         setRule(i, {...rules[i], content: { ...rules[i].content, response: newResponses }});
     }
 
-   
+
     return (
         <Container className={`${classes.container} paper-container`}>
             <Typography variant="h4" component="h2" className={classes.title}>
@@ -283,11 +283,11 @@ function EditBot({bot, botId, user, history}) {
             <Paper className={classes.paper}>
                 <Grid container spacing={3}>
                     <Grid item xs className={classes.grid}>
-                        <TextField 
-                            variant="outlined" 
-                            fullWidth 
-                            value={botName} 
-                            onChange={e => { console.log(e.target.id);setBotName(e.target.value); autoSave();}} 
+                        <TextField
+                            variant="outlined"
+                            fullWidth
+                            value={botName}
+                            onChange={e => { console.log(e.target.id);setBotName(e.target.value); autoSave();}}
                             label="Name"/>
                     </Grid>
                     <Grid item xs className={classes.grid}>
@@ -304,16 +304,16 @@ function EditBot({bot, botId, user, history}) {
                 <Grid className={classes.gridOverflow}>
                     {rules.map((rule, i) => <Box key={i}><RuleForm i={i} rules={rules} setTrigger={setTrigger} autoSave={autoSave} setResponse={setResponse} addResponse={addResponse} removeResponse={removeResponse} classes={classes} /></Box>)}
                     <Divider />
-                    <Button 
+                    <Button
                         size="medium"
                         variant="contained"
-                        color="primary" 
+                        color="primary"
                         className={classes.add}
                         onClick={addRule} >Add rule</Button>
-                    {rules.length ? <Button 
+                    {rules.length ? <Button
                         size="medium"
                         variant="contained"
-                        color="primary" 
+                        color="primary"
                         className={classes.add}
                         onClick={removeRule} >Remove rule</Button>
                     : null }
