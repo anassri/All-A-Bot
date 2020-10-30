@@ -194,10 +194,10 @@ export function Explore({ bots, user, token, bookmarkBotDispatch, loadBookmarksD
             ABOUT ALL-A-BOT
           </Typography>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id vehicula ante, et vulputate lacus. Cras
-            fringilla dui at convallis varius. Nunc non condimentum mi. Sed dapibus, erat at pretium luctus, est odio
-            mattis nisl, quis imperdiet urna nunc nec nisi. Quisque eu arcu nulla. Suspendisse non congue justo, id
-            gravida lorem. Phasellus at justo lorem.
+            So you just created your new Discord server, and you want to create a bot that will help you easily 
+            organize and manage your members and user? You've come to the right place. 
+            All-A-Bot helps you generate a Discord bot that you can customize to your needs without the need to code anything. 
+            Just simply choose the options you want and our app will take care of the rest. Happy generating!
           </p>
         </div>
         <Paper className={classes.paper}>
