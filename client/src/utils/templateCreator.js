@@ -39,8 +39,8 @@ function ${funcName}(client) {
             } else if (res.type === 'message') {
                 tempHolder += leaveJoinMessageBuilder(res.details.string, event.trigger.details.string)
             }
+            eventStart += tempHolder
         })
-        eventStart += tempHolder
         fileStart += eventStart
         onReadyStart += `${funcName}(client)\n`
     })
