@@ -109,6 +109,14 @@ export const bookmarkBot = (botId, userId, token) => async dispatch => {
   }
 };
 
+export const unbookmarkBot = (botId, userId, token) => async dispatch => {
+  await fetch('/api/users/bots/bookmarks/delete', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ botId, userId }),
+  });
+};
+
 export const loadBots = (user, token) => async dispatch => {
   const res = await fetch('/api/bots', {
     method: 'POST',
