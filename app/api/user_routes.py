@@ -11,7 +11,7 @@ def index():
     return {"users": [user.to_dict() for user in response]}
 
 
-@user_routes.route('/bots/bookmarks', methods=['POST'])
+@user_routes.route('/bots/bookmarks/add', methods=['POST'])
 @jwt_required
 def user_bookmarks():
     incoming = request.get_json()
