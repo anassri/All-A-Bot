@@ -22,9 +22,7 @@ def user_bookmarks():
     db.session.commit()
 
     user = User.query.get(incoming['userId'])
-    return jsonify(
-        bookmarks=[bookmark.to_dict() for bookmark in user.bookmarks],
-        user=user.to_dict())
+    return jsonify(bookmarks=[bookmark.to_dict() for bookmark in user.bookmarks])
 
 
 @user_routes.route('/bots/bookmarks/delete', methods=['POST'])
@@ -35,13 +33,12 @@ def unbookmark():
         userId=incoming['userId'], botId=incoming['botId']).first()
     db.session.delete(bookmark)
     db.session.commit()
-    return jsonify(True)
+    user = User.query.get(incoming['userId'])
+    return jsonify(bookmarks=[bookmark.to_dict() for bookmark in user.bookmarks])
 
 
 @user_routes.route('/<int:id>/bots/bookmarks', methods=['GET'])
 @jwt_required
 def get_user_bookmarks(id):
-    print(id)
     user = User.query.get(id)
-    print(user.to_dict())
     return jsonify(bookmarks=[bookmark.to_dict() for bookmark in user.bookmarks])
