@@ -103,8 +103,16 @@ const ListItem = ({
 
   const handleShare = () => {};
 
-  const handleBookmark = () => async event => {
+  const addBookmark = () => {
     bookmarkBotDispatch(bot.id, user.id, token);
+  };
+
+  const removeBookmark = () => {};
+
+  const handleBookmark = () => async event => {
+    if (bookmarks.some(b => b.id === bot.id)) removeBookmark();
+    else addBookmark();
+
     loadBookmarksDispatch(user.id, token);
   };
 
