@@ -27,6 +27,17 @@ def user_bookmarks():
         user=user.to_dict())
 
 
+@user_routes.route('/bots/bookmarks/delete', methods=['POST'])
+@jwt_required
+def unbookmark():
+    incoming = request.get_json()
+    bookmark = User_Bookmark.query.filter_by(
+        userId=incoming['userId'], botId=incoming['botId']).first()
+    db.session.delete(bookmark)
+    db.session.commit()
+    return jsonify(True)
+
+
 @user_routes.route('/<int:id>/bots/bookmarks', methods=['GET'])
 @jwt_required
 def get_user_bookmarks(id):
