@@ -60,7 +60,7 @@ class Bot(db.Model):
     owner = db.relationship("User")
     users = db.relationship('User', back_populates='bots',
                             secondary='users_bookmarks')
-    rules = db.relationship("Rule")
+    rules = db.relationship("Rule", cascade="all, delete")
 
     def to_dict(self):
         return {
