@@ -228,7 +228,7 @@ function EditBot({ bot, botId, user, history }) {
                 username: 'All A Bot Bot',
                 embeds: [{
                     title: botName,
-                    url: `http://www.all-a-bot.herokuapp.com/bots/${botId}`,
+                    url: `http://all-a-bot.herokuapp.com/bots/${botId}`,
                     color: 9521796,
                     description: `New bot created! Say hello to **${botName}**, go check them out.`
                 }]
