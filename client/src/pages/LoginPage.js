@@ -35,7 +35,7 @@ const useStyle = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'flex-end',
     marginBottom: 5,
-    paddingLeft: 20, 
+    paddingLeft: 20,
   },
 }));
 
@@ -73,12 +73,14 @@ export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
 
   return (
     <Box>
-        <div className={classes.root}>
+      <div className={classes.root}>
         <Container maxWidth='lg' className='paper-container'>
           <Paper className={classes.paper}>
-            {errors ? <Alert variant="outlined" severity="error">
-              {errors}
-            </Alert> : null}
+            {errors ? (
+              <Alert variant='outlined' severity='error'>
+                {errors}
+              </Alert>
+            ) : null}
             <div className='welcome-container'>
               <Typography variant='h4' component='h2' style={{ fontWeight: 'bold', color: 'white' }}>
                 Welcome back!
@@ -132,7 +134,7 @@ export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
                   <Button
                     variant='contained'
                     style={{ backgroundColor: '#7289da' }}
-                    href='https://discord.com/oauth2/authorize?client_id=771154573795655680&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fredirect&response_type=code&scope=identify%20email%20connections%20guilds'>
+                    href='https://discord.com/api/oauth2/authorize?client_id=771154573795655680&redirect_uri=https%3A%2F%2Fall-a-bot.herokuapp.com%2Fauth%2Fredirect&response_type=code&scope=identify%20email%20connections%20guilds'>
                     <span style={{ marginRight: '5px' }}>
                       <i className='fab fa-discord' />
                     </span>
