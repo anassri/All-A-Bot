@@ -83,8 +83,8 @@ export const loadBookmarks = (userId, token) => async dispatch => {
   });
 
   if (res.ok) {
-    const bookmarks = await res.json();
-    dispatch(setBookmarks(bookmarks.bookmarks));
+    const { bookmarks } = await res.json();
+    dispatch(setBookmarks(bookmarks));
   }
 };
 
@@ -98,14 +98,29 @@ export const deleteBot = (id, token) => async dispatch => {
 };
 
 export const bookmarkBot = (botId, userId, token) => async dispatch => {
-  const res = await fetch('/api/users/bots/bookmarks', {
+  const res = await fetch('/api/users/bots/bookmarks/add', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({ botId, userId }),
   });
 
   if (res.ok) {
-    const data = await res.json();
+    const { bookmarks } = await res.json();
+    dispatch(setBookmarks(bookmarks));
+  }
+};
+
+export const unbookmarkBot = (botId, userId, token) => async dispatch => {
+  const res = await fetch('/api/users/bots/bookmarks/delete', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ botId, userId }),
+  });
+
+  if (res.ok) {
+    const { bookmarks } = await res.json();
+
+    dispatch(setBookmarks(bookmarks));
   }
 };
 

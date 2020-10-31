@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
-import { loadAllBots, bookmarkBot, loadBookmarks } from '../store/bots';
+import { loadAllBots, bookmarkBot, unbookmarkBot, loadBookmarks } from '../store/bots';
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -82,6 +82,7 @@ const ListItem = ({
   username,
   user,
   bookmarkBotDispatch,
+  unbookmarkBotDispatch,
   loadBookmarksDispatch,
 }) => {
   const classes = useStyle();
@@ -103,8 +104,18 @@ const ListItem = ({
 
   const handleShare = () => {};
 
-  const handleBookmark = () => async event => {
+  const addBookmark = () => {
     bookmarkBotDispatch(bot.id, user.id, token);
+  };
+
+  const removeBookmark = () => {
+    unbookmarkBotDispatch(bot.id, user.id, token);
+  };
+
+  const handleBookmark = () => async event => {
+    if (bookmarks.some(b => b.id === bot.id)) removeBookmark();
+    else addBookmark();
+
     loadBookmarksDispatch(user.id, token);
   };
 
@@ -173,7 +184,7 @@ const ListItem = ({
   );
 };
 
-export function Explore({ bots, user, token, bookmarkBotDispatch, loadBookmarksDispatch }) {
+export function Explore({ bots, user, token, bookmarkBotDispatch, unbookmarkBotDispatch, loadBookmarksDispatch }) {
   const classes = useStyle();
   const [botsMatchingQuery, setBotsMatchingQuery] = useState([...bots]);
 
@@ -235,6 +246,7 @@ export function Explore({ bots, user, token, bookmarkBotDispatch, loadBookmarksD
                     username={bot.owner.username}
                     user={user}
                     bookmarkBotDispatch={bookmarkBotDispatch}
+                    unbookmarkBotDispatch={unbookmarkBotDispatch}
                     loadBookmarksDispatch={loadBookmarksDispatch}
                     token={token}
                     style={{ textAlign: 'left' }}
@@ -256,6 +268,7 @@ export default function ExploreContainer() {
   const dispatch = useDispatch();
 
   const bookmarkBotDispatch = (botId, userId, token) => dispatch(bookmarkBot(botId, userId, token));
+  const unbookmarkBotDispatch = (botId, userId, token) => dispatch(unbookmarkBot(botId, userId, token));
   const loadBookmarksDispatch = (userId, token) => dispatch(loadBookmarks(userId, token));
 
   useEffect(() => {
@@ -270,6 +283,7 @@ export default function ExploreContainer() {
       user={user}
       token={token}
       bookmarkBotDispatch={bookmarkBotDispatch}
+      unbookmarkBotDispatch={unbookmarkBotDispatch}
       loadBookmarksDispatch={loadBookmarksDispatch}
     />
   );
