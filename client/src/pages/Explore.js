@@ -71,7 +71,6 @@ const useStyle = makeStyles(theme => ({
     alignItems: 'flex-end',
     marginBottom: 5,
     paddingLeft: 20,
-    
   },
 }));
 const ListItem = ({
@@ -133,7 +132,12 @@ const ListItem = ({
         <div>
           <DownloadBtn bot={bot} />
         </div>
-        <i onClick={handleOpenPopover} title='Share a Bot' className='fas fa-share-alt fa-lg' style={{ cursor: 'pointer', opacity: 0.7, }}/>
+        <i
+          onClick={handleOpenPopover}
+          title='Share a Bot'
+          className='fas fa-share-alt fa-lg'
+          style={{ cursor: 'pointer', opacity: 0.7 }}
+        />
         <Popover
           open={popoverIsOpen}
           anchorEl={anchorEl}
@@ -143,23 +147,23 @@ const ListItem = ({
           onClose={handleClosePopover}
           PaperProps={{ classes: { root: classes.popover } }}>
           <div>
-            <EmailShareButton url={`http://localhost:3000/bots/${id}`}>
+            <EmailShareButton url={`https://all-a-bot.herokuapp.com/bots/${id}`}>
               <EmailIcon size={32} round={true} />
             </EmailShareButton>
 
-            <FacebookShareButton url={`http://localhost:3000/bots/${id}`}>
+            <FacebookShareButton url={`https://all-a-bot.herokuapp.com/bots/${id}`}>
               <FacebookIcon size={32} round={true} />
             </FacebookShareButton>
 
-            <TwitterShareButton url={`http://localhost:3000/bots/${id}`}>
+            <TwitterShareButton url={`https://all-a-bot.herokuapp.com/bots/${id}`}>
               <TwitterIcon size={32} round={true} />
             </TwitterShareButton>
 
-            <LinkedinShareButton url={`http://localhost:3000/bots/${id}`}>
+            <LinkedinShareButton url={`https://all-a-bot.herokuapp.com/bots/${id}`}>
               <LinkedinIcon size={32} round={true} />
             </LinkedinShareButton>
 
-            <RedditShareButton url={`http://localhost:3000/bots/${id}`}>
+            <RedditShareButton url={`https://all-a-bot.herokuapp.com/bots/${id}`}>
               <RedditIcon size={32} round={true} bgStyle={{ fill: '#F94503' }} />
             </RedditShareButton>
           </div>
@@ -193,10 +197,10 @@ export function Explore({ bots, user, token, bookmarkBotDispatch, loadBookmarksD
             ABOUT ALL-A-BOT
           </Typography>
           <p>
-            So you just created your new Discord server, and you want to create a bot that will help you easily 
-            organize and manage your members and user? You've come to the right place. 
-            All-A-Bot helps you generate a Discord bot that you can customize to your needs without the need to code anything. 
-            Just simply choose the options you want and our app will take care of the rest. Happy generating!
+            So you just created your new Discord server, and you want to create a bot that will help you easily organize
+            and manage your members and user? You've come to the right place. All-A-Bot helps you generate a Discord bot
+            that you can customize to your needs without the need to code anything. Just simply choose the options you
+            want and our app will take care of the rest. Happy generating!
           </p>
         </div>
         <Paper className={classes.paper}>
@@ -221,19 +225,21 @@ export function Explore({ bots, user, token, bookmarkBotDispatch, loadBookmarksD
             </div>
             <Grid className={classes.bots}>
               {botsMatchingQuery.map(bot => (
-                <Box><ListItem
-                  name={bot.name}
-                  key={bot.id}
-                  id={bot.id}
-                  bot={bot}
-                  description={bot.description}
-                  username={bot.owner.username}
-                  user={user}
-                  bookmarkBotDispatch={bookmarkBotDispatch}
-                  loadBookmarksDispatch={loadBookmarksDispatch}
-                  token={token}
-                  style={{ textAlign: 'left' }}
-                /></Box>
+                <Box>
+                  <ListItem
+                    name={bot.name}
+                    key={bot.id}
+                    id={bot.id}
+                    bot={bot}
+                    description={bot.description}
+                    username={bot.owner.username}
+                    user={user}
+                    bookmarkBotDispatch={bookmarkBotDispatch}
+                    loadBookmarksDispatch={loadBookmarksDispatch}
+                    token={token}
+                    style={{ textAlign: 'left' }}
+                  />
+                </Box>
               ))}
             </Grid>
           </Grid>
