@@ -173,7 +173,15 @@ const ResponseForm = ({ ruleIndex, responseIndex, rules, setResponse, autoSave, 
                         value={rules[ruleIndex].content.response[responseIndex].details.string}
                         label={rules[ruleIndex].content.response[responseIndex].type === "message" ? "message string" : "emoji name"}
                         onChange={e => { setResponse(ruleIndex, responseIndex, { ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }); autoSave(); }} />
-                    : ['addRole'].includes(rules[ruleIndex].content.response[responseIndex].type)
+                    : ['addRole'].includes(rules[ruleIndex].content.response[responseIndex].type) && rules[ruleIndex].content.trigger.type ==='guildMemberAdd'
+                    ?  <TextField
+                        variant="outlined"
+                        fullWidth
+                        id={`responsetext${ruleIndex}-${responseIndex}`}
+                        value={rules[ruleIndex].content.response[responseIndex].details.string}
+                        label={rules[ruleIndex].content.response[responseIndex].type === "addRole" ? "Role name" : ""}
+                        onChange={e => { setResponse(ruleIndex, responseIndex, { ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }); autoSave(); }} />
+                    : <></>
                     }
             </Grid>
         </Grid>
