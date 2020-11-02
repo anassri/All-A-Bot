@@ -173,7 +173,8 @@ const ResponseForm = ({ ruleIndex, responseIndex, rules, setResponse, autoSave, 
                         value={rules[ruleIndex].content.response[responseIndex].details.string}
                         label={rules[ruleIndex].content.response[responseIndex].type === "message" ? "message string" : "emoji name"}
                         onChange={e => { setResponse(ruleIndex, responseIndex, { ...rules[ruleIndex].content.response[responseIndex], details: { ...rules[ruleIndex].content.response[responseIndex].details, string: e.target.value } }); autoSave(); }} />
-                    : <></>}
+                    : ['addRole'].includes(rules[ruleIndex].content.response[responseIndex].type)
+                    }
             </Grid>
         </Grid>
     </div>)
