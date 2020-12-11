@@ -35,8 +35,9 @@ import DownloadBtn from '../components/DownloadBtn';
 const useStyle = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    marginTop: 10,
-    marginBottom: 10,
+    width: 1032,
+    margin: '0 auto',
+    position: "relative",
   },
   paper: {
     height: '60%',
@@ -214,6 +215,9 @@ export function Explore({ bots, user, token, bookmarkBotDispatch, unbookmarkBotD
             that you can customize to your needs without the need to code anything. Just simply choose the options you
             want and our app will take care of the rest. Happy generating!
           </p>
+        </div>
+        <div className="guide-tab-container">
+          <p className="guide-text">Guide</p>
         </div>
         <Paper className={classes.paper}>
           <Grid container spacing={3} style={{ flexDirection: 'column' }}>

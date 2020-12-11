@@ -5,3 +5,28 @@
 .about-container{
     text-align: left;
 }
+.paper-container{
+    margin: 10px 0;
+}
+.guide-tab-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    /* transform-origin: bottom; */
+    left: -45px;
+    top: 150px;
+    background-color: #212121;
+    width: 75px;
+    height: 120px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.guide-text{
+    font-size: 20px;
+    font-weight: bold;
+    /* float: left; */
+    transform: rotate(-90deg);
+    /* transform-origin: left 50 top 100; */
+
+}
