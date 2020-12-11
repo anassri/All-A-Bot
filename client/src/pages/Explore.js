@@ -36,6 +36,7 @@ const useStyle = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     marginTop: 10,
+    marginBottom: 10,
   },
   paper: {
     height: '60%',
@@ -257,6 +258,7 @@ export function Explore({ bots, user, token, bookmarkBotDispatch, unbookmarkBotD
           </Grid>
         </Paper>
       </Container>
+
     </div>
   );
 }

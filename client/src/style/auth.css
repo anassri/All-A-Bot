@@ -1,0 +1,8 @@
+.login-buttons{
+    display: flex;
+    justify-content: space-around;
+}
+.login-button{
+
+    width: 400px;
+}

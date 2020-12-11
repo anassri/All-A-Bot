@@ -5,6 +5,7 @@ import { login, loadUser, loadToken } from '../store/auth';
 import { makeStyles } from '@material-ui/core';
 import { Box, TextField, Button, Checkbox, Typography, Container, Paper } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
+import '../style/auth.css';
 
 const useStyle = makeStyles(theme => ({
   root: {
@@ -50,6 +51,11 @@ export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
   useEffect(() => {
     if (user) history.push('/dashboard');
   });
+  useEffect(()=>{
+    if(password && email){
+      login();
+    }
+  }, [password, email])
 
   const validateForm = data => {
     const errors = [];
@@ -59,18 +65,24 @@ export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
     setErrors(errors);
     return false;
   };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const login = async () =>{
     const formIsValid = validateForm();
     if (formIsValid) {
       const loginAttempt = await loginDispatcher(email, password);
-
+  
       if (loginAttempt.status === 200) history.push('/dashboard');
       else setErrors(loginAttempt.msg);
     }
+    
+  }
+  const handleSubmit = async e => {
+    e.preventDefault();
+    login();
   };
-
+  const handleDemo = () =>{
+    setEmail("fake@email.com")
+    setPassword("demopassword")
+  }
   return (
     <Box>
       <div className={classes.root}>
@@ -117,9 +129,14 @@ export const LoginPage = ({ user, loginDispatcher, loadUserDispatcher }) => {
                     Forget your password?
                   </Typography>
                   <br></br>
-                  <Button variant='contained' color='primary' type='submit'>
-                    Log In
-                  </Button>
+                  <div className="login-buttons">
+                    <Button variant='contained' className="login-button" color='primary' type='submit'>
+                      Log In
+                    </Button>
+                    <Button variant='contained' className="login-button" color='primary' onClick={handleDemo}>
+                      Demo User
+                    </Button>
+                  </div>
                   <br></br>
                   <Typography variant='subtitle1' component='h3' style={{ textAlign: 'left' }}>
                     <span style={{ color: 'white' }}>Need an account? </span>
