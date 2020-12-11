@@ -8,7 +8,27 @@ from app.models import User, Bot, Rule
 # from alembic import op
 
 # print(db)
-ruleString1 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": { "string": "hi" } }, "response": [{ "type": "message", "details": { "string": "hi there!" } }, { "type": "emoji", "details": { "string": "Appacademylogo" } }] }"""
+ruleString1 = """{ 
+    "trigger": { 
+        "type": "message", 
+        "usesPrefix": true, 
+        "details": { 
+            "string": "hi" 
+            } 
+        }, 
+    "response": [{ 
+        "type": "message", 
+        "details": { 
+            "string": "hi there!" 
+            } 
+    }, { 
+        "type": "emoji", 
+        "details": { 
+            "string": "Appacademylogo" 
+            } 
+    }] 
+}"""
+
 
 ruleString2 = """{ "trigger": { "type": "message", "usesPrefix": true, "details": { "string": "bye" } }, "response": [{ "type": "message", "details": { "string": "goodbye friend!" } }] }"""
 

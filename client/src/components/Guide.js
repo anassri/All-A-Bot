@@ -45,7 +45,7 @@ function Guide() {
                 <h2 style={{textAlign: 'center'}}>Step 4</h2>
                 <p>
                     The final step is to start your bot. While still in the command prompt/termin, simply type "npm start", and your bot should come online!
-                    To get your bot into a server, you will need to invite it. A good webiste for generating your bot invite link is <a href="https://discordapi.com/permissions.html" target="_blank">this one</a>.
+                    To get your bot into a server, you will need to invite it. A good webiste for generating your bot invite link is <a href="https://discordapi.com/permissions.html" target="_blank" style={{fontWeight: 'bold', textDecoration: 'none', color: '#fff'}}>this one</a>.
                     You must have sufficient permissions within a server to be able to invite your bot into it. The bot is running locally on your computer, and will only run as long you keep it running
                     inside of the command prompt/terminal. To end it manually, hit Ctrl+C for windows, and Command+C on mac.
                 </p>

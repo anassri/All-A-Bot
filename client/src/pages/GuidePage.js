@@ -23,9 +23,6 @@ export default function GuidePage(){
     const classes = useStyle();
     return (
         <Container maxWidth='lg' className='paper-container'>
-            <div className="guide-tab-container">
-                <p className="guide-text">Guide</p>
-            </div>
             <Paper className={classes.paper}>
                 <Grid container spacing={3} style={{ flexDirection: 'column' }}>
                     <Guide />
