@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   TextField,
@@ -189,7 +189,7 @@ const ListItem = ({
 export function Explore({ bots, user, token, bookmarkBotDispatch, unbookmarkBotDispatch, loadBookmarksDispatch }) {
   const classes = useStyle();
   const [botsMatchingQuery, setBotsMatchingQuery] = useState([...bots]);
-
+  const history = useHistory();
   const handleSearch = event => {
     const query = event.target.value;
 
@@ -201,7 +201,9 @@ export function Explore({ bots, user, token, bookmarkBotDispatch, unbookmarkBotD
 
     setBotsMatchingQuery([...matches]);
   };
-
+  const handleGuidePage = () =>{
+    history.push('/guide');
+  }
   return (
     <div className={classes.root}>
       <Container maxWidth='lg' className='paper-container'>
@@ -216,7 +218,7 @@ export function Explore({ bots, user, token, bookmarkBotDispatch, unbookmarkBotD
             want and our app will take care of the rest. Happy generating!
           </p>
         </div>
-        <div className="guide-tab-container">
+        <div className="guide-tab-container" onClick={handleGuidePage}>
           <p className="guide-text">Guide</p>
         </div>
         <Paper className={classes.paper}>

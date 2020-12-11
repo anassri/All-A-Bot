@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 
 import { loadUser } from '../store/auth';
 
-import HomePageContainer from './HomePage';
 import LoginPageContainer from './LoginPage';
 import SignupPageContainer from './SignupPage';
 import EditBot from './EditBot';
@@ -14,6 +13,7 @@ import BotContainer from './Bot';
 import CreateBot from './CreateBot';
 import RedirectContainer from './Redirect';
 import BotSuccess from './BotSuccess';
+import GuidePage from './GuidePage';
 
 export function Pages({ loadUserDispatch }) {
   useEffect(() => {
@@ -31,6 +31,7 @@ export function Pages({ loadUserDispatch }) {
       <Route exact path='/bots/:id' component={BotContainer} />
       <Route exact path='/success' component={BotSuccess} />
       <Route path='/auth/:code' component={RedirectContainer} />
+      <Route path='/guide' component={GuidePage} />
     </>
   );
 }

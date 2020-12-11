@@ -319,6 +319,7 @@ function EditBot({ bot, botId, user, history }) {
             <Typography variant="h4" component="h2" className={classes.title}>
                 {bot.name ? "EDIT " + bot.name.toUpperCase() : "CREATE A BOT "}
             </Typography>
+            
             <Paper className={classes.paper}>
                 <Grid container spacing={3}>
                     <Grid item xs className={classes.grid}>

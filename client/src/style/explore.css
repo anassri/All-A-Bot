@@ -21,6 +21,11 @@
     height: 120px;
     border-radius: 5px;
     cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+.guide-tab-container:hover{
+    opacity: 1;
 }
 .guide-text{
     font-size: 20px;
