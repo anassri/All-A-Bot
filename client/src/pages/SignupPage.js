@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { signup, loadUser } from '../store/auth';
 import { makeStyles } from '@material-ui/core';
-import { Box, TextField, Button, Checkbox, Typography, Container, Paper } from '@material-ui/core';
+import { Box, TextField, Button, Typography, Container, Paper } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 
 const useStyle = makeStyles(theme => ({

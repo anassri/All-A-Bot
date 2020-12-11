@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { useHistory, useParams, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, logInWithDiscord } from '../store/auth';
+import { logInWithDiscord } from '../store/auth';
 
 export const Redirect = ({ code, user, logInWithDiscordDispatch }) => {
   const history = useHistory();

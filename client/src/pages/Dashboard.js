@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   AppBar,
-  Button,
   Tabs,
   Tab,
   Typography,
@@ -14,12 +13,6 @@ import {
   Box,
   Divider,
   Paper,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  TextField,
 } from '@material-ui/core/';
 import { useConfirm } from 'material-ui-confirm';
 import { CardActionArea } from '@material-ui/core';

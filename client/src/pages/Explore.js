@@ -91,7 +91,7 @@ const ListItem = ({
 
   useEffect(() => {
     if (user) loadBookmarksDispatch(user.id, token);
-  }, user);
+  }, [user]);
 
   const bookmarks = useSelector(state => state.bots.bookmarks);
 
@@ -242,8 +242,8 @@ export function Explore({ bots, user, token, bookmarkBotDispatch, unbookmarkBotD
                 }}></TextField>
             </div>
             <Grid className={classes.bots}>
-              {botsMatchingQuery.map(bot => (
-                <Box>
+              {botsMatchingQuery.map((bot, i) => (
+                <Box key={i}>
                   <ListItem
                     name={bot.name}
                     key={bot.id}

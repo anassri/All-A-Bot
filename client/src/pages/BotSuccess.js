@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { loadOne } from '../store/bots'
+import React, { useEffect } from 'react';
 import {
     makeStyles,
     Grid,
@@ -10,7 +7,6 @@ import {
     Typography,
     Divider
 } from '@material-ui/core';
-import DownloadBtn from '../components/DownloadBtn';
 
 
 const useStyle = makeStyles((theme) => ({

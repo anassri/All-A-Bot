@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, loadUser } from '../store/auth';
 import { useHistory } from 'react-router-dom';
