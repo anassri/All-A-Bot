@@ -9,12 +9,12 @@
 * [Next Steps](#next-steps)
 
 ## All-A-Bot Summary
-All-A-Bot is an auction app modeled after Kickstarter. Its objective is to help you auction off your work for charity. All-A-Bot makes it easy to support the charity you love by selling a piece of work you made. 
+All-A-Bot is a custom [Discord](https://discord.com/) bot generator. AAB is built to make it simple for Discord members to create bots, with multiple commands, for their Discord servers.
 
 ![All-A-Bot gif](./documentation/all-a-bot.gif)
 
 ## Technologies Used
-All-A-Bot is a full-stack application built with a React frontend and an Express backend. Most of the logic happens in the React frontend. Incorporating [Material UI framework](https://material-ui.com/) for the styling.
+All-A-Bot is a full-stack application built with a React frontend and an Python.Flask backend. Most of the logic happens in the React frontend. Incorporating [Material UI framework](https://material-ui.com/) for the styling.
 
 The frontend is served by the backend, which responds to requests, and grabs data from the PostgreSQL database.
 
