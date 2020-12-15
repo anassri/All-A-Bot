@@ -20,86 +20,106 @@ The frontend is served by the backend, which responds to requests, and grabs dat
 
 ## Frontend Overview
 
-All-A-Bot is a frontend heavy application. It utilizes React to create a dynamic and rich user experience. Here are the technologies used to make this application.
+All-A-Bot is a frontend heavy application. It utilizes React to create a dynamic and rich user experience. It also incorporate [DiscordJS](https://discord.js.org/#/), a Node.js module that allows for easiy interaction with the Discord API. Here are the technologies used to make this application.
 
 ### React
 
 All-A-Bot is a React application. It utilizes its higher order components for a dynamic and efficient rendering. The app extensively uses the technologies and libraries of the React ecosystem.
 
 
-In the main page that displays all campaigns, the app generates the campaign cards dynamically. The code snippet below renders cards.
+In the Explore Bot page that displays all published bots, the app dynamically generates the list of bots that are fetched from the database. The code snippet below renders the list.
 
 ```js
-<Grid   container 
-        direction="row"
-        justify="center"
-        spacing={3}>
-        {campaigns.length
-        ? campaigns.map((campaign) => { if(!campaign.isExpired) return <Grid key={campaign.id} item xs={4}>
-                <CampaignItems  campaign={campaign} /></Grid> })
-        : <h1 className="no-campaigns-container">No Active Campaigns Found.</h1>
-        }
-</Grid>
+{botsMatchingQuery.map((bot, i) => (
+                <Box key={i}>
+                  <ListItem
+                    name={bot.name}
+                    key={bot.id}
+                    id={bot.id}
+                    bot={bot}
+                    description={bot.description}
+                    username={bot.owner.username}
+                    user={user}
+                    bookmarkBotDispatch={bookmarkBotDispatch}
+                    unbookmarkBotDispatch={unbookmarkBotDispatch}
+                    loadBookmarksDispatch={loadBookmarksDispatch}
+                    token={token}
+                    style={{ textAlign: 'left' }}
+                  />
+                </Box>
+))}
 ```
 
-The code above utilizes the `CampaignItems` component to dynamically generate those cards. Here's what the `CampaignItems` looks like under the hood:
+It uses the `botsMatchingQuery` variable that is saved in local state to then re-render the list of bots in case the user searches for a particular bot. The component will rely on updates to the local state instead of firing off a new fetch request to the server everytime a user searches for a bot.
+
+The code below shows what the `ListItem` component does:
 
 ```js
-<Card className={`${classes.root} card-container`}>
-    <CardActionArea>
-        <Link key={campaign.id} to={`/campaign/${campaign.id}`} className={classes.text}>
-            <CardMedia
-                className={classes.media}
-                image={campaign.image}
-                title={campaign.name}
-            />
-        <CardContent>
-        
-            <Typography gutterBottom variant="h5" component="h2" >
-                {campaign.name}
-            </Typography>
-            <Typography variant="body1" color="textSecondary" component="p">
-                {campaign.summary}
-            </Typography>
-            <Typography variant="caption" color="textSecondary" component="p" style={{marginTop: 10}}>
-                By <span style={{ fontWeight: "bold" }}>{campaign.User.firstName} {campaign.User.lastName}</span> for <span style={{ fontWeight: "bold" }}>{campaign.Charity.name}</span>
-            </Typography>
-        </CardContent>
-        <CardActions className="stats-container">
-            <div className="bid time-left">
-                <div className="current-bid">
-                    <Typography gutterBottom variant="body1" component="h2">
-                        <DetermineBid campaign={campaign} />
-                    </Typography>
-                </div>
-                <div className="remaining counter progress-bar">
-                    <Typography gutterBottom variant="body1" component="h2">
-                        <DetermineTimeRemaining isExpired={campaign.isExpired} closingDate={campaign.closingDate} createdAt={campaign.createdAt} />
-                    </Typography>
-                    <div className={classes.progress}>
-                        <LinearProgress variant="determinate" value={progress} />
-                    </div>
-                </div>
+<Grid key={id} item xs={12} className={classes.bot}>
+      <i
+        onClick={handleBookmark(bot.id)}
+        className={
+          bookmarks ? (bookmarks.some(b => b.id === bot.id) ? 'fas fa-bookmark fa-2x' : 'far fa-bookmark fa-2x') : ''
+        }></i>
+      <CardActionArea className={classes.action}>
+        <div className={classes.content}></div>
+        <Link to={`/bots/${id}`} style={{ color: 'inherit' }}>
+          <Typography variant='h5' component='h2' style={{ fontWeight: 'bold' }}>
+            {name}
+          </Typography>
+          <Typography variant='subtitle1' component='h2'>
+            <div>
+              {description}. By <span style={{ fontWeight: 'bold' }}>{username}</span>
             </div>
-        </CardActions>
-        <CardActions className="items-other-info-container">
-            <div className={`${classes.bottom} items-other-info`}>
-                <Typography variant="body1" color="textSecondary" component="p">
-                    {campaign.Category.name}
-                </Typography>
-                <div className="location">
-                    <div className="nav-icon"><i className="fas fa-map-marker-alt"></i></div>
-                    <Typography variant="body1" color="textSecondary" component="p">
-                        {campaign.User.location}
-                    </Typography>
-                </div>
-            </div>
-        </CardActions>
+          </Typography>
         </Link>
-    </CardActionArea>
+      </CardActionArea>
+      <div className={classes.content}>
+        <div>
+          <DownloadBtn bot={bot} />
+        </div>
+        <i
+          onClick={handleOpenPopover}
+          title='Share a Bot'
+          className='fas fa-share-alt fa-lg'
+          style={{ cursor: 'pointer', opacity: 0.7 }}
+        />
+        <Popover
+          open={popoverIsOpen}
+          anchorEl={anchorEl}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'center', horizontal: 'center' }}
+          anchorPosition={{ top: 10, right: 50 }}
+          onClose={handleClosePopover}
+          PaperProps={{ classes: { root: classes.popover } }}>
+          <div>
+            <EmailShareButton url={`https://all-a-bot.herokuapp.com/bots/${id}`}>
+              <EmailIcon size={32} round={true} />
+            </EmailShareButton>
 
-</Card>
+            <FacebookShareButton url={`https://all-a-bot.herokuapp.com/bots/${id}`}>
+              <FacebookIcon size={32} round={true} />
+            </FacebookShareButton>
+
+            <TwitterShareButton url={`https://all-a-bot.herokuapp.com/bots/${id}`}>
+              <TwitterIcon size={32} round={true} />
+            </TwitterShareButton>
+
+            <LinkedinShareButton url={`https://all-a-bot.herokuapp.com/bots/${id}`}>
+              <LinkedinIcon size={32} round={true} />
+            </LinkedinShareButton>
+
+            <RedditShareButton url={`https://all-a-bot.herokuapp.com/bots/${id}`}>
+              <RedditIcon size={32} round={true} bgStyle={{ fill: '#F94503' }} />
+            </RedditShareButton>
+          </div>
+        </Popover>
+      </div>
+    </Grid>
 ```
+
+In addition to viewing the bot information, the app lets the user edit and share the bot to different social media platforms.
+
 `CampaignItems` will destructure the props to use the information contained and insert them where they need to be in the layout. All-A-Bot takes advantage of Material-UI's powerful components to display the campaign information properly in a card layout.
 
 The component will also determine the time remaining till the campaign closes and displays it in a human readable format. In addition, the app will find out the current bid and displays it on the card.
