@@ -9,18 +9,18 @@
 * [Next Steps](#next-steps)
 
 ## All-A-Bot Summary
-All-A-Bot is a custom [Discord](https://discord.com/) bot generator. AAB is built to make it simple for Discord members to create bots, with multiple commands, for their Discord servers.
+All-A-Bot is a custom [Discord](https://discord.com/) bot generator. AAB is built to make it simple for Discord members to create bots, with multiple commands, for their Discord servers. Users will have to have a developer token acquired from Discord's website in order to be able to download bots from AAB.
 
 ![All-A-Bot gif](./documentation/all-a-bot.gif)
 
 ## Technologies Used
-All-A-Bot is a full-stack application built with a React frontend and an Python.Flask backend. Most of the logic happens in the React frontend. Incorporating [Material UI framework](https://material-ui.com/) for the styling.
+All-A-Bot is a full-stack application built with a React frontend and an Python/Flask backend. Most of the logic happens in the React frontend. Incorporating [Material UI framework](https://material-ui.com/) for the styling.
 
 The frontend is served by the backend, which responds to requests, and grabs data from the PostgreSQL database.
 
 ## Frontend Overview
 
-All-A-Bot is a frontend heavy application. It utilizes React to create a dynamic and rich user experience. It also incorporate [DiscordJS](https://discord.js.org/#/), a Node.js module that allows for easiy interaction with the Discord API. Here are the technologies used to make this application.
+All-A-Bot is a frontend heavy application. It utilizes React to create a dynamic and rich user experience. It also integrates with [DiscordJS](https://discord.js.org/#/), a Node.js module that allows for easiy interaction with the Discord API. Here are the technologies used to make this application.
 
 ### React
 
@@ -50,7 +50,7 @@ In the Explore Bot page that displays all published bots, the app dynamically ge
 ))}
 ```
 
-It uses the `botsMatchingQuery` variable that is saved in local state to then re-render the list of bots in case the user searches for a particular bot. The component will rely on updates to the local state instead of firing off a new fetch request to the server everytime a user searches for a bot.
+It uses the `botsMatchingQuery` variable that is saved to the local state to  re-render the list of bots in case the user searches for a particular bot. The component will rely on updates to the local state instead of firing off a new fetch request to the server everytime a user searches for a bot.
 
 The code below shows what the `ListItem` component does:
 
