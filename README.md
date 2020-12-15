@@ -117,20 +117,15 @@ The code below shows what the `ListItem` component does:
       </div>
     </Grid>
 ```
+`ListItem` will destructure the props to use the information contained and insert them where they need to be in the list. All-A-Bot takes advantage of Material-UI's powerful components to display the bot information properly in thier corresponding layout.
 
 In addition to viewing the bot information, the app lets the user edit and share the bot to different social media platforms.
-
-`CampaignItems` will destructure the props to use the information contained and insert them where they need to be in the layout. All-A-Bot takes advantage of Material-UI's powerful components to display the campaign information properly in a card layout.
-
-The component will also determine the time remaining till the campaign closes and displays it in a human readable format. In addition, the app will find out the current bid and displays it on the card.
-
-![Sample card](./graphics/sample-campaign.png)
 
 ### Redux
 
 [Redux](https://redux.js.org/) and the [react-redux](https://react-redux.js.org/) were used to manage the application's state and make fetch requests to the backend.
 
-Campaigns' information are fetched and kept in the Redux store. While fetching all campaigns may lengthens the initial load time, it provides a smoother experience once that load is complete. Pagination is also an option for future extensive use.
+Bots' information are fetched and kept in the Redux store. It provides a smoother experience once that load is complete. 
 
 Redux paves the way for new features to be integrated easily.
 
@@ -139,32 +134,85 @@ Redux paves the way for new features to be integrated easily.
 All-A-Bot incorporates nicely with Material-UI. A mockup was created to determine the look and feel of the app before diving into developement. The app was designed to utilize Material-UI's components for a smoother look and nicer user experience.
 
 #### Original Mockup
-![original mockup](./graphics/website-mockup.jpg)
+![original mockup](./documentation/AAB_mockups.png)
 
 #### End Result
-![end-result mockup](./graphics/end-result.png)
+![end-result mockup](./documentation/end-result.png)
 
-### Date-fns
-The [Date-fns](https://date-fns.org/) library is used to make time easier to read with words instead of the datetime format JavaScript provides.
+### DiscordJS
+The [DiscordJS](https://discord.js.org/#/) Module is the heart of AAB. It integrates with our code to generate a template for the user to upload to discord. 
+
+The code below checks which rule the user selected and generates the corresponding code accordingly.
+
+```js
+function commandObjectsBuilder(objList) {
+    let commandObjects = ``
+
+    objList.forEach(cmd => {
+        const varName = cmd.trigger.details.string + '_' + randStringMaker()
+        if (cmd.trigger.usesPrefix) {
+            let objTemplate = `\n${varName} = {name: '${cmd.trigger.details.string}', async execute(message, args) {`
+            cmd.response.forEach(res => {
+                if (res.type === "message") {
+                    objTemplate += `\n    ${basicResponseBuilder(res.details.string)}\n`
+                } else if (res.type === "ban") {
+                    objTemplate += `\n    ${banBuilder()}\n`
+                } else if (res.type === "emoji") {
+                    objTemplate += `\n    ${reactionBuilder(res.details.string)}\n`
+                } else if (res.type === "assignRole") {
+                    objTemplate += `\n    ${assignRoleBuilder()}`
+                } else if (res.type === "removeRole") {
+                    objTemplate += `\n    ${removeRoleBuilder()}`
+                }
+            })
+            commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})\n`
+        } else if (!cmd.trigger.usesPrefix) {
+            let objTemplate = `\n${varName} = {name: \`${cmd.trigger.details.string}\`, async execute(message, args) {`
+            cmd.response.forEach(res => {
+                if (res.type === "message") {
+                    objTemplate += `\n    ${basicResponseBuilder(res.details.string)}\n`
+                } else if (res.type === "ban") {
+                    objTemplate += `\n    ${banAuthorBuilder()}\n`
+                }
+            })
+            commandObjects += objTemplate + `}}\nclient.commands.set(${varName}.name, ${varName})\n`
+        } 
+    })
+
+    return commandObjects
+}
+
+```
+
+Sample function that assigns a role:
+
+```js
+function assignRoleBuilder() {
+    return `    let role = await message.guild.roles.cache.find(x => x.name === args[1]);
+    if (!message.mentions.users.size) {
+        return message.reply("you need to tag a user");
+    }
+    if (!role) {
+        return message.reply("Role doesn't exist, either create that role or type a valid role");
+    }
+    const user = message.mentions.members.first()
+    user.roles.add(role);
+    message.reply(user.user.username + " is now a " + role.name);\n`
+}
+```
 
 ## Backend Overview
-All-A-Bot uses an Express server with PostgreSQL as the database. The backend is fairly simple in comparison to the frontend. It sends the frontend to the client, receives requests and sends data to the frontend. Here is a breakdown of the backend technologies.
+All-A-Bot uses a Python/Flask server with PostgreSQL as the database. The backend is fairly simple in comparison to the frontend. It sends the frontend to the client, receives requests and sends data to the frontend. Here is a breakdown of the backend technologies.
 
-### Express
-[Express](https://expressjs.com/) was the obvious choice as All-A-Bot's server-side framework. Express makes it easy to implement the light-weight responsibilities of All-A-Bot' server. 
+### Flask
+[Flask](https://flask.palletsprojects.com/en/1.1.x/) was chosen as All-A-Bot's server-side framework for its minimalism. Flask makes it easier to integrate technologies such as [CSRF protection](https://owasp.org/www-community/attacks/csrf) without extra configuration. In addition, Flask integrates with SQLAlchemy, which makes querying data much simpler and more efficient.
 
 ### PostgreSQL
 [PostgreSQL](https://www.postgresql.org/) is used as the project's database. Its simplicity and flexibility makes it an obvious choice amongst other SQL databases. 
 
 ## Next Steps
-All-A-Bot is a living app. It will always have new features added to it to continue to improve it for best user experience.
-
-### Additional Features
-A few features that are in the works:
-* Check out, once a user has won a campaign, the need for the user to checkout and make a payment is then necessary.
-* contributor vs bidder separate dashboards.
+All-A-Bot is a living app. It will always have new features added to it to continue to improve it for best user experience. As DiscordJS continues to develop, AAB will have to adapt to include new rules and features that Discord members can use.
 
 ### Conclusion
-All-A-Bot is my first solo app with React and Express. I've had a lot fun building it and I've learned a lot during the process. 
+All-A-Bot was developed specifically for us to try out something completely new. Most of us had no prior DiscordJS experience. It was fun working with a completely new module and getting to know the different things we can accomplish with DiscordJS.
 
-I've always wanted to build apps that benefits people and I've always enjoyed having unique pieces of art. The thought to combine both was intriguing. I wanted a way to benefit charities and allow bidders to also own a nice piece of work. That's where the inspiration behind All-A-Bot came from.
