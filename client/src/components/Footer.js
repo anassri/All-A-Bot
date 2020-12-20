@@ -4,9 +4,7 @@ import '../style/footer.css';
 
 let style = {
     textAlign: "center",
-    // padding: "20px",
     marginBottom: 10,
-    // height: "60px",
     width: "1032",
     maxWidth: 1032,
 }
