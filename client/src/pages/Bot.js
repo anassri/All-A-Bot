@@ -35,7 +35,6 @@ const useStyle = makeStyles((theme) => ({
         textAlign:'left',
         color: "rgba(232,232,232,0.7)",
         paddingTop: 15,
-        // marginBottom: 10
     },
     content: {
         textAlign: 'left',
