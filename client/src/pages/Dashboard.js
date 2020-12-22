@@ -64,7 +64,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     maxWidth: 1080,
-    // width: '66.67%',
     height: '60%',
     minHeight: '60vh',
     padding: '55px 65px',
@@ -146,8 +145,6 @@ export function Dashboard({
     packageDownload();
     handleClose();
   };
-
-  const handleClone = event => {};
 
   if (!bots || !bookmarks) return null;
 
