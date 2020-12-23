@@ -12,7 +12,7 @@ export const Redirect = ({ code, user, logInWithDiscordDispatch }) => {
 
   useEffect(() => {
     if (user) history.push('/dashboard');
-  }, user);
+  }, [user]);
   return <></>;
 };
 
